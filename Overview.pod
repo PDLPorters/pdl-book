@@ -1,0 +1,131 @@
+=for comment
+NOTE: to podify this document, first check it for errors, correct them and then display with:
+podchecker Overview.pod && pod2html -noindex Overview.pod \
+--htmlroot="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod" \
+> Overview.html && open Overview.html
+
+=head1 Writing Documentation for PDL
+
+The goal is to refactor and expand the older PDL books and their sections into the
+structure below, and to do it all in the Plain Old Documentation (POD)
+format. These are text files ending with the extension .pod and are
+written with a simple formatting similar to HTML. POD can be nicely
+formatted, but I'm aiming for good, accurate content and we can worry
+about prettifying it later.
+
+You can read how to write POD with:
+
+    perldoc perlpod
+
+When writing the Book/Tutorials/documentation, you should be regularly checking the
+pod file with the C<podchecker> program, and optionally displaying the
+HTML output to see how simple formatting should look like.
+
+    podchecker "PDL::Docs::Overview.pod"
+
+and if all goes well, it will say: C<PDL::Docs::Overview.pod pod syntax OK.>
+Otherwise, note the problems and clean them up.
+
+Convert to HTML with this line:
+
+    pod2html -noindex "PDL::Docs::Overview.pod" > tmp.html
+
+...and then open C<tmp.html> with your browser to see what it looks
+like.
+
+=head1 Including Figures
+
+POD does not have a capability to display figures, but HTML and PDF
+output does. For the figure, here's the one line summary:
+
+Make an 8-bit color PNG with width 800 pixels and add this line in the
+POD:
+
+    =for html <img WIDTH=400 src="path_to_image/image.png">
+
+Longer explanation:
+
+Images for HTML and PDF generation should come from the single PNG image
+with 8 bit color and a width of 800 pixels.  The PNG should be C<8
+bit-color> as reported by running the C<file image.png> command in unix.
+The height can be unconstrained.
+
+Only the HTML code should be added in a POD document - I have a script
+that will automatically add the correct pod formatting code for a PDF image
+afterwards. This is done because C<podchecker> complains about the pod
+formatting code for the PDF image.
+
+=head2 Book
+
+A book should give an introduction to PDL, running through the basic
+fratures with enough detail so that the user can do basic operations,
+learn some simple threading, and output their results to files or plots.
+
+=over
+
+=item Where to find help
+
+=item L<PDL::Book::Piddle|PDL::Book::Piddle> What is a PDL object?
+
+=item L<PDL::Book::Creating|PDL::Book::Creating> Basic Operations to make PDLs
+
+=item L<PDL::Book::NiceSlice|PDL::Book::NiceSlice> Cutting out bits of a PDL
+
+=item L<PDL::Book::Functions|PDL::Book::Functions> Writing your own functions for PDL
+
+=item L<PDL::Book::Threading|PDL::Book::Threading> Threading and Getting rid of FOR loops
+
+=item L<PDL::Book::PGPLOT|PDL::Book::PGPLOT> Graphics with PGPLOT B<done>
+
+=item L<PDL::Book::PLplot|PDL::Book::PLplot> Graphics with PLplot
+
+=item L<PDL::Book::Transform|PDL::Book::Transform> Rotating, Scaling and Translating with PDL::Transform
+
+=item L<PDL::Book::Complex|PDL::Book::Complex> Complex Numbers
+
+=item L<PDL::Book::Pthreads|PDL::Book::Pthreads> Parallel Computations with pthreads
+
+=item L<PDL::Book::PP|PDL::Book::PP> Getting C routines into PDL with PDL::PP
+
+=back
+
+
+=head2 Tutorials
+
+Detailed explanations with examples that go into detail
+about some function, idea or methodology of PDL.
+
+=over
+
+=item Demonstrating threading with the Game of Life
+
+=item Making your PGPLOT output look pretty
+
+=item Getting to grips with PDL::Transform
+
+=back
+
+=head2 Reference
+
+The PDL modules and their functions - this is built from the POD conversion scripts that comb the PDL modules.
+This should be an alphabetized list of all the calleable functions in a
+given PDL installation.
+
+=head2 FAQ
+
+Commonly asked questions from the PDL Mailing list that address repeated
+topics.
+
+=head2 PDF OUTPUT
+
+Conversion for PDF reading is done using:
+
+http://perl.jonallen.info/projects/pod2pdf
+
+    pod2pdf PDL.Tut.PGPLOT.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file test.pdf
+
+Images are included for the PDF with O < tags followed by the pathname.
+
+Images are left-aligned, and a width of 400 pixels is just over half the
+width of the PDF page.
+

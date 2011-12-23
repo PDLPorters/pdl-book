@@ -1,0 +1,92 @@
+=head1 Automatic loading of functions into PDL using C<PDL::AutoLoader>
+=head2 Using PDL Functions
+
+PDL shares the Perl method for building functions for code that perform
+a commonly repeated function - you can define a function with C<sub>, a
+function name, and a pair of curly braces.
+
+Here's a simple function in a PDL script:
+
+    $a = sequence(10);
+    $b = $a * 4;
+
+    $result = test_sum($a, $b);
+    print $result;
+
+    print test_sum(pdl(10,20,30), pdl(3,4,5) );
+
+    sub test_sum {
+        ($a1, $a2) = @_;
+
+        my $c = $a1 + $a2;
+
+        my $difference = $a1 - $a2;
+
+        return($c, $difference);
+    }
+
+As you can see, the function is called C<test_sum> and it is defined at
+the end of the main script, and we call C<test_sum> twice, printing out
+the answers as we go.
+
+You can define the functions in any part of your Perl script, even after
+the point in the program that you started using the function. The input
+variables to the function are passed through the C<@_> array, and we can
+put any set of piddles into the function. The function also has local
+scope, so variables inside the routine are not seen by anything calling
+that function. Remember, though, that the variables I<outside> the
+function B<can> be seen inside the function! It's good practice to have
+a C<use strict;> inside your functions whilst writing them, though, as
+this will help catch bugs.
+
+=head2 Moving Functions into Separate Files
+
+It gets tiring to copy and paste your useful functions from script to
+script, and so PDL provides a way to have your functions stored in a
+file that can be read by many scripts.
+
+Use a file editor and cut and paste the text below into a file with the
+name C<test_sum.pdl>.
+
+Two important notes:
+
+=over
+
+=item *
+
+The filename has C<.pdl> at its end, not C<.pl>
+
+=item *
+
+The file has C<1;> as the last line outside the curly braces of the
+statement.
+
+    sub test_sum {
+        ($a1, $a2) = @_;
+
+        my $c = $a1 + $a2;
+
+        my $difference = $a1 - $a2;
+
+        return($c, $difference);
+    }
+    
+    1;
+
+Now, run your script so that it has C<use PDL::AutoLoader;> as a line
+after the C<use PDL;> statement, and your program will pull in the
+function.
+
+=head2 Getting PDL to look for your Functions
+
+After a while, you will have many PDL scripts scattered over many
+directories, and so it makes sense to collect all your functions into a
+separate directory and have PDL look for them there.
+
+You can set an environment variable in your shell called C<PDLLIB> to
+look within a given directory. One convention is to use
+C<PDLIB=${HOME}/lib/pdl+> to store all your functions.
+
+
+
+

@@ -1,0 +1,165 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Functions</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+<!--
+
+<ul>
+
+	<li><a href="#writing_your_own_functions_into_pdl">Writing your own functions into PDL</a></li>
+	<ul>
+
+		<li><a href="#using_pdl_functions">Using PDL Functions</a></li>
+		<li><a href="#moving_functions_into_separate_files">Moving Functions into Separate Files</a></li>
+		<li><a href="#getting_pdl_to_look_for_your_functions_in_other_places">Getting PDL to look for your functions in other places</a></li>
+		<li><a href="#passing_options_to_your_function_with_hashes">Passing Options to your function with Hashes</a></li>
+		<li><a href="#documenting_your_functions">Documenting your Functions</a></li>
+	</ul>
+
+</ul>
+
+-->
+
+
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="writing_your_own_functions_into_pdl">Writing your own functions into PDL</a></h1>
+<p>
+</p>
+<h2><a name="using_pdl_functions">Using PDL Functions</a></h2>
+<p>PDL shares the Perl method for building functions for code that perform
+a commonly repeated function - you can define a function with <code>sub</code>, a
+function name, and a pair of curly braces.</p>
+<p>Here's a simple function in a PDL script:</p>
+<pre>
+    #!/usr/bin/perl
+    use PDL;
+    $a = sequence(10);
+    $b = $a * 4;</pre>
+<pre>
+    $result = my_sums($a, $b);
+    print $result;</pre>
+<pre>
+    print my_sums(pdl(10,20,30), pdl(3,4,5) );</pre>
+<pre>
+    sub my_sums {
+        my ($a1, $a2) = @_; # pdls passed in the perl array @_</pre>
+<pre>
+        my $c = $a1 + $a2;</pre>
+<pre>
+        my $difference = $a1 - $a2;</pre>
+<pre>
+        return($c, $difference);
+    }</pre>
+<p>As you can see, the function is called <code>my_sums</code> and it is defined at
+the end of this script, but you can be define functions anywhere in the
+script. In the example above, we call <code>my_sums</code> twice, printing out
+the answers as we go.</p>
+<p>You can return as many PDLs from the function as you want, by passing
+them out in a comma separated list.</p>
+<p>You can define the functions in any part of your Perl script, even after
+the point in the program that you started using the function. The input
+variables to the function are passed through the <code>@_</code> array, and we can
+put any set of piddles into the function. The function also has local
+scope, so variables inside the routine are not seen by anything calling
+that function. Remember, though, that the variables <em>outside</em> the
+function <strong>can</strong> be seen inside the function! It's good practice to have
+a <code>use strict;</code> inside your functions whilst writing them, though, as
+this will help catch bugs.</p>
+<p>
+</p>
+<h2><a name="moving_functions_into_separate_files">Moving Functions into Separate Files</a></h2>
+<p>It gets tiring to copy and paste your useful functions from script to
+script, and so PDL provides a way to have your functions stored in a
+file that can be read by many scripts.</p>
+<p>Two important notes:</p>
+<ul>
+<li>
+<p>The filename has <code>.pdl</code> at its end, not <code>.pl</code></p>
+</li>
+<li>
+<p>The file has <code>1;</code> as the last line outside the curly braces of the
+statement.</p>
+</li>
+</ul>
+<p>Use a file editor and cut and paste the text below into a file with the
+name <code>my_sums.pdl</code>.</p>
+<pre>
+    sub my_sums {
+        ($a1, $a2) = @_;
+        my $c = $a1 + $a2;
+        my $difference = $a1 - $a2;
+        return($c, $difference);
+    }
+    1;</pre>
+<p>Now create a separate script in the same directory:</p>
+<pre>
+    #!/usr/bin/perl
+    use PDL;
+    use PDL::AutoLoader;
+    $a = sequence(10);
+    $b = $a * 4;
+    $result = my_sums($a, $b);
+    print $result;
+    print my_sums(pdl(10,20,30), pdl(3,4,5) );</pre>
+<p>Running this Perl script will include PDL, and PDL will automatically
+look for a file called <code>my_sums.pdl</code> (remember the extension has to
+have <code>.pdl</code>) and use it.</p>
+<p>
+</p>
+<h2><a name="getting_pdl_to_look_for_your_functions_in_other_places">Getting PDL to look for your functions in other places</a></h2>
+<p>After a while, you will have many PDL functions scattered over many
+directories, and so it makes sense to collect all your functions into a
+separate directory and have PDL look for them there.</p>
+<p>You can set an environment variable in your shell called <code>PDLLIB</code> to
+look within a given directory. One convention is to use
+<code>PDLLIB=${HOME}/lib/pdl+</code> to store all your functions. When defined in
+your system shell, this will inform PDL where you've put your commonly
+used functions. The directory path is specified to your PDL library
+directory. The <code>+</code> sign at the end of the path tells PDL to also look
+in all the subdirectories below the PDLLIB directory.</p>
+<p>
+</p>
+<h2><a name="passing_options_to_your_function_with_hashes">Passing Options to your function with Hashes</a></h2>
+<p>Sometimes you need to pass in one or more options into your PDL
+function, and these are typically passed into a PDL routine using an
+anonymous hash. As an example of this, we'll modify the routine above to
+optionally print the result of the function:</p>
+<pre>
+    sub my_sums {
+        ($a1, $a2) = @_;
+        my $c = $a1 + $a2;
+        my $difference = $a1 - $a2;
+        return($c, $difference);
+    }
+    1;</pre>
+<p>
+</p>
+<h2><a name="documenting_your_functions">Documenting your Functions</a></h2>
+<p>Just like any other Perl script, you can add Plain Old Documentation
+(POD) inside your PDL functions.</p>
+<p>For a detailed look at what you can have in a POD, look at <em>perlpod</em>
+with <code>perldoc perlpod</code> or look online for a tutorial.</p>
+<p>At the bare minimum, the POD should say what the PDL function does, what
+are its inputs and outputs. Further detail may include one or two
+examples so that a new user can test it and check they understand what
+the function behaves, look at <em>perlpod</em> with <code>perldoc perlpod</code> or look
+online for a tutorial.</p>
+
+</body>
+
+</html>

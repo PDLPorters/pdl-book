@@ -1,0 +1,1657 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Plotting and Labelling Data and Images using PGPLOT</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:kenworthy@matthew-kenworthys-imac.local" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#plotting_and_labelling_data_and_images_using_pgplot">Plotting and Labelling Data and Images using PGPLOT</a></li>
+	<li><a href="#introducing_pdl__graphics__pgplot">Introducing <code>PDL::Graphics::PGPLOT</code></a></li>
+	<li><a href="#an_overview_of_2d_plotting_commands">An overview of 2D plotting commands</a></li>
+	<ul>
+
+		<li><a href="#options_in_plot_commands">Options in plot commands</a></li>
+		<li><a href="#hard_copies_and_plot_options">Hard-copies and plot options</a></li>
+		<li><a href="#setting_default_values_for_options">Setting default values for options</a></li>
+		<li><a href="#setting_up_the_plot_area">Setting up the plot area</a></li>
+		<li><a href="#drawing_lines_and_plotting_points">Drawing lines and plotting points</a></li>
+		<ul>
+
+			<li><a href="#plotting_error_bars">Plotting error-bars</a></li>
+			<li><a href="#drawing_lines">Drawing lines</a></li>
+			<li><a href="#plotting_histograms">Plotting histograms</a></li>
+			<li><a href="#drawing_polygons">Drawing polygons</a></li>
+		</ul>
+
+		<li><a href="#displaying_images">Displaying images</a></li>
+		<ul>
+
+			<li><a href="#transforms">Transforms</a></li>
+			<li><a href="#colour_bar_wedge">Colour bar/wedge</a></li>
+		</ul>
+
+		<li><a href="#contour_plots_and_vector_fields">Contour plots and vector fields</a></li>
+		<li><a href="#drawing_simple_shapes">Drawing simple shapes</a></li>
+		<li><a href="#text_and_legends">Text and legends</a></li>
+		<ul>
+
+			<li><a href="#non_alphanumeric_symbols">Non-alphanumeric symbols</a></li>
+		</ul>
+
+	</ul>
+
+	<li><a href="#labelling_your_figures_in_pgplot">Labelling your figures in PGPLOT</a></li>
+	<li><a href="#using_colour">Using colour</a></li>
+	<li><a href="#threading_in_pdl__graphics__pgplot">Threading in PDL::Graphics::PGPLOT</a></li>
+	<li><a href="#recording_and_playing_back_plot_commands">Recording and playing back plot commands</a></li>
+	<ul>
+
+		<ul>
+
+			<li><a href="#redoing_a_plot_with_slightly_different_data">Redoing a plot with slightly different data</a></li>
+			<li><a href="#using_recording_in_scripts">Using recording in scripts</a></li>
+		</ul>
+
+	</ul>
+
+	<li><a href="#the_object_oriented_approach">The object oriented approach</a></li>
+	<ul>
+
+		<li><a href="#why_use_the_oo_interface">Why use the OO interface</a></li>
+		<li><a href="#usage_of_the_oo_interface">Usage of the OO interface</a></li>
+	</ul>
+
+	<li><a href="#using_pgplot_commands_directly">Using PGPLOT commands directly</a></li>
+	<li><a href="#credits">Credits</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="plotting_and_labelling_data_and_images_using_pgplot">Plotting and Labelling Data and Images using PGPLOT</a></h1>
+<p>A central requirement of any data analysis package is the possibility of
+visualisation of data. PDL deals with this in a slightly different
+manner than some other packages in that no built-in graphics library is
+used, instead it uses other freely available external packages. In this
+chapter we will focus on the main 2D plotting package, PGPLOT.</p>
+<p>Here we will cover the use of the <code>PDL::Graphics::PGPLOT</code> package which
+uses the freely available PGPLOT subroutine package written by Tim
+Pearson. This is a very powerful package and <code>PDL::Graphics::PGPLOT</code>
+does not provide easy access to everything in the PGPLOT package,
+although it hopefully does most of what you will need.</p>
+<p>For advanced use you might have to use some PGPLOT commands directly,
+see <a href="#using_pgplot_commands_directly">Using PGPLOT commands directly</a> for a discussion of this. But
+even if you don't you are recommended to at least keep a copy of the
+PGPLOT documentation lying around. It is available from <a href="http://www.astro.caltech.edu/~tjp/pgplot/">http://www.astro.caltech.edu/~tjp/pgplot/</a>.</p>
+<p>The goals of this section is to familiarise the reader with the PDL
+interface to PGPLOT and show how complicated datasets can be easily
+manipulated and displayed. The focus will be on interactive use to
+facilitate learning, but at the end we will turn to an object-oriented
+interface that might be more suited for scripts.</p>
+<p>To use <code>PDL::Graphics::PGPLOT</code> it is necessary to have the PGPLOT
+package installed, and in addition have the Perl PGPLOT module (written
+by Karl Glazebrook and available through CPAN) installed and working. In
+the following we will assume that you have this all set up.</p>
+<p>
+</p>
+<hr />
+<h1><a name="introducing_pdl__graphics__pgplot">Introducing <code>PDL::Graphics::PGPLOT</code></a></h1>
+<p>2-dimensional graphics in PDL is normally performed by the
+<code>PDL::Graphics::PGPLOT</code> module. The <code>PDL::Graphics::PGPLOT</code> package
+must be <code>use</code>'ed to give access to the commands. This introduction
+will be based on interactivity and use of <code>perldl</code></p>
+<pre>
+    perldl&gt; use PDL::Graphics::PGPLOT;</pre>
+<p>That is what you need to get running. We will now play around with a
+couple of commands before we turn to a systematic overview in the next
+two sections. We will concentrate on the <code>line</code> and <code>points</code> commands
+which draws continuous lines and individual plotting symbols
+respectively. The final result should look similar to Figure 1.</p>
+<img src="PGPLOTFigs/ex_linepoint.png">
+<img src="PGPLOTFigs/ex_errorbars.png">
+<p><b>Figure 1</b>: Our first try at using PDL::Graphics::PGPLOT.<p><p>The first step is to start <code>perldl</code> and use the
+<code>PDL::Graphics::PGPLOT</code> package (some output is suppressed)</p>
+<pre>
+    &gt; perldl
+    Type 'help' for online help
+    Type 'demo' for online demos
+    Loaded PDL v2.4.3
+    perldl&gt; use PDL::Graphics::PGPLOT</pre>
+<p>Now we need to open a graphics device - there are quite a few that are
+supported by PGPLOT, here we will use a normal plot window that can be
+re-used:</p>
+<pre>
+    perldl&gt; dev('/xs')</pre>
+<p>You should now have a large plot window on your screen, if you had some
+problems try to do <code>dev('?')</code> which will give you a list of available
+devices and allow you to choose one.</p>
+<p>We first need to define a variable to have something to plot. The first
+plan is to simply plot a parabola and a Gaussian (bell) function as in
+the left panel in Figure 1, so we need an x-variable that is both
+positive and negative.</p>
+<pre>
+    perldl&gt; $x=zeroes(100)-&gt;xlinvals(-5, 5)</pre>
+<p>This creates a 100 element piddle starting at -5 and ending at 5. We can
+then very easily draw a parabola:</p>
+<pre>
+    perldl&gt; line $x, $x*$x/12.5, {LINESTYLE=&gt;'Dashed', Colour=&gt;red}</pre>
+<p>which should draw a nice parabola with a dashed red line. As
+should be clear the <code>line</code> command draws a line and takes the x and y
+coordinates of the points on the line as arguments and options to the
+command are given as an anonymous hash.</p>
+<p>We now want to plot a Gaussian on top of this, but if we were just to
+issue another plot command it would by default erase the screen, so
+instead we call the <code>hold</code> function to stop that from happening:</p>
+<pre>
+    perldl&gt; hold</pre>
+<p>We can then continue plotting, now using symbols instead of a line:</p>
+<pre>
+    perldl&gt; points $x, exp(-$x*$x/2), {Symbol =&gt; 'Plus'};</pre>
+<p>Again, note that the function <code>points</code> function plots symbols instead
+of lines. PGPLOT has a large array of symbols, normally accessed using
+numbers, but the most common have text aliases defined.</p>
+<p>The only thing left for us now is to ensure that the next plot will
+start afresh. Since we issued the <code>hold</code> command all subsequent plots
+will overplot the existing ones and since we do not want that anymore,
+we therefore have to <code>release</code> the device to the next set of plot
+commands:</p>
+<pre>
+    perldl&gt; release;</pre>
+<p>As a second example we will show how you can create plots with error
+bars. We will just carry on so the previous plot will be erased (enjoy
+it while you can). We first have to define some variables for the plot,
+so we need the <em>x</em> and <em>y</em> variables and the error on <em>y</em>.</p>
+<pre>
+    perldl&gt; $x = pdl(0.88, 0.223, 0.815, 0.606, 0.188, 0.360)
+    perldl&gt; $y = pdl(24.52, 22.24, 25.43, 23.54, 22.63, 23.59)
+    perldl&gt; $dy = pdl(0.57, 0.07, 0.84, 0.27, 0.12, 0.28)</pre>
+<p>In the previous example we let PGPLOT decide on the plotting ranges we
+were going to use, but now we want some more control over it. To do so
+we set it up using the <code>env</code> command:</p>
+<pre>
+    perldl&gt; env(0, 1, 22, 26)</pre>
+<p>which sets the X-axis to go from 0 to 1 and the Y-axis from 22 to 26.</p>
+<p>That is really all that is needed before plotting the error bars:</p>
+<pre>
+    perldl&gt; errb $x, $v, $dv,  {Symbol =&gt; 'Square'};</pre>
+<p>And here we go! It almost looks like science. Of course in real life
+error-bars might not be symmetric (although you often wish they were),
+and we will explain how to do this later when we discuss <code>errb</code> in more
+detail below.</p>
+<p>
+</p>
+<hr />
+<h1><a name="an_overview_of_2d_plotting_commands">An overview of 2D plotting commands</a></h1>
+<p>Before we proceed to an overview of all commands in
+<code>PDL::Graphics::PGPLOT</code> it is necessary to define a couple of terms:
+The first is the concept of <strong>device</strong> - this is what the plotting
+commands work on, often this will be a <em>screen</em> device which shows
+resulting output on the screen in a window, but it can also be output to
+a file in some sort of format.  Then inside each device there is a
+<em>plotting area</em> within which plotting commands gives a noticeable
+result.</p>
+<p>Another important concept is <em>holding</em> of plots.  When a plot is held,
+any subsequent plot commands will plot on top of the existing plot. To
+explicitly hold a plot you issue the command <code>hold</code> and to release it
+again you use <code>release</code>.</p>
+<p>Finally most commands described in the following take a set of
+<strong>options</strong>. These are values that can be set to modify the default
+behaviour of the plotting routine and are very useful so we will first
+discuss the standard options and how options are specified.</p>
+<p>
+</p>
+<h2><a name="options_in_plot_commands">Options in plot commands</a></h2>
+<p>As mentioned above and seen in the brief introduction to the PGPLOT
+interface earlier, we use options to modify the behaviour of plot
+commands. Below we will often see examples of <strong>specific</strong> options, those
+that are only recognised by a particular plot command. However in
+addition there are <strong>general</strong> options that are recognised by many or all
+plot commands. These are normally the options you use most so it is
+important to know these.</p>
+<p>But first, how do you specify an option? If you read through the
+walk-through above you have probably already realised that they are set
+as keys in a hash:</p>
+<pre>
+    line x, y {Colour =&gt; 3}</pre>
+<p>However due to the way they are implemented in the code (using the
+<code>PDL::Options</code> package) the hash is more flexible than normal Perl
+hashes. Firstly the options are case-insensitive and secondly some have
+synonyms defined so that for instance <code>Color</code> and <a href="#colour"><code>Colour</code></a> are both
+accepted to avoid bad feelings on one side of the Atlantic. Finally
+most, if not all, options can be shortened so that <code>Lines</code> will be
+interpreted as <code>LineStyle</code>. This is mostly useful when working on the
+<code>perldl</code> command line however as it is error-prone in scripts (imagine
+that someone later implemented a <code>Lines</code> option which did something
+totally different, like draw 10 parallell lines, yeah, quite likely).</p>
+<p>The following listing of standard options is based on the on-line
+documentation which you can access yourself inside <code>perldl</code> as</p>
+<pre>
+    perldl&gt; help PDL::Graphics::PGPLOT::Window</pre>
+<p>or using the <code>pdldoc</code> command</p>
+<pre>
+    bash$ pdldoc PDL::Graphics::PGPLOT::Window</pre>
+<p>It is not envisaged that the standard option set will be significantly
+expanded from that listed here, but the on-line documentation should
+reflect any changes if they take place.</p>
+<dl>
+<dt><strong><a name="arrow" class="item"><code>Arrow</code></a></strong></dt>
+
+<dd>
+<p>This option allows you to set the
+arrow shape, and optionally size for arrows for the <code>vect</code> routine. The
+arrow shape is specified as a hash with the key <code>FS</code> to set fill style,</p>
+</dd>
+<dt><strong><a name="angle" class="item"><code>Angle</code></a></strong></dt>
+
+<dd>
+<p>sets the opening angle of the arrow head, <code>Vent</code> to set how
+much of the arrow head is cut out and <code>Size</code> to set the arrowsize.</p>
+<p>The following code:</p>
+<pre>
+    perldl&gt; $opt = {Arrow =&gt; {FS=&gt;1, Angle=&gt;60, Vent=&gt;0.3, Size=&gt;5}};</pre>
+<p>will set up an options hash for a broad arrow of five times the normal
+size.</p>
+<p>Alternatively the arrow can be specified as a set of numbers
+corresponding to an extention to the syntax for the PGPLOT command
+<code>pgsah</code> . The equivalent to the above is</p>
+<pre>
+    perldl&gt; $opt = {Arrow =&gt; pdl([1, 60, 0.3, 5])};</pre>
+<p>For the latter the arguments must be in the given order, and if any are
+not given the default values of 1, 45, 0.3 and 1.0 respectively will be
+used.</p>
+</dd>
+<dt><strong><a name="arrowsize" class="item"><code>Arrowsize</code></a></strong></dt>
+
+<dd>
+<p>The arrowsize can be specified separately using this option
+to the options hash. It is useful if an arrowstyle has been set up and
+one wants to plot the same arrow with several sizes. Please note that it
+is <strong>not</strong> possible to set arrowsize and character size in the same call
+to a plotting function. This should not be a problem in most cases.</p>
+<pre>
+    perldl&gt; $opt = {ARROWSIZE =&gt; 2.5};</pre>
+</dd>
+<dt><strong><a name="axis" class="item"><code>Axis</code></a></strong></dt>
+
+<dd>
+<p>Set the axis type (see the <code>env</code> command below in
+<a href="#setting_up_the_plot_area">Setting up the plot area</a>). It can either be specified as a
+number, or by a name as in the following table</p>
+<pre>
+    Name        Number  Explanation
+    ----        ------  -----------</pre>
+<pre>
+    Empty       -2      draw no box, axes or labels
+    Box         -1      draw box only
+    Normal       0      draw box and label it with coordinates
+    Axes         1      same as Normal, but also draw X=0, Y=0 axes
+    Grid         2      same as Axes, but also draw grid lines
+    LogX        10      draw box and label X-axis logarithmically
+    LogY        20      draw box and label Y-axis logarithmically
+    LogXY       30      draw box and label both axes logarithmically</pre>
+<p>The reason why this command is accepted by most commands is that when a
+command is called before a plot area is set up it will implicitly call
+<code>env</code> which interprets this option.</p>
+</dd>
+<dt><strong><a name="axiscolour" class="item"><code>AxisColour</code></a></strong></dt>
+
+<dd>
+<p>Set the axis colour using the same syntax as for the <a href="#colour"><code>Colour</code></a> option below.</p>
+</dd>
+<dt><strong><a name="border" class="item"><code>Border</code></a></strong></dt>
+
+<dd>
+<p>Normally the plot limits are chosen so that the plotted points just fit
+inside the plot area; with this option you can increase (or decrease)
+the limits by either a relative (ie a fraction of the original axis
+width) or an absolute amount. Either specify a hash array, where the
+keys are <code>Type</code> (set to '<code>Relative</code> ' or '<code>Absolute</code> ') and <code>Value</code>
+(the amount to change the limits by), or set to 1, which is equivalent
+to <code>Border =&gt; { Type =&gt; 'Rel', Value =&gt; 0.05}</code>.</p>
+</dd>
+<dt><strong><a name="charsize" class="item"><code>Charsize</code></a></strong></dt>
+
+<dd>
+<p>Set the character/symbol size as
+a multiple of the standard size. <code>$opt = {Charsize =&gt; 1.5}</code></p>
+</dd>
+<dt><strong><a name="colour" class="item"><code>Colour</code></a></strong></dt>
+
+<dd>
+<p>Set the colour to be used for the subsequent plotting - it has
+<code>Color</code> as a synonym. This can be specified as a number, and the most
+used colours can also be specified with name, according to the following
+table:</p>
+<pre>
+    0   White       4   Blue        8   Orange
+    1   Black       5   Cyan        14  Dark  gray
+    2   Red         6   Magenta     16  Light Gray
+    3   Green       7   Yellow</pre>
+<p>However there is a much more flexible mechanism to deal with colour. The
+colour can be set as a 3 or 4 element anonymous array (or piddle) which
+gives the RGB colours. If the array has four elements the first element
+is taken to be the colour index to change. For normal work you might
+want to simply use a 3 element array with R, G and B values and let the
+package deal with the details. The R,G and B values go from 0 to 1.</p>
+<p>In addition the package will also try to interpret non-recognised colour
+names using the default X11 lookup table, normally using the <code>rgb.txt</code>
+that came with PGPLOT.</p>
+<p>For more details on the handling of colour it is best that the user
+consults the PGPLOT documentation. Further details on the handling of
+colour can be found in the documentation for the internal routine
+<code>_set_colour</code>.</p>
+</dd>
+<dt><strong><a name="filltype" class="item"><code>Filltype</code></a></strong></dt>
+
+<dd>
+<p>Set the fill type to be used by <code>poly</code>, <code>circle</code>, <code>ellipse</code> and
+<code>rectangle</code>. The fill can either be specified using numbers or name,
+according to the following table, where the recognised name is shown in
+capitals-it is case-insensitive, but the whole name must be specified.</p>
+<pre>
+    1   Solid
+    2   Outline
+    3   Hatched
+    4   CrossHatched</pre>
+<p><code>$opt = {Filltype =&gt; 'Solid'}</code> (see below for an example of hatched
+fill)</p>
+</dd>
+<dt><strong><a name="font" class="item"><code>Font</code></a></strong></dt>
+
+<dd>
+<p>Set the character font. This can either be specified as a number
+following the PGPLOT numbering or name as follows (name in capitals):</p>
+<pre>
+    1   Normal
+    2   Roman
+    3   Italic
+    4   Script</pre>
+<p>Note that in a string, the font can be changed using the escape
+sequences <code>\fn</code> , <code>\fr</code> , <code>\fi</code> and <code>\fs</code> respectively. See the
+documentation in <a href="#text_and_legends">Text and legends</a> for more information regarding
+escape sequences.</p>
+<p><code>$opt = {Font =&gt; 'Roman'};</code> gives the same result as <code>$opt = { Font=&gt; 2 };</code></p>
+</dd>
+<dt><strong><a name="hatching" class="item"><code>Hatching</code></a></strong></dt>
+
+<dd>
+<p>Set the hatching to be used if either filltype 3 or 4 is selected (see
+above). The specification is similar to the one for specifying arrows.
+The arguments for the hatching is either given using a hash with the key
+<a href="#angle"><code>Angle</code></a> to set the angle that the hatch lines will make
+with the horizontal, <code>Separation</code> to set the spacing of the hatch lines
+in units of 1% of <code>min(height,width)</code> of the view surface, and <code>Phase</code>
+to set the offset the hatching.  Alternatively this can be specified as
+a 1x3 piddle <code>$hatch=pdl[$angle, $sep, $phase]</code>.</p>
+<pre>
+    $opt = {Filltype =&gt; 'Hatched', Hatching =&gt; {Angle=&gt;30, Separation=&gt;4}};</pre>
+<p>Can also be specified as</p>
+<pre>
+    $opt = {Fill=&gt; 'Hatched', Hatch =&gt; pdl [30,4,0.0]};</pre>
+<p>For another example of hatching, see the command <code>poly</code> in <a href="#drawing_lines_and_plotting_points">Drawing lines and plotting points</a>
+below.</p>
+</dd>
+<dt><strong><a name="justify" class="item"><code>Justify</code></a></strong></dt>
+
+<dd>
+<p>A boolean value which, if true, causes both axes to drawn to the
+same scale. If you want more information about this option you are
+advised to consule the PGPLOT documenation for the <code>pgenv</code> command.</p>
+</dd>
+<dt><strong><a name="linestyle" class="item"><code>Linestyle</code></a></strong></dt>
+
+<dd>
+<p>Set the line style. This can either be specified as a number following
+the PGPLOT numbering or as a name as shown in the following table.</p>
+<pre>
+    1   Solid
+    2   Dashed
+    3   Dot-dash
+    4   Dotted
+    5   Dash-dot-dot</pre>
+<p>Thus the following two specifications both specify the line to be dotted:</p>
+<pre>
+    $opt = {Linestyle =&gt; 4};
+    $varopt = {Linestyle =&gt; 'Dotted'};</pre>
+<p>The names are not case sensitive, but the full name is required.</p>
+</dd>
+<dt><strong><a name="linewidth" class="item"><code>Linewidth</code></a></strong></dt>
+
+<dd>
+<p>Set the line width. It is specified as a integer multiple of 0.13 mm.</p>
+<pre>
+    $opt = {Linewidth =&gt; 10}; # A rather fat line</pre>
+</dd>
+<dt><strong><a name="plotposition" class="item"><code>PlotPosition</code></a></strong></dt>
+
+<dd>
+<p>The position of the plot on the page relative to the view surface in
+normalised coordinates as an anonymous array. The array should contain
+the lower and upper X-limits and then the lower and upper Y-limits. To
+place two plots above each other with no space between them you could do</p>
+<pre>
+    $win-&gt;env(0, 1, 0, 1, {PlotPosition =&gt; [0.1, 0.5, 0.1, 0.5]});
+    $win-&gt;env(5, 9, 0, 8, {PlotPosition =&gt; [0.1, 0.5, 0.5, 0.9]});</pre>
+</dd>
+<dt><strong><a name="symbol" class="item"><code>Symbol</code></a></strong></dt>
+
+<dd>
+<p>The plot symbol to use, with the default being 17 which gives a small
+filled circle. This is an option for <code>points</code> and <code>errb</code> at the
+moment, but could be used for others too. It is either given a piddle
+with the same number of elements as the plot variable, a name (or
+number) specifying the symbol to use according to the following
+(recognised name in capital letters):</p>
+<pre>
+    0   Square      4   Circle      9   Sun
+    1   Dot         5   Cross       11  Diamond
+    2   Plus        7   Triangle    12  Star
+    3   Asterisk    8   Earth       17  Default</pre>
+<p>PGPLOT has support for a much larger number of symbols. The reader is
+advised to consult the PGPLOT documentation for further information or
+write a short program that loops through all symbols. Note however that
+there are a <strong>lot</strong>. For instance symbol 2830 is a cyrillic character
+- the system used is the Hershey system for symbols. In addition you
+can draw regular polygons with <em>n</em>-sides by setting the symbol to <em>-n</em>,
+so that <code>$opt = {Symbol =&gt; -n };</code> but be aware that <em>-1</em> and <em>-2</em>
+draws a dot with the diameter set to the current linewidth.</p>
+</dd>
+<dt><strong><a name="title" class="item"><code>Title</code></a></strong></dt>
+
+<dd>
+<p>The title on top of the plot box.</p>
+</dd>
+<dt><strong><a name="xtitle" class="item"><code>XTitle</code></a></strong></dt>
+
+<dd>
+<p>The title for the X-axis of the plot.</p>
+</dd>
+<dt><strong><a name="ytitle" class="item"><code>YTitle</code></a></strong></dt>
+
+<dd>
+<p>The title along the Y-axis.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="hard_copies_and_plot_options">Hard-copies and plot options</a></h2>
+<p>The default options for screen display are not ideal for hard-copies
+(typically PostScript). Thus there is a separate set of options for
+certain properties when the output device is a hard-copy one. Here we
+will quickly summarize these</p>
+<dl>
+<dt><strong><a name="hardlw" class="item"><code>HardLW</code></a></strong></dt>
+
+<dd>
+<p>The line width used on hard-copy devices. The default is 4.</p>
+</dd>
+<dt><strong><a name="hardch" class="item"><code>HardCH</code></a></strong></dt>
+
+<dd>
+<p>The character size used on hard-copy devices. The default is 1.4.</p>
+</dd>
+<dt><strong><a name="hardfont" class="item"><code>HardFont</code></a></strong></dt>
+
+<dd>
+<p>The default font used on hard-copy devices. It defaults to 2.</p>
+</dd>
+<dt><strong><a name="hardaxiscolour" class="item"><code>HardAxisColour</code></a></strong></dt>
+
+<dd>
+<p>The default colour to draw the axis with on a hard-copy device. This is
+particularly important since light green (default screen colour) is not
+very visible on paper. The default is 1 (black). The setting of colours
+work as with <a href="#colour"><code>Colour</code></a></p>
+</dd>
+<dt><strong><a name="hardcolour" class="item"><code>HardColour</code></a></strong></dt>
+
+<dd>
+<p>The default plot colour on hard-copy devices, it defaults to 1 (black).</p>
+<p>These options should be set either in the call to <code>dev</code> (see
+<a href="#setting_up_the_plot_area">Setting up the plot area</a>) or redefined using the
+method outlined in the next section.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="setting_default_values_for_options">Setting default values for options</a></h2>
+<p>You might not be happy with the default settings for the various options
+and want to set a different value permanently instead of specifying it
+with every call to <code>dev</code> , <code>env</code> or some other command. There is some
+support for this, but it is limited in that it is not case-insens itive
+nor does it have synonyms (except for colour/color) so the options
+<strong>must</strong> be written as above. (You will be notified if you did something
+wrong).</p>
+<p>That said it is fairly easy to use. You would normally set this in your
+<code>.perldlrc</code> file (see ' <code>help\InsetSpace ~perldl</code> ' in the perldl
+shell or ' <code>pdldoc perldl</code> '). The relevant function is
+<code>set_pgplot_options</code> which takes a hash as argument with the options
+and their values, as in the following example:</p>
+<pre>
+    use PDL::Graphics::PGPLOTOptions ('setpgplotoptions');
+    setpgplotoptions('Device' =&gt; '/xs', 'LineWidth' =&gt; 10);</pre>
+<p>Note that some settings might affect more than you like. In particular
+the <code>LineWidth</code> and <code>LineStyle</code> options will also affect the axis and
+axis labels drawn. However, character size, device default plot symbol,
+border and other options can be conveniently be specified in this way.</p>
+<p>
+</p>
+<h2><a name="setting_up_the_plot_area">Setting up the plot area</a></h2>
+<p>The first step for the budding plot maker is to set up the drawing area.
+This involves selecting what device you want to create the plots on and
+then setting the region you want to plot in .</p>
+<p>The destination for your plot commands is set with the <code>dev</code> command,
+and with different arguments to <code>dev</code> you can send plots to various
+output devices such as:</p>
+<p>GIF files - <code>dev('giffile.gif/gif')</code></p>
+<p>Postscript files - <code>dev('filename.ps/ps')</code></p>
+<p>Colour Postscript files - <code>dev('filename.ps/cps')</code></p>
+<p>X-windows plotting windows - <code>dev('/xs')</code></p>
+<p>If you wish to have several plotting panels per page you can specify the
+number in the x and y directions as further arguments to <code>dev</code> so that
+to get four panels you would write <code>dev('/xs', 2, 2)</code>.</p>
+<p>For more detailed control over the created device, you can specify
+various options. The main four options you might use are:</p>
+<dl>
+<dt><strong><a name="aspect" class="item"><code>Aspect</code></a></strong></dt>
+
+<dd>
+<p>The aspect ratio of a newly created output device. If your device is a
+graphics window under a window system, this might or might not be
+applied when the window is created, but it should be updated as soon as
+you plot to it. The default value is 0.618, i.e. the
+golden ratio.</p>
+</dd>
+<dt><strong><a name="windowwidth" class="item"><code>WindowWidth</code></a></strong></dt>
+
+<dd>
+<p>The width of the created output window. The width is specified in units
+of inches, which is reasonably easy to deal with when printing out, but
+if your device is a graphics window it is all a bit more unclear since
+different setups might have different ideas of what an inch corresponds
+to in pixels.</p>
+</dd>
+<dt><strong><a name="windowxsize" class="item"><code>WindowXSize</code></a></strong></dt>
+
+<dd>
+<p>The X-size of the plot window, specified as <a href="#windowwidth"><code>WindowWidth</code></a> and combined
+with <a href="#aspect"><code>Aspect</code></a> if <a href="#windowysize"><code>WindowYSize</code></a> is not set.</p>
+</dd>
+<dt><strong><a name="windowysize" class="item"><code>WindowYSize</code></a></strong></dt>
+
+<dd>
+<p>As above but for the Y-size.</p>
+</dd>
+<dt><strong><a name="nx_and_ny" class="item"><code>NX</code> and <code>NY</code></a></strong></dt>
+
+<dd>
+<p>These two options set the number of panels in the X and Y direction
+respectivel y and are alternatives to specifying the numbers of panels
+directly in the call to <code>dev</code> as <code>dev(&lt;device&gt;, &lt;nx&gt;, &lt;ny&gt;)</code>.</p>
+<p>The options are specified in an anonymous hash so that:</p>
+<pre>
+    perldl&gt; dev('/xs', {NX =&gt; 4, NY =&gt; 2})</pre>
+<p>will create a plot window with four panels in the X-direction and 2 in
+the Y-direction, with a default aspect ration and size. Alternatively
+the same window could have a specified width and aspect ratio by
+specifying those options as</p>
+<pre>
+    perldl&gt; dev('/xs', {NX =&gt; 4, NY =&gt; 2, Aspect =&gt; 1, WindowWidth =&gt; 5})</pre>
+<p>However dev does not actually draw anything for you, it merely selects
+the output device. To set up a plot you either call a plot command
+directly, or if you want more control over the axis ranges you use the
+command <code>env</code>. This useful command takes the upper and lower limits in X
+and Y as input:</p>
+<pre>
+    env(0, 1, 0, 1);</pre>
+<img src="PGPLOTFigs/ex_env1.png"><p>sets up a plotting area with both axes going from 0 to 1. If a
+logarithmic axis is desired this can be achieved by passing an option to
+the env command, we can also use this to set the axis labels:</p>
+<pre>
+    env(1, 1000, 0, 1, {Axis =&gt; 'LOGX', Xtitle =&gt; 'X-axis', Ytitle =&gt; 'Y-axis'});</pre>
+<img src="PGPLOTFigs/ex_env2.png"><p>Further information on the <a href="#axis"><code>Axis</code></a> option can be found in <a href="#options_in_plot_commands">Options in plot commands</a>.</p>
+<p>It is important to realise that when you call <code>env</code> explicitly it
+automatically holds the plot for you, so subsequent plot commands will
+plot on top of the plotting area, and if you want to make a new plot you
+need either to call <code>env</code> again or call <code>release</code> explicitly.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="drawing_lines_and_plotting_points">Drawing lines and plotting points</a></h2>
+<p>The most important commands in the graphics package are probably the
+line drawing and point plotting commands <code>line</code> and <code>points</code> . The
+most basic command is <code>points</code> which plots particular symbols at given
+x and y values:</p>
+<img src="PGPLOTFigs/ex_points.png"><pre>
+    perldl&gt; $x = sequence(10)
+    perldl&gt; $y = $x*$x + 1
+    perldl&gt; points $x, $y</pre>
+<p>The action of the <code>points</code> command can be modified by adding options.
+The most important is <a href="#symbol"><code>Symbol</code></a> which changes the plot symbol and
+<a href="#charsize"><code>Charsize</code></a> which changes the size of plot symbols; in addition the
+<code>Plotline</code> option is a toggle which if set causes a line to be drawn
+through the plots:</p>
+<pre>
+    perldl&gt; points $x, $y, {Symbol =&gt; 'Triangle', Plotline =&gt; 1, Charsize =&gt; 5}</pre>
+<img src="PGPLOTFigs/ex_points2.png"><p>The string <code>Triangle</code> is equivalent to symbol number 7 and in general
+symbols will have to be accessed using the numerical system, but there
+are textual equivalents for many commonly used symbols (see <a href="#options_in_plot_commands">Options in plot commands</a>). The <code>points</code> command does also accept a
+piddle as the symbol value, in which case it should have the same length
+as <code>$x</code> and <code>$y</code> and each point will be plotted with the corresponding
+symbol value.</p>
+<p>
+</p>
+<h3><a name="plotting_error_bars">Plotting error-bars</a></h3>
+<p>Closely related to <code>points</code> is the routine for plotting symbols with
+error-bars, <code>errb</code> . This can be called in a variety of ways to allow
+for various ways of giving errorbars and whether horizontal or vertical
+errorbars are required. A typical call is:</p>
+<pre>
+    perldl&gt; env(0, 5, -2, 30) 
+    perldl&gt; $x=sequence(10)/2.0; $y=$x*$x 
+    perldl&gt; $dy = sqrt($x+1); 
+    perldl&gt; errb $x, $y, $dy, { Symbol =&gt; ’Square’}</pre>
+<img src="PGPLOTFigs/ex_errb.png"><p>which plots
+squares with symmetrical vertical error-bars. To get error bars in the
+horizontal direction one gives these before the y-errors. Likewise it is
+possible to get asymmetric error-bars by giving the upper and lower
+limits of the error bars separately for the X and Y variables as in the
+following example:</p>
+<pre>
+    perldl&gt; $x2 = pdl(1.5, 2.3, 4.7) 
+    perldl&gt; $y2 = pdl(10, 22, 0) 
+    perldl&gt; $dx = $x2-&gt;zeroes(); # No X-errors 
+    perldl&gt; $yu= pdl(12,29,1)-$y2 
+    perldl&gt; $yl= $y2 - pdl(7, 20, -2) 
+    perldl&gt; errb $x2, $y2, $dx, $dx, $yl, $yu, {Symbol =&gt; ’Triangle’}</pre>
+<img src="PGPLOTFigs/ex_errb2.png"><p>
+</p>
+<h3><a name="drawing_lines">Drawing lines</a></h3>
+<p>We saw above that we could draw
+lines between points by setting the <code>PlotLine</code> option
+to <code>points</code>, however there are much better ways to draw lines. The
+basic line-drawing command is <code>line</code> which draws a straight line
+between each point.</p>
+<pre>
+    perldl&gt; $x = zeroes(10)-&gt;xlinvals(-3, 3)
+    perldl&gt; line $x, sin($x)</pre>
+<img src="PGPLOTFigs/ex_line1.png"><p>The style, width and colour of the line can be changed with the options
+<code>Style</code>, <code>LineWidth</code> and <a href="#colour"><code>Colour</code></a> / <code>Color</code> respectively as outlined
+in <a href="#options_in_plot_commands">Options in plot commands</a>.</p>
+<p>
+</p>
+<h3><a name="plotting_histograms">Plotting histograms</a></h3>
+<p>A very similar command is <code>bin</code> which is useful for plotting
+histograms. This command draws horizontal lines between <em>x(i)</em> and
+<em>x(i+1)</em> with the value <em>y(i)</em>.</p>
+<pre>
+    perldl&gt; $x = zeroes(10)-&gt;xlinvals(-3, 3) 
+    perldl&gt; bin $x, sin($x)</pre>
+<img src="PGPLOTFigs/ex_bin.png"><p>By default the routine assumes that the X-values are the start points of
+the bin, if instead your values are for the centers of the bins, you
+need to set the option <code>Centre</code>/<code>Center</code> to a true value. In addition
+the appearance of the lines can be modified using the same options as
+for the <code>line</code> command.</p>
+<p>
+</p>
+<h3><a name="drawing_polygons">Drawing polygons</a></h3>
+<p>Finally the <code>poly</code> command is like <code>line</code> but fills the polygon
+defined by <code>$x</code> and <code>$y</code> with the chosen fillstyle (defaults to solid
+fill). If you display this you should consider putting 
+<code>FillStyle =&gt; 'Outline'</code> in your <code>.perldlrc</code> file as explained in 
+<a href="#setting_default_values_for_options">Setting default values for options</a>, or you can set it explicitly as in the following example:</p>
+<pre>
+    perldl&gt; $x=zeroes(20)-&gt;xlinvals(-2,2);
+    perldl&gt; $y=exp(-$x*$x); 
+    perldl&gt; $xpoly = append($x-&gt;where($x &lt;= 0), pdl(0)); 
+    perldl&gt; $ypoly = append($y-&gt;where($x &lt;= 0), pdl(0)); 
+    perldl&gt; poly $xpoly, $ypoly, {FillType =&gt; ’Hatched’};</pre>
+<img src="PGPLOTFigs/linepoly_ex.png"><p>In this example
+it is worth noting the added complications to ensure that the polygon is
+closed. In addition we have used the option <code>FillType</code>
+to change the style of fill used. This can be finely adjusted if
+necessary, for further examples see <a href="/PDL/Graphics/PGPLOT.html">the PDL::Graphics::PGPLOT manpage</a>
+and the discussion of <code>FillType</code> in <a href="#options_in_plot_commands">Options in plot commands</a>.</p>
+<p>
+</p>
+<h2><a name="displaying_images">Displaying images</a></h2>
+<p>PGPLOT was originally designed for astronomy and as such it has good
+support for the display of 2D-data. In PDL this support has been
+simplified and there is now only one command for image display, <code>imag</code>
+, which internally chooses between different PGPLOT display commands.
+The simplest use of <code>imag</code> is to let it act on a 2D piddle so:</p>
+<pre>
+    perldl&gt; $a = rvals(50,50, {Center =&gt; [ 25, 25]}); 
+    perldl&gt; imag $a;</pre>
+<img src="PGPLOTFigs/ex_imag1.png"><p>However, most likely you will find that the shape is not
+circularly symmetric because the aspect ratio of your graphics window is
+different from 1. How then can we correct this? The easiest solution is
+probably to make sure that your graphics device has aspect ratio 1 by
+giving the <a href="#aspect"><code>Aspect</code></a> option to the <code>dev</code> command
+(see <a href="#setting_up_the_plot_area">Setting up the plot area</a>).</p>
+<p>That isn't always an option though, and an alternative approach is to
+use the option <code>Pix</code> to the <code>imag</code> command. This lets you adjust the
+aspect ratio of the image pixels. You can in addition specify the number
+of image pixels per screen unit with the option <code>Pitch</code> so that to
+display the previous image with square pixels and 2 image pixels per
+screen pixel you use:</p>
+<pre>
+    perldl&gt; imag $a, { Pix =&gt; 1, Pitch =&gt; 2 }</pre>
+<p>You can also use <code>Unit</code> to specify the unit used for scaling and
+<code>Scale</code> for the reciprocal of <code>Pitch</code>, see the PDL::Graphics::PGPLOT
+documentation for details. The <code>Pix</code> option only adjusts the
+coordinate ranges and this might not always be what you require. In such
+situations a solution might be to create a square plot window directly
+as mentioned earlier.</p>
+<p>In addition you might want to specify a stretch of the gray-scale of the
+image. This can be obtained first by specifying the max and min values
+of the displayed image (everything above is set to the max value and
+everything below to the min value). This is set with the <code>Min</code> and
+<code>Max</code> options. Additionally it is possible to adjust the image transfer
+function using the option <code>ITF</code>. Allowed values are <code>Linear</code>, <code>Log</code>
+and <code>Sqrt</code>.</p>
+<p>You can also add a colour bar (colour wedge in PGPLOT parlance) to the
+image display. This is accomplished either using the <code>draw_wedge</code> (see
+below) command directly or by setting the <code>DrawWedge</code> option to true in
+your call to <code>imag</code> . If you want to pass options to the <code>draw_wedge</code>
+command, you can do that with the <code>Wedge</code> option. See below for
+further details.</p>
+<p>
+</p>
+<h3><a name="transforms">Transforms</a></h3>
+<p>Finally a very useful feature of PGPLOT that is relevant both to images
+and also the contour plots (see below) is the concept of a transform
+matrix. This is a <em>6</em> element vector, <em>T(i)</em> which maps input
+pixels into display pixels so that pixel <em>i,j</em> is mapped to:</p>
+<pre>
+    X(ij) = T0 + T1(i) + T2(j)
+    Y(ij) = T3 + T4(i) + T5(j)</pre>
+<p>It is always simplest to refer to this equation the first few times one
+sets up a transform vector.You use this whenever your pixel positions in
+the real world were different from that represented by your input image
+array.</p>
+<pre>
+    use PDL;
+    use PDL::Graphics::PGPLOT;
+    # Create two plot areas in the X-directions dev('/xs', 2, 1);
+    # Create a Gaussian around the center of the image
+    $a = rvals(101, 101, {Center =&gt; [50, 50]});
+    $y = exp(-$a*$a/50.);
+    # Display with a linear transfer function
+    imag $y;
+    # This transform vector maps the extreme points to 
+    my $tr = pdl(-10, 1.0/5.0, 0, -10, 0, 1.0/5.0);
+    # Finally display the image with the transform and
+    # a logarithmic transfer function.
+    imag $y, {Transform =&gt; $tr, ITF =&gt; 'Log'};</pre>
+<img src="PGPLOTFigs/ex_imag2.png"><p>Here we are contrasting two different ways of displaying the same image.
+On the left is the default display of a Gaussian, whereas on this right
+is the result when mapping the pixels to a range from <em>-10</em> to <em>10</em>
+with a logarithmic transfer function. Here we show the use of the <code>ITF</code>
+and and <code>Transform</code> options. Note that using <code>Transform</code> in
+conjunction with <code>Pix</code> is going to lead to unwanted results!</p>
+<p>
+</p>
+<h3><a name="colour_bar_wedge">Colour bar/wedge</a></h3>
+<p>It is often desireable to annotate an image with a colour wedge showing
+the range of values in the image. This is accomplished with the
+<code>draw_wedge</code> function in PDL::Graphics::PGPLOT (but you can avoid
+calling this directly by setting the <code>DrawWedge</code> option in your call to
+<code>imag</code> , see above). This function should normally give a decent result
+without the user setting any options except the <a href="#label"><code>Label</code></a> option which
+sets the annotation, but occasionally it is necessary to change its
+behaviour and that is done by setting the following options:</p>
+<dl>
+<dt><strong><a name="side" class="item"><code>Side</code></a></strong></dt>
+
+<dd>
+<p>What side the wedge will appear on, the default is the right side and it
+is specified as a single character, ' <code>B</code> ' for bottom, ' <code>L</code> ', '
+<code>T</code> ' and ' <code>R</code> ' for left, top and right respectively.</p>
+</dd>
+<dt><strong><a name="displacement" class="item"><code>Displacement</code></a></strong></dt>
+
+<dd>
+<p>The distance away from the axis. Default=2.</p>
+</dd>
+<dt><strong><a name="width" class="item"><code>Width</code></a></strong></dt>
+
+<dd>
+<p>The width of the wedge. Default=3</p>
+</dd>
+<dt><strong><a name="foreground" class="item"><code>Foreground</code></a></strong></dt>
+
+<dd>
+<p>The value to set the foreground
+colour to. This can be referred to as <code>Fg</code> as well. The default is the
+max value used by <code>imag</code> when drawing the image.</p>
+</dd>
+<dt><strong><a name="background" class="item"><code>Background</code></a></strong></dt>
+
+<dd>
+<p>The value to set the background
+colour to. This can be referred to as <code>Bg</code> as well. The default is the
+min value used by <code>imag</code> when drawing the image.</p>
+</dd>
+<dt><strong><a name="label" class="item"><code>Label</code></a></strong></dt>
+
+<dd>
+<p>The label used to annotate the wedge.</p>
+</dd>
+</dl>
+<img src="PGPLOTFigs/eg_wedge.png"><pre>
+    dev '/xs', {WindowWidth =&gt; 6, Aspect =&gt; 1};
+    $im = rfits('Frei/n4013lJ.fits');
+    $im += abs(min($im)-1);
+    $im = log10($im);
+    imag($im, {PlotPosition =&gt; [0.1, 0.85, 0.175, 0.925], Min =&gt; 2.6, Max =&gt; 2.0 });
+    draw_wedge({Wedge =&gt; {Width =&gt; 4, Label =&gt; 'Log Counts', Displacement =&gt; 1}});</pre>
+<p>Note that you will sometimes need to directly set the plot size to avoid
+clipping in the display. A full example that shows the use of
+<code>draw_wedge</code> can be seen in the Figure above where we display a galaxy
+and display a look-up table next to it.</p>
+<p>
+</p>
+<h2><a name="contour_plots_and_vector_fields">Contour plots and vector fields</a></h2>
+<p>Contour plots are very similar to image displays and display lines at
+particular levels of the image. The function to create contour plots is
+<code>cont</code> which at the simplest level only takes a 2D array as its
+argument.</p>
+<pre>
+    $a = sequence(100,100); cont $a;</pre>
+<img src="PGPLOTFigs/ex_cont1.png"><p>That might be all you need, but most likely you would like to specify
+contour levels, label contours and maybe draw them in different colours.</p>
+<p>You use the option <code>Contours</code> to give the wanted contour levels as a
+piddle and <code>Labels</code> to give an anonymous array of strings for labels as
+shown in the example below:</p>
+<pre>
+    use PDL; use PDL::Graphics::PGPLOT; 
+    dev(’/xs’);
+    $y = ylinvals(zeroes(100,100), -5, 5); 
+    $x = xlinvals(zeroes(100,100), -5, 5);
+    $z = cos($x**2)+sin($y*2);
+    cont $z, {Contours =&gt; pdl(-1, 0, 1), Labels =&gt; [’-1’, ’0’, ’1’]};</pre>
+<img src="PGPLOTFigs/ex_cont2.png"><p>In addition it is possible to colour the labels differently from
+the contour lines (<code>LabelColour</code>), to specify the number of contours
+instead of their values (<code>NContours</code>) and to draw negative contours
+as dashed lines and positive as solid lines by setting the option
+<code>Follow</code> to a value <em></em>0 &gt;&gt;.</p>
+<p>Overlaying a contour plot on top of an image is as easy as displaying
+the image, call <code>hold</code> and display the contour plot. The reader might
+want to try a colour version of the example above ( <code>$z</code> as in the
+example):</p>
+<pre>
+    perldl&gt; ctab('Fire');
+    perldl&gt; imag $z; hold;
+    perldl&gt; cont $z, {Contours =&gt; pdl(-1,0,1)};</pre>
+<p>The final 2D plot command we will deal with here is the command for
+plotting a vector field, <code>vect</code>. This command takes two arrays as
+arguments. The first gives the horisontal component and the second the
+vertical component of the vector field. The length of the vectors can be
+set using the <code>SCALE</code> option and the position relative to the pixel
+centers with the option <code>POS</code>.</p>
+<p>What is important to note with a command like <code>vect</code> is that you can
+use the <code>Transform</code> option to map a smaller vector array to a larger
+image. This is often useful because a vector field with <em>256 x 256</em>
+arrows on top of a similarly sized image will quickly be unreadable. The
+result of using this technique is shown below together with the code
+that produced the plot.</p>
+<img src="PGPLOTFigs/ex_vec1.png"><pre>
+    perldl&gt; $x = xlinvals(zeroes(100,100), -5, 5)
+    perldl&gt; $y = ylinvals(zeroes(100,100), -5, 5)
+    perldl&gt; $z = sin($x*$y/2)
+    perldl&gt; imag $z;
+    perldl&gt; hold;
+    # Show the partial derivatives wrt.  x &amp; y as vectors
+    perldl&gt; $xcomp = $x*cos($x*$y/2)/2
+    perldl&gt; $ycomp = $y*cos($x*$y/2)/2
+    # We want to show only every tenth vector for clarity
+    perldl&gt; $s = '0:-1:10,0:-1:10';
+    # Finally we need to map the final 10x10 array to the 100x100 image
+    perldl&gt; $tr = pdl(0,10,0,0,0,10)
+    perldl&gt; vect $xcomp-&gt;slice($s), $ycomp-&gt;slice($s), {Transform=&gt;$tr}</pre>
+<p>
+</p>
+<h2><a name="drawing_simple_shapes">Drawing simple shapes</a></h2>
+<p>In addition to the simple commands described above, there are a few
+convenient commands for drawing simple shapes such as circles, ellipses
+and rectangles. These are fairly straightforward commands with similar
+options and invocations so we will go through them fairly quickly. A
+common issue with these commands as with the <code>poly</code> command is that
+they draw filled shapes, if you want outlined shapes to be drawn you
+have to set the <a href="#filltype"><code>Filltype</code></a> option to <code>Outline</code>.</p>
+<p>The circle command is probably the simplest, it draws a circle (which
+may or may not look like a circle depending on the aspect ratio of your
+display - see <a href="#setting_up_the_plot_area">Setting up the plot area</a>. The user specifies the
+radius and the x and y position of the center:</p>
+<pre>
+    perldl&gt; dev ’/xs’, {Aspect =&gt; 1, WindowWidth =&gt; 5} 
+    perldl&gt; env 0, 10, 0, 10 
+    perldl&gt; $radius=2; ($x, $y) = (4, 4) 
+    perldl&gt; circle $x, $y, $radius, {LineWidth =&gt; 3}</pre>
+<img src="PGPLOTFigs/ex_circle1.png"><p>The <code>ellipse</code> function is like the <code>circle</code> function but it requires
+the user to specify the minor and major axis and the angle between the
+major axis and the horisontal. For ease of use it is probably better to
+specify these as options, but if you remember the order you can also
+give them directly as arguments to the function (<em>x</em>-position,
+<em>y</em>-position, major axis, minor axis, angle):</p>
+<pre>
+    perldl&gt; dev ’/xs’, {Aspect =&gt; 1, WindowWidth =&gt; 5} 
+    perldl&gt; env 0, 10, 0, 10 
+    perldl&gt; ellipse 4, 4, {MajorAxis =&gt; 2, MinorAxis =&gt; 1, Theta =&gt; atan2(1,1)}</pre>
+<img src="PGPLOTFigs/ex_ellipse1.png"><p>And finally the <code>rectangle</code> command draws
+rectangles where you can give the position of the centre, the length of
+the sides and the angle with the horisontal. The operation is very
+similar to the <code>ellipse</code> command with the length of the sides of the
+rectangle taking place of the major and minor axis.</p>
+<pre>
+    perldl&gt; dev ’/xs’, {Aspect =&gt; 1, WindowWidth =&gt; 5} 
+    perldl&gt; env 0, 10, 0, 10 
+    perldl&gt; rectangle 4, 4, {XSide =&gt; 2, YSide =&gt; 1, Angle =&gt; atan2(1,1)}</pre>
+<img src="PGPLOTFigs/ex_rect1.png"><p>Note that <a href="#angle"><code>Angle</code></a> and <code>Theta</code> are synonyms.</p>
+<p>In addition you can set the sides to be similar by setting the <a href="#side"><code>Side</code></a>
+option to the length you require. The lengths are all specified in
+data-coordinates (which is why you should do a plot or call <code>env</code>
+before using any of these commands).</p>
+<p>For other shapes or when these are not sufficiently flexible you should
+use the <code>poly</code> command which is called by both <code>rectangle</code> and
+<code>ellipse</code> .</p>
+<p>
+</p>
+<h2><a name="text_and_legends">Text and legends</a></h2>
+<p>The main command for drawing text on the plotting surface is the <code>text</code>
+command which at its basic level just draws a string from the given <em>x</em>
+and <em>y</em> position:</p>
+<pre>
+    perldl&gt; dev ’/xs’ 
+    perldl&gt; env 0,10,0,10, {Axis =&gt; ’GRID’} 
+    perldl&gt; text ’Left justified’, 4, 1 
+    perldl&gt; text ’Centered’, 4, 2, { Justification =&gt; 0.5} 
+    perldl&gt; text ’Right justfied’, 4, 3, { Justification =&gt; 1.0}</pre>
+<img src="PGPLOTFigs/ex_text1.png"><p>Here we have included grid-lines to show the effect of the different
+justifications.  Note that <a href="#justify"><code>Justify</code></a> is a synonym for <code>Justification</code>,
+and that you need to give numerical values for the position. Normally
+the text background is transparent as shown here, but you can also set
+an opaque background by setting the <code>BackgroundColour</code> option to a
+colour name or value (see also the next section).</p>
+<p>In addition to the justification option one can also change the angle of
+the text using the <a href="#angle"><code>Angle</code></a> option and specify the text and/or <em>x</em> and
+<em>y</em> as options (the best advice is to either do all or none).</p>
+<pre>
+    perldl&gt; text {XPos =&gt; 1, YPos=&gt; 4, Angle =&gt; 25, Text =&gt; 'Tilted'}</pre>
+<p>
+</p>
+<h3><a name="non_alphanumeric_symbols">Non-alphanumeric symbols</a></h3>
+<p>PGPLOT has extensive support for non-alphanumeric characters in text
+strings and also offers reasonable control over the display of
+superscripts, subscripts etc. This is all achieved using <em>escape sequences</em>.
+In PGPLOT these are all signaled by the character <code>\</code> .
+Thus <code>\u</code> starts a superscript or ends a subscript - it signals a shift
+&quot;up&quot;. Likewise <code>\d</code> starts a subscript or ends a superscript.  Consult
+the PGPLOT documentation for a full list.</p>
+<p>
+</p>
+<hr />
+<h1><a name="labelling_your_figures_in_pgplot">Labelling your figures in PGPLOT</a></h1>
+<p>The only additional text-related function in the PDL::Graphics::PGPLOT
+interface is the <code>legend</code> command which draws a legend in the plot
+window. This is a more complex routine which can be a time-saver as soon
+as you have learned how to use it. It takes the same arguments as the
+<code>text</code> command with the exception that the text argument is an
+anonymous array of labels for the legend, and that a fourth argument is
+accepted which specifies the width of the box in which the legend will
+be drawn. If this is not set or it is set to the string <code>Automatic</code> it
+will be adjusted to contain the legend with the default font-size (or
+that set by the user via the <code>CharSize</code> option).</p>
+<img src="PGPLOTFigs/ex_legend1.png"><pre>
+    perldl&gt; $x = sequence(100) / 5; $y1 = sqrt($x); $y2 = $x**2;
+    perldl&gt; env(0, 4, 0, 15);
+    perldl&gt; line $x, $y1, {LineStyle =&gt; 'Dashed', Colour =&gt; 'Red'}
+    perldl&gt; line $x, $y2, {LineWidth =&gt; 3, Colour =&gt; 'Blue'}
+    perldl&gt; legend ['sqrt(x)', 'x \backslash u2'], 0.5, 10,
+                    {LineStyle =&gt; ['Dashed', undef],
+                    LineWidth =&gt; [undef, 3], Colour =&gt; ['Red', 'Blue'] }
+                  # ,Width =&gt; 1.0 } makes x**2 legend disappear, why?</pre>
+<p>The idea of the <code>legend</code> command is that you give the line-styles,
+line-widths, colours or symbols you want to illustrate as anonymous
+arrays to the <code>LineStyle</code>, <code>LineWidth</code>, <a href="#colour"><code>Colour</code></a> and <a href="#symbol"><code>Symbol</code></a>
+options. Not very clear? Well, maybe an example will help.</p>
+<p>The figure above is an example of <code>legend</code> in use. Two lines are drawn, a
+red dashed line and a blue thick line. To annotate this plot using
+<code>legend</code> you give the text annotations as an (anonymous) array of
+strings, the x and y position of the legend box and an anonymous hash
+containing information about the legends to draw as shown in the
+example. The options used to specify a particular draw style are the
+same as the ones used in the call to <code>line</code> and will undergo the same
+translations-note however that you can specify a value of <code>undef</code>
+which requests that the current default for the
+linestyle/linewidth/colour etc. is used. The
+<a href="#width"><code>Width</code></a> option is used to set the width of the legend box and is given
+in data coordinates. The idea is that you will create the plot, see
+where you want the legends to go and then set the x and y width to the
+appropriate settings and redoing the plot, possibly using the replay
+mechanism, see <a href="#recording_and_playing_back_plot_commands">Recording and playing back plot commands</a>.</p>
+<p>The legend command has several options, the main of which are
+illustrated above.  The remaining options are useful for tweaking the
+appearance, and a full list is as follows:</p>
+<dl>
+<dt><strong><a name="text" class="item"><code>Text</code></a></strong></dt>
+
+<dd>
+<p>The text, this is an alternative to specifying it as the first argument
+to the function.</p>
+</dd>
+<dt><strong><a name="xpos" class="item"><code>XPos</code></a></strong></dt>
+
+<dd>
+<p>The X-position of the text, again as an alternative to specifying it as
+the second argument.</p>
+</dd>
+<dt><strong><a name="ypos" class="item"><code>YPos</code></a></strong></dt>
+
+<dd>
+<p>The Y-position of the text, again as an alternative to specifying it as
+the third argument.</p>
+</dd>
+<dt><strong><a name="width2" class="item"><a href="#width"><code>Width</code></a></a></strong></dt>
+
+<dd>
+<p>The width of the (invisible) box the legend is drawn inside. This can
+also be specified as the fourth argument to the <code>legend</code> command. If
+this is set to the string <code>Automatic</code> the width is calculated from the
+character size used.</p>
+</dd>
+<dt><strong><a name="height" class="item"><code>Height</code></a></strong></dt>
+
+<dd>
+<p>This can be used as an alternative constraint on size, giving the height
+of the legend box. If both <a href="#width"><code>Width</code></a> and <a href="#height"><code>Height</code></a> are specified the
+smallest size is used (characters are not compressed or stretched to
+fit).</p>
+</dd>
+<dt><strong><a name="textfraction" class="item"><code>TextFraction</code></a></strong></dt>
+
+<dd>
+<p>The fraction of the box set aside for text. The default is 0.5 which
+usually is ok. Note that this option used to be called <code>Fraction</code> ,
+which still is available as a synonym.</p>
+</dd>
+<dt><strong><a name="textshift" class="item"><code>TextShift</code></a></strong></dt>
+
+<dd>
+<p>This option allows for fine control of the spacing between the text and
+the start of the line/symbol. It is given in fractions of the total
+width of the legend box. The default value is 0.1.</p>
+</dd>
+<dt><strong><a name="vertspace" class="item"><code>VertSpace</code></a></strong></dt>
+
+<dd>
+<p>By default the text lines are separated by one character height (in the
+sense that if the separation were 0 then they would lie on top of each
+other). The <a href="#vertspace"><code>VertSpace</code></a> option allows you to increase (or decrease)
+this gap in units of the character height; a value of 0.5 would add half
+a character height to the gap between lines, and -0.5 would remove the
+same distance. The default value is 0. This option has <code>VSpace</code> as a
+synonym (more natural for the TeX-heads out there).</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="using_colour">Using colour</a></h1>
+<p>PGPLOT has a two disjoint sets of colours. One set determines the colour
+table used when displaying images and is initialised to a grayscale, and
+the other is a set of 15 colours used to colour all other plotting
+objects. The latter set is accessible through the <a href="#colour"><code>Colour</code></a> option
+described in <a href="#options_in_plot_commands">Options in plot commands</a> Here we will concentrate on
+accessing the lookup-table for image display.</p>
+<p>The command used to change the colour table is <code>ctab</code>, which in its
+generic form takes six arguments specifying the intensity levels, red,
+green and blue colour components, contrast and brightness levels. The
+contrast and brightness are optional so that we can say:</p>
+<pre>
+    perldl&gt; $int = pdl([0, 0.33, 0.66, 1.0]) 
+    perldl&gt; $r = pdl([0.5, 0, 0.5, 1]) 
+    perldl&gt; $b = pdl([0.0, 0.5, 1.0, 0.5]) 
+    perldl&gt; $g = pdl([1.0, 0.5, 0.0, 0.5]) 
+    perldl&gt; ctab($int, $r, $g, $b); 
+    perldl&gt; $a = rvals(100, 100)
+    perldl&gt; imag $a</pre>
+<img src="PGPLOTFigs/ex_col1.png"><p>...which should display a circularly symmetric figure
+with green in the centre, going through blue to red-ish where <code>$a</code> is
+at a maximum.</p>
+<p>It is however normally sufficient to use the colour tables made
+available by <code>PDL::Graphics::LUT</code>. This package makes available a
+large number of standard colour tables which can be accessed using the
+following commands:</p>
+<dl>
+<dt><strong><a name="lut_names" class="item"><code>lut_names</code></a></strong></dt>
+
+<dd>
+<p>This returns a perl list of the available colour tables.</p>
+</dd>
+<dt><strong><a name="lut_ramps" class="item"><code>lut_ramps</code></a></strong></dt>
+
+<dd>
+<p>As above, but returns a list of the names of the available intensity
+ramps.</p>
+</dd>
+<dt><strong><a name="lut_data" class="item"><code>lut_data</code></a></strong></dt>
+
+<dd>
+<p>And finally the data in the tables can be accessed with this function
+which takes as arguments the name of the colour table, and optionally a
+scalar determining if the colour table is to be reversed and the name of
+an intensity ramp (default is a linear intensity ramp). The function
+returns four piddles with intensity and RGB values which can immediately
+be passed to <code>ctab</code>.</p>
+</dd>
+</dl>
+<p>Note that these commands do not set the colour table for you, you will
+still need to call <code>ctab</code> to do that.</p>
+<p>Thus to set one of the colour tables in the <code>PDL::Graphics::LUT</code>
+package, you do:</p>
+<pre>
+    perldl&gt; use PDL::Graphics::LUT;
+    perldl&gt; print &quot;Available tables: &quot;.join(', ', lut_names());
+    Available tables: aips0, backgr, bgyrw, blue, blulut, color, green,
+    heat, idl11, idl12, idl14, idl15, idl2, idl4, idl5, idl6, isophot, light,
+    manycol, pastel, rainbow, rainbow1, rainbow2, rainbow3,
+    rainbow4, ramp, random, random1, random2, random3,
+    random4, random5, random6, real, red, smooth, smooth1,
+    smooth2, smooth3, staircase, stairs8, stairs9, standard
+    perldl&gt; ctab( lut_data \series default ('rainbow1'));
+    perldl&gt; imag rvals(100,100);</pre>
+<p>which should give you a colour table that goes from black through green,
+blue and yellow to red.</p>
+<p>All the colour tables with their names overlaid can be generated with
+this script:</p>
+<pre>
+    use PDL::Graphics::PGPLOT;
+    use PDL::Graphics::LUT;
+    dev(&quot;/xs&quot;,3,15);
+    foreach(lut_names()){
+        print&quot;$_\n&quot;;
+        ctab(lut_data($_));
+        imag sequence(250,1);
+        text $_,20,-0.2,{CHARSIZE=&gt;20,LINEWIDTH=&gt;20,COLOUR=&gt;0};
+        text $_,20,-0.2,{CHARSIZE=&gt;20,LINEWIDTH=&gt;1,COLOUR=&gt;1};
+    }</pre>
+<p>And the resultant figure is shown below:</p>
+<img src="PGPLOTFigs/ColorTables2.png"><p>
+</p>
+<hr />
+<h1><a name="threading_in_pdl__graphics__pgplot">Threading in PDL::Graphics::PGPLOT</a></h1>
+<p>The plot commands do not always lend themselves to easy threading
+because it can sometimes be difficult to know what the user intends to
+do when (say) an array of images is passed to the <code>imag</code> command. Are
+they to be displayed in several plot panels, are they to be plotted on
+top of each other, seamlessly plotted next to each other? But even more
+complex is the question of treatment of options and how to deal with
+these if there are less options than for instance, lines to draw (a
+common occurence if you wanted to draw a <strong>lot</strong> of lines).</p>
+<p>That said the <code>PDL::Graphics::PGPLOT</code> interface does have limited
+support for threading in the <code>line</code> and <code>points</code> functions. These call
+the <code>tline</code> and <code>tpoints</code> internally, and work just like <code>line</code> and
+<code>points</code> except that they expect the input <em>y</em>-piddle to be 2D, with
+each line in the array plotted against the <em>x</em>-piddle.</p>
+<p>The way the options are treated is the most interesting. To set options
+for a set of lines, give an anonymous array as argument to that option
+with a value for each line. If you give more options than there are
+lines, the surplus is ignored. However if you give less, the options are
+repeated from the start. Although possibly a bit confusing this is very
+powerful because you can get a large number of combinations of colour
+and linestyle. For instance if you give 4 colours and 5 linestyles, you
+get a total of 20 distinct combinations and should you give 3 linewidths
+as well you will suddenly have 80 different styles to work with with
+very little typing. Note however that you need to make sure that the
+numbers you give are relativel y prime - otherwise you will get much
+less possibility, just think of the situation where you have 4
+linestyles and 4 colours, they will just loop in harmony and result in
+only 4 combinations.</p>
+<p>Anyway, let us see how it all works in practice by creating a plot of
+sine curves with different frequencies. This is a simple example where
+we want to colour all even frequencies with red and all odd with blue
+and vary the line-styles as well:</p>
+<pre>
+    perldl&gt; $pi=4*atan2(1,1); 
+    perldl&gt; $x=zeroes(50)-&gt;xlinvals(0, $pi) 
+    perldl&gt; $freq = sequence(10) 
+    perldl&gt; $y = sin($freq*transpose($x)) 
+    perldl&gt; line $x, $y, {Colour =&gt; [’Red’, ’Blue’], Linestyle=&gt;[0,1,2,3,4,5]}</pre>
+<img src="PGPLOTFigs/ex_tline1.png"><p>
+</p>
+<hr />
+<h1><a name="recording_and_playing_back_plot_commands">Recording and playing back plot commands</a></h1>
+<p>Have you ever created a good-looking plot on the command line of
+an interactive data program, be it PDL, IDL, Matlab, Octave or any other
+package, and wished that you could make a quick Postscript copy of it
+only to find that you need to redo all the commands? I certainly
+have. In the newer versions of PDL this
+is thankfully not the case anymore. These have a recording facility
+built in. However this is not enabled by default (for reasons described
+later in this section), you need to turn it on yourself. The way to do
+this is to set the <code>$PDL::Graphics::PGPLOT::RECORDING</code>
+variable to a true value:</p>
+<pre>
+    perldl&gt; $PDL::Graphics::PGPLOT::RECORDING = 1</pre>
+<p>You can turn this on automatically in the <code>perldl</code> shell if you put
+this command in your <code>~/.perldlrc</code> file. Alternatively you can turn on
+recording for each plot device independently by setting the <code>Recording</code>
+option to true when starting a device:</p>
+<pre>
+    perldl&gt; dev '/xs', {Recording =&gt; 1}</pre>
+<p>Note that if you set the variable it must be set <strong>after</strong> you have
+<code>use</code>'d the PDL::Graphics::PGPLOT because this package sets the
+variable when it initialises to its default value of zero.</p>
+<p>In the following I will focus my attention on using the recording and
+playback functions in the <code>perldl</code> shell as I envisage that it will be
+most useful there. There are a couple of potential uses in scripts as
+well which I will get back to below, but this is not well thought
+through yet.</p>
+<p>Before we continue it should also be added that the recording facility
+is somewhat experimental. In particular it doesn't deal very well with
+multi-panel plotting where you jump back and forth between panels. If
+you want to do that, make sure you specify the <code>Panel</code> option for every
+call.</p>
+<p>It is very easy to use the recording facilities with a few less obvious
+aspects. An example should go a long way to get you to understand the
+basics. First we set up a simple plot using the commands we learned
+above:</p>
+<pre>
+    perldl&gt; use PDL::Graphics::PGPLOT
+    perldl&gt; $PDL::Graphics::PGPLOT::RECORDING = 1
+    perldl&gt; $x = sequence(10)
+    perldl&gt; $y = random(10)
+    perldl&gt; dev '/xs'
+    perldl&gt; env(-1, 11, -0.5, 1.5, {Xtitle =&gt; 'Number'})
+    perldl&gt; points $x, $y, {Symbol =&gt; 'Plus'}</pre>
+<p>which should give you a scatter plot on screen. Now after constructing
+this fantastic piece of scientific illumination you decided to make a
+Postscript version of it, but you are loathe to use the up key to
+execute the commands again so you decide to use the recording
+facilities.</p>
+<pre>
+    perldl&gt; $s = retrieve_state()
+    perldl&gt; dev 'replay_ex.ps/ps'
+    perldl&gt; replay $s</pre>
+<p>That is all. These commands should now have created a file called
+<code>replay_ex.ps</code> in the present directory.</p>
+<p>The <code>retrieve_state</code> commands retrieves the current state of the plot
+device and returns a variable to hold this in. This state contains
+references to the data plotted and plot commands executed and can be
+replayed, or re-executed, at a later stage using the <code>replay</code> command.
+You can also turn on and off recording temporarily with the
+<code>turn_off_recording</code> and <code>turn_on_recording</code> commands.</p>
+<p>This suffices for most situations and should work for any complexity of
+plot constructed. There are however a few rules that needs to be
+observed and possible pitfalls:</p>
+<p>If you turn on recording globally using
+<code>$PDL::Graphics::PGPLOT::RECORDING</code>, you must set the variable
+<strong>before</strong> opening a plot device because the value of the variable is
+only checked then. If you forget, you can of course always turn it on
+with the <code>turn_on_recording</code> function.</p>
+<p>The state is cleared whenever the plot window is
+erased, or if the user executes the <code>clear_state</code> command. In
+particular this occurs when you change plotting device (although if you
+use several windows they will each have their own state; see also the
+following section), so use the <code>retrieve_state</code> command <strong>before</strong> you
+change device!</p>
+<p>The state contains references to the data plotted.
+This does not use memory (at least not appreciably!), but it does mean
+that an extra reference to the data is kept and the memory to the data
+might not be freed when you expect it to. This can be problematic if you
+make a lot of image displays. The best ways to avoid this problem in the
+<code>perldl</code> shell is to call the <code>clear</code> on the state: <code>perldl&gt; $s-&gt;clear()</code> or to re-use the variable next time you call
+<code>retrieve_state</code>. Note that this should only be a problem if you
+explicitly call <code>retrieve_state</code>.</p>
+<p>Finally since only references to the data are
+held, make sure you do not modify them before calling <code>replay</code> or you
+might end up with a rather different looking plot!</p>
+<p>What we covered now is the basic use of the recording facility, which
+hopefully will come in handy rather often (which is why I recommend
+enabling it permanent ly in the <code>perldl</code> shell as outlined above).
+However there are slightly less common uses of the facility that might
+come in handy:</p>
+<p>
+</p>
+<h3><a name="redoing_a_plot_with_slightly_different_data">Redoing a plot with slightly different data</a></h3>
+<p>The fact that the recording state contains references to the data
+enables a somewhat tricky but potentially very useful trick to be
+executed: Redoing the plot with adjusted data. Sometimes you make a
+complex plot only to discover that you had made an error with your data
+and you need to redo it. This is where you can use the recording
+functions: Retrieve the state, make adjustments to the data making sure
+not to break the link and run <code>replay</code>.</p>
+<p>However, although this sounds quite easy it has a few subtleties that
+can give surprising results at times. It might therefore be a good idea
+to look at a few, very similar and very basic, examples and compare
+their effects. So let us first of all open a plot device:</p>
+<pre>
+    perldl&gt; dev '/xs', {Recording =&gt; 1}</pre>
+<p><strong>NOTE: What I describe here is not well tested and is probably buggy.  This needs to be sorted out before finishing - at least I have had a few weird results when trying this out.</strong></p>
+<p>We are going to use our example of plotting a parabola, and
+replaying it with various parameter sets. Let us therefore define a
+couple of variables and plot this, first letting PDL decide on the plot
+limits:</p>
+<pre>
+    perldl&gt; $x = sequence(10); $y = $x*$x
+    perldl&gt; line $x, $y;
+    perldl&gt; $s = retrieve_state()</pre>
+<p>The whole point of this problem is to change the variables, so let us
+add 3 to the X-values and replay the command:</p>
+<pre>
+    perldl&gt; $x += 3
+    perldl&gt; replay $s</pre>
+<p>This should give you a part of a parabola from <code>x=3</code> to <code>x=12</code>, but
+now defined by the equation <code>y=pow((x-3),2)</code> .  Also the limits of the
+plot window should have adjusted themselves to the new <em>x</em> values. Note
+that the <em>y</em> values are unchanged.</p>
+<p>In the previous example the limits in the plot window adjusted to the
+new values for <em>x</em> and <em>y</em> because the <code>line</code> command sets the plot
+limits if the plot is not held (such as with an explicit call to
+<code>env</code>). But what happens if we redo the example with our own chosen
+limits?</p>
+<pre>
+    perldl&gt; $x = sequence(10); $y = $x*$x
+    perldl&gt; env (0, 9, 0, 81)
+    perldl&gt; line $x, $y;
+    perldl&gt; $s = retrievestate()
+    perldl&gt; $x += 3; replay $s</pre>
+<p>The result now should be as shown in Figure XXXXXXXX
+which has the same plot limits as before, but a shifted parabola. This
+is because the state now remembers the explicit <code>env</code> statement that
+you had made and uses that to set the limits.</p>
+<p>Finally you must remember that the reference is not to a variable name,
+but to a piddle which exists separately from the variable. Thus you
+cannot change your data at a whim, so the following change will change
+the data back to where we started</p>
+<pre>
+    perldl&gt; $x -= 3; replay $s</pre>
+<p>But the following will <strong>not</strong> plot a parabola
+starting at <em>x=5</em>:</p>
+<pre>
+    perldl&gt; $x = sequence(10)+5.0; replay $s</pre>
+<p>The reason for this is that the reference kept in the state object is to
+the actual <strong>data</strong> in the previous <em>$x</em>-object and not to the variable
+name.</p>
+<p>However sometimes you want to give a entirely new dataset to the plot.
+Say you wanted to plot a sine curve instead of a parabola. Is there any
+way to do that? The answer is yes, but it looks rather ugly, so you
+might want to consider whether this is something you want to do</p>
+<pre>
+    perldl&gt; $x = sequence(10); $y = $x*$x
+    perldl&gt; line $x, $y; $s=retrievestate()
+    # Now let us transfer this to a sine plot
+    perldl&gt; $y -= $y; $y += sin($x)
+    perldl&gt; replay $s</pre>
+<p>And voila! a sine curve does step forth. Not exactly elegant,
+but this trick allows you to replace any variable used in a complex plot
+with a totally different content.</p>
+<p>
+</p>
+<h3><a name="using_recording_in_scripts">Using recording in scripts</a></h3>
+<p>In general the recording facility is of rather limited use in scripts
+because you can just as easily encapsulate your plot commands in a
+subroutine and just call the subroutine when need be. At present the
+only saving is probably in typing, but if the facility is extended to
+saving and restoring plot commands the situation would change.</p>
+<p>
+</p>
+<hr />
+<h1><a name="the_object_oriented_approach">The object oriented approach</a></h1>
+<p>Assume that you are developing a simulation. When you are testing the
+code (all written in PDL of course) you have to keep track of how some
+data changes at every time-step, but at the same time you want to look
+at time-averages. If you were to use what we discussed above you would
+probably want to display the time-steps in one panel and the
+time-averages in another panel in a plot window. The problem with this
+is of course that one panel is updated a lot more often than the other
+so you have to waste a lot of time re-plotting the time-average.</p>
+<p>Clearly there are two possible ways to improve this: a) have a method
+which allows you to plot to a given panel when you want and b) have to
+plot windows. It is possible to use the first approach by giving the
+<code>Panel</code> option to the plot commands:</p>
+<pre>
+    dev('/xs');
+    for (my $i=0; $i&lt;$n; $i++) {
+       $integrand = func($x, $i); 
+       points $x, $integrand, {Panel =&gt; 2};
+       $sum += $integrand;
+    }
+    points $x, $sum/$n, {Panel =&gt; 1};</pre>
+<p>So that this hypothetical code-bit would keep plotting in panel 2,
+updating the plot there until the loop is over at which point panel 1 is
+updated.</p>
+<p>This can be practical, but it is rather limited given the requirement of
+giving the panel number every time. Instead an alternative approach
+would be to create several plot windows, and for this you really ought
+to use an object oriented approach. In this approach every plot device
+is a separate object and you call every plot command via this object. So
+the previous example would be</p>
+<pre>
+    my $opt = {Device =&gt; '/xs', WindowWidth =&gt; 7, Aspect =&gt; 1};
+    my $integrandwindow = PDL::Graphics::PGPLOT::Window-&gt;new($opt);
+    my $integralwindow = PDL::Graphics::PGPLOT::Window-&gt;new($opt);
+    for (my $i=0; $i&lt;$n; $i++) {
+       $integrand = func($x, $i);
+       $integrandwindow-&gt;points($x, $integrand);
+       $sum += $integrand;
+    }
+    $integralwindow-&gt;points($x, $sum/$n);</pre>
+<p>
+</p>
+<h2><a name="why_use_the_oo_interface">Why use the OO interface</a></h2>
+<p>So, you may say, what is the point with the OO interface except
+appeasing the OO fanatics around? It seems to require more typing and I
+can see no significant advantage.</p>
+<p>In many situations these are valid arguments, if you are just plotting
+data on the command line in <code>perldl</code> , for instance, or do not need
+multiple plot windows. And at some level the OO interface is primarily a
+convenience for the programme r, and it is in fact how the
+PDL::Graphics::PGPLOT package is implemented. That said though there are
+some (possibly strong) arguments for using the OO interface:</p>
+<ul>
+<li>
+<p>You do not pollute your namespace, which means
+that you are free to define routines that are called <code>line</code> , <code>points</code>
+and so on. This is the main reason why I use this interface personally
+when doing simple plots in programs.</p>
+</li>
+<li>
+<p>It is a <strong>lot</strong> easier to deal
+with multiple plot windows when using the OO interface, in fact I would
+personally discourage people from having multiple plot windows without
+using the OO interface.</p>
+</li>
+</ul>
+<p>Eventually an argument in favour of the OO interface will hopefully be
+that it would enable an easier mix of different plotting packages so
+that they can all be accessed in a similar way, but we are not there
+yet.</p>
+<p>
+</p>
+<h2><a name="usage_of_the_oo_interface">Usage of the OO interface</a></h2>
+<p>To use the OO interface one needs to create a new plot object and then
+call the plot routines through this object. If you want several windows,
+you just create more objects and switching between these should be
+straightforward as you should be able to see in the following examples.</p>
+<p>Note that since the OO interface is less suited to use on the command
+line, I have opted to show the examples as small code-bits but they
+should all be possible to execute from the <code>perldl</code> command line. In
+addition this section will merely give several examples of use of the OO
+interface and not discuss (again) the different commands since they are
+the same as we went through above, it is just a different way of calling
+them.</p>
+<p>Opening a plot object and plotting a simple plot</p>
+<p>To create a plot object we first need to <code>use</code> the PDL::Graphics2D
+package - this is merely a shortcut for the true
+PDL::Graphics::PGPLOT::Window package, but why type more when it doesn't
+gain you anything? Then we create the object using the standard Perl
+notation <code>PDL::Graphics2D-</code>new()&gt; :</p>
+<pre>
+    use PDL;
+    # Note that we could also access this as
+    # PDL::Graphics::PGPLOT::Window, but since this is
+    # shorter I advocate its use.</pre>
+<pre>
+    use PDL::Graphics2D;
+    # Now create a plot window
+    my $winopt = {Device =&gt; '/xs', WindowWidth =&gt; 7, Aspect =&gt; 1};
+    my $w = PDL::Graphics2D-&gt;new($winopt);</pre>
+<pre>
+    # Create a simple plot
+    $x = sequence(10);
+    $w-&gt;points($x, $x*$x, {Symbol =&gt; 'Triangle'};</pre>
+<p>Note how we use the window object (<code>$w</code>) when calling the <code>points</code>
+routine - since we didn't <code>use</code> the PDL::Graphics::PGPLOT package
+there isn't any function called <code>points</code> in our namespace and we use
+the window object to get hold of it. The structure is of course very
+similar to what we did in <a href="#drawing_lines_and_plotting_points">Drawing lines and plotting points</a>
+above and there really is little practical difference between the two
+interfaces when plotting to only one window.</p>
+<p>Therefore let us up the stakes somewhat and try a more practical
+example. In many situations you might have one plot where each point in
+the plot has many values associated to it (i.e. your plot is a slice in
+a multidimensional space). When you examine such data you often would
+like to click on a point on your plot and bring up associated data for
+that point in a different display - this is an obvious situation for the
+OO interface.</p>
+<p>The logic for this project is easy: We first create two windows</p>
+<pre>
+    use PDL;
+    use PDL::Graphics2D;
+    # Create two identical windows
+    my $winopt = {Device =&gt; '/xs', WindowWidth =&gt; 7, Aspect =&gt; 1};
+    my $data = PDL::Graphics2D-&gt;new($winopt);
+    my $associated = PDL::Graphics2D-&gt;new($winopt);</pre>
+<p>Note that it is a good idea to name your variables containing the window
+objects with sensible names for later use.</p>
+<p>The next step is to plot data (well, in this example I will merely
+create them):</p>
+<pre>
+    my $x = sequence(10);
+    my $y = $x**2;
+    # Plot points using standard symbol
+    $data-&gt;points($x, $y);</pre>
+<p>which should draw a nice parabola on your screen. Now the user (that is
+you, reader) has to click on (or near) a point to select it - we will
+then use the X-value of that point to set the period of sine curve:</p>
+<pre>
+    print &quot;Dear user, please click on (or close to) a point\n&quot;;
+    my ($xin, $yin) = $data-&gt;cursor();
+    # closest will now contain the index of the point closest to
+    # where the user clicked.
+    my $closest = minimum_ind(abs($x-$xin) + abs($y-$yin));
+    my $y_associated = sin($x-&gt;at($closest)*$x);
+    $associated-&gt;line($x, $y_associated);</pre>
+<p>That should now give you a sine wave in the second window with a
+frequency dependent on where along the X-axis you clicked. Of course it
+would be a lot easier to use <code>$xin</code>, but that wasn't what we tried to
+do after all.</p>
+<p>This is of course a very simplified example, but it does provide a
+framework for a more comprehensive data explorer. From astronomy a
+typical example would be to plot scatter-plots for two variables and
+bringing up images of the objects by clicking at their data in the plot
+window. In other situations the data might be financial data for a set
+of companies and clicking on the points would bring up a comprehensive
+summary of that company. You are limited by your imagination!</p>
+<p>The bottom line is that whatever your requirements are, the OO approach
+is probably better when you need more than one plot window, but when you
+only use one window, and particularly on the <code>perldl</code> command line.</p>
+<p>
+</p>
+<hr />
+<h1><a name="using_pgplot_commands_directly">Using PGPLOT commands directly</a></h1>
+<p>The Perl module PGPLOT contains interfaces to all PGPLOT functions. The
+majority of these functions have alternative interfaces in the PDL
+package, but there might be situations when you need to use these
+functions directly. And in addition if you are used to using PGPLOT from
+before you might prefer the interface, although it is rather
+inconvenient when dealing with PDL.</p>
+<p>Full documentation for the PGPLOT functions can be found at Tim
+Pearson's WWW page: <code>http://astro.caltech.edu/~tjp/pgplot/</code> . This is
+not the place to discuss the details of PGPLOT, but it is interesting to
+learn how to access these routines from PDL with piddles as arguments.</p>
+<p>Typical PGPLOT drawing functions take as arguments the number of points
+and references to perl arrays to give x and y coordinates, thus:</p>
+<pre>
+    @x = (1,2,3);
+    @y = (3,-1,7);
+    pgpoint(3, \@x, \@y, 4);</pre>
+<p>will plot three points with the x and y values indicates and using
+plotting symbol 4 (circle).</p>
+<p>The complication for PDL users is that piddles are not perl arrays and
+hence have to be converted to array references before they can be passed
+to a PGPLOT function. This is achieved with the <code>get_dataref</code> command
+which returns a reference to the data in a piddle. Thus the example
+above would be written:</p>
+<pre>
+    $x = pdl(1,2,3);
+    $y = pdl(3,-1,7);
+    pgpoint($x-&gt;nelem, $x-&gt;getdataref, $y-&gt;getdataref, 4);</pre>
+<p>in PDL.</p>
+<p>In general you should use the provided wrapper routines for readability,
+but feel free to combine the two if you prefer. You should be able to
+pick'n'mix functions from the PDL interface and from PGPLOT directly,
+although a few subtle bugs might creep in (in particular the handling of
+several plot windows).</p>
+<p>There are several situations where direct access to PGPLOT might be
+necessary. Although hopefully they are not very common, it can be useful
+to look at a few to see what the PDL::Graphics::PGPLOT module doesn't
+do. Since it is possible to mix PGPLOT commands with the
+PDL::Graphics::PGPLOT commands this is not a major problem though,
+although it might require you to learn some PGPLOT. So to turn to some
+examples, I have decided to list a few simple problems:</p>
+<ul>
+<li>
+<p>Drawing several plot boxes on top of each other to
+get differently shaded grids. This is done in one of the demonstration
+programs that come with PGPLOT and can't be easily done in
+PDL::Graphics::PGPLOT without some playing around with the
+<a href="#plotposition"><code>PlotPosition</code></a> option. It is a lot easier to call <code>pgbox</code> directly.</p>
+</li>
+<li>
+<p>Complex contour plots - in particular
+non-rectangular. At present there is no support for non-rectangular
+contour plots in PDL::Graphics::PGPLOT, and neither is any support
+planned for the near future. You are advised to read the PGPLOT
+documentation for <code>pgconx</code> and have a look at demo #3 in the PGPLOT
+distribution for an example.</p>
+</li>
+</ul>
+<p>The bottom line is that as your plots get more and more complex you
+might end up in a situation where you need the finer control offered by
+the <code>PGPLOT</code> package, but for day-to-day use it is hoped that
+PDL::Graphics::PGPLOT will address most people's needs. And if doesn't
+then let us know!</p>
+<p>
+</p>
+<hr />
+<h1><a name="credits">Credits</a></h1>
+<p>Original text from &quot;PDL - Scientific Programming in Perl&quot; (2001) Chap. 4</p>
+<p>Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Söller,
+Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
+Doug Hunt, Tim Pickering.</p>
+<p>Modified to LyX by Chris Marshall for PDL 2.4.3, December 2006.</p>
+<p>Converted to POD format by Matthew Kenworthy, May 2010.</p>
+
+</body>
+
+</html>

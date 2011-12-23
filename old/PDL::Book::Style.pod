@@ -1,0 +1,31 @@
+=head1 STYLE GUIDE
+
+=head2 VALIDITY AND HTML OUTPUT
+
+Open an editing window in VIM, and use this command line to check the
+pod you are editing for validity, then generate the HTML tags and
+images:
+
+:!podchecker PDL.Tut.PGPLOT.pod && pod2html --infile=PDL.Tut.PGPLOT.pod --outfile=PDL.Tut.PGPLOT.html
+
+For a Mac, check the HTML output with:
+
+open PDL.Tut.PGPLOT.html and click 'reload'
+also
+
+=head2 PDF OUTPUT
+
+Conversion for PDF reading is done using:
+
+http://perl.jonallen.info/projects/pod2pdf
+
+    pod2pdf PDL.Tut.PGPLOT.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file test.pdf
+
+Images are included for the PDF with O< tags followed by the pathname.
+
+Images are left-aligned, and a width of 400 pixels is just over half the
+width of the PDF page.
+
+PNG images must be 8-bits or less for pod2pdf, so 
+
+

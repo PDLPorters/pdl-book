@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Writing Documentation for PDL</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+<!--
+
+<ul>
+
+	<li><a href="#writing_documentation_for_pdl">Writing Documentation for PDL</a></li>
+	<li><a href="#including_figures">Including Figures</a></li>
+	<ul>
+
+		<li><a href="#book">Book</a></li>
+		<li><a href="#tutorials">Tutorials</a></li>
+		<li><a href="#reference">Reference</a></li>
+		<li><a href="#faq">FAQ</a></li>
+		<li><a href="#pdf_output">PDF OUTPUT</a></li>
+	</ul>
+
+</ul>
+
+-->
+
+
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="writing_documentation_for_pdl">Writing Documentation for PDL</a></h1>
+<p>The goal is to refactor and expand the older PDL books and their sections into the
+structure below, and to do it all in the Plain Old Documentation (POD)
+format. These are text files ending with the extension .pod and are
+written with a simple formatting similar to HTML. POD can be nicely
+formatted, but I'm aiming for good, accurate content and we can worry
+about prettifying it later.</p>
+<p>You can read how to write POD with:</p>
+<pre>
+    perldoc perlpod</pre>
+<p>When writing the Book/Tutorials/documentation, you should be regularly checking the
+pod file with the <code>podchecker</code> program, and optionally displaying the
+HTML output to see how simple formatting should look like.</p>
+<pre>
+    podchecker &quot;PDL::Docs::Overview.pod&quot;</pre>
+<p>and if all goes well, it will say: <code>PDL::Docs::Overview.pod pod syntax OK.</code>
+Otherwise, note the problems and clean them up.</p>
+<p>Convert to HTML with this line:</p>
+<pre>
+    pod2html -noindex &quot;PDL::Docs::Overview.pod&quot; &gt; tmp.html</pre>
+<p>...and then open <code>tmp.html</code> with your browser to see what it looks
+like.</p>
+<p>
+</p>
+<hr />
+<h1><a name="including_figures">Including Figures</a></h1>
+<p>POD does not have a capability to display figures, but HTML and PDF
+output does. For the figure, here's the one line summary:</p>
+<p>Make an 8-bit color PNG with width 800 pixels and add this line in the
+POD:</p>
+<pre>
+    =for html &lt;img WIDTH=400 src=&quot;path_to_image/image.png&quot;&gt;</pre>
+<p>Longer explanation:</p>
+<p>Images for HTML and PDF generation should come from the single PNG image
+with 8 bit color and a width of 800 pixels.  The PNG should be <code>8
+bit-color</code> as reported by running the <code>file image.png</code> command in unix.
+The height can be unconstrained.</p>
+<p>Only the HTML code should be added in a POD document - I have a script
+that will automatically add the correct pod formatting code for a PDF image
+afterwards. This is done because <code>podchecker</code> complains about the pod
+formatting code for the PDF image.</p>
+<p>
+</p>
+<h2><a name="book">Book</a></h2>
+<p>A book should give an introduction to PDL, running through the basic
+fratures with enough detail so that the user can do basic operations,
+learn some simple threading, and output their results to files or plots.</p>
+<dl>
+<dt><strong><a name="where_to_find_help" class="item">Where to find help</a></strong>
+
+<dt><strong><a name="pdl_book_piddle_pdl_book_piddle_what_is_a_pdl_object" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/Piddle.html">PDL::Book::Piddle</a> What is a PDL object?</a></strong>
+
+<dt><strong><a name="pdl_book_creating_pdl_book_creating_basic_operations_to_make_pdls" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/Creating.html">PDL::Book::Creating</a> Basic Operations to make PDLs</a></strong>
+
+<dt><strong><a name="pdl_book_niceslice_pdl_book_niceslice_cutting_out_bits_of_a_pdl" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/NiceSlice.html">PDL::Book::NiceSlice</a> Cutting out bits of a PDL</a></strong>
+
+<dt><strong><a name="pdl_book_subroutines_pdl_book_subroutines_getting_pdls_in_and_out_of_subroutines" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/Subroutines.html">PDL::Book::Subroutines</a> Getting PDLs in and out of subroutines</a></strong>
+
+<dt><strong><a name="pdl_book_threading_pdl_book_threading_threading_and_getting_rid_of_for_loops" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/Threading.html">PDL::Book::Threading</a> Threading and Getting rid of FOR loops</a></strong>
+
+<dt><strong><a name="pdl_book_pgplot_pdl_book_pgplot_graphics_with_pgplot_done" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/PGPLOT.html">PDL::Book::PGPLOT</a> Graphics with PGPLOT <strong>done</strong></a></strong>
+
+<dt><strong><a name="pdl_book_plplot_pdl_book_plplot_graphics_with_plplot" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/PLplot.html">PDL::Book::PLplot</a> Graphics with PLplot</a></strong>
+
+<dt><strong><a name="pdl_book_transform_pdl_book_transform_rotating_scaling_and_translating_with_pdl_transform" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/Transform.html">PDL::Book::Transform</a> Rotating, Scaling and Translating with PDL::Transform</a></strong>
+
+<dt><strong><a name="pdl_book_complex_pdl_book_complex_complex_numbers" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/Complex.html">PDL::Book::Complex</a> Complex Numbers</a></strong>
+
+<dt><strong><a name="pdl_book_pthreads_pdl_book_pthreads_parallel_computations_with_pthreads" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/Pthreads.html">PDL::Book::Pthreads</a> Parallel Computations with pthreads</a></strong>
+
+<dt><strong><a name="pdl_book_pp_pdl_book_pp_getting_c_routines_into_pdl_with_pdl_pp" class="item"><a href="http://www.strw.leidenuniv.nl/~kenworthy/pdlpod/PDL/Book/PP.html">PDL::Book::PP</a> Getting C routines into PDL with PDL::PP</a></strong>
+
+</dl>
+<p>
+</p>
+<h2><a name="tutorials">Tutorials</a></h2>
+<p>Detailed explanations with examples that go into detail
+about some function, idea or methodology of PDL.</p>
+<dl>
+<dt><strong><a name="demonstrating_threading_with_the_game_of_life" class="item">Demonstrating threading with the Game of Life</a></strong>
+
+<dt><strong><a name="making_your_pgplot_output_look_pretty" class="item">Making your PGPLOT output look pretty</a></strong>
+
+<dt><strong><a name="getting_to_grips_with_pdl_transform" class="item">Getting to grips with PDL::Transform</a></strong>
+
+</dl>
+<p>
+</p>
+<h2><a name="reference">Reference</a></h2>
+<p>The PDL modules and their functions - this is built from the POD conversion scripts that comb the PDL modules.
+This should be an alphabetized list of all the calleable functions in a
+given PDL installation.</p>
+<p>
+</p>
+<h2><a name="faq">FAQ</a></h2>
+<p>Commonly asked questions from the PDL Mailing list that address repeated
+topics.</p>
+<p>
+</p>
+<h2><a name="pdf_output">PDF OUTPUT</a></h2>
+<p>Conversion for PDF reading is done using:</p>
+<p><a href="http://perl.jonallen.info/projects/pod2pdf">http://perl.jonallen.info/projects/pod2pdf</a></p>
+<pre>
+    pod2pdf PDL.Tut.PGPLOT.pod --icon-scale 0.25 --title &quot;PDL Book&quot; --icon logo2.png --output-file test.pdf</pre>
+<p>Images are included for the PDF with O &lt; tags followed by the pathname.</p>
+<p>Images are left-aligned, and a width of 400 pixels is just over half the
+width of the PDF page.</p>
+
+</body>
+
+</html>
