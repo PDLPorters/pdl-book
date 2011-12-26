@@ -846,6 +846,280 @@ Your resulting code should not have any C<loop> constructs.
 
 =back
 
+=head2 Tips
+
+These are a couple of things I have learned which help me make effective use
+of PDL::PP, but which did not sensibly fit elsewhere.
+
+=over
+
+=item Best Practice: use pp_line_numbers
+
+PDL::PP includes a brand new function in PDL 2.4.10 called C<pp_line_numbers>.
+This function takes two arguments: a number and a string. The number should
+indicate the actual line in your Perl source file at which the string starts,
+and the function causes C<#line> directives to be inserted into the string.
+This is C<ENORMOUSLY> helpful when you have a syntax error. Without it, the
+syntax error is reported as coming from a given line in your XS file, but
+with it the error is reported as coming from your own source file.
+
+I will illustrate this with an example that gave me great trouble while I
+was preparing this text:
+
+=for listing bad-error-reporting
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ # Run the code on a 2x4 matrix:
+ sequence(2,4)->my_print_rows;
+ 
+ __END__
+ 
+ __Pdlpp__
+ 
+ pp_def('my_print_rows',
+     Pars => 'in(n)',
+     Code => q{
+         printf("About to start printing rows\n");
+         int row_counter = 0;
+         threadloop %{
+             printf("  Row %3d: ", row_counter);
+             loop(n) %{
+                 printf("%f, ", $in())
+             %}
+             printf("\n");
+             row_counter++;
+         %}
+         printf("All done!\n");
+     },
+ );
+
+Notice what's missing? The semicolon at the end of the C<printf> is missing.
+Unfortunately, the error output of this example (contained in
+F<_Inline/build/bad_error_reporting_pl_8328/out.make>) borders on useless:
+
+ bad_error_reporting_pl_4420.xs: In function ‘pdl_my_print_rows_readdata’:
+ bad_error_reporting_pl_4420.xs:177: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ bad_error_reporting_pl_4420.xs:177: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ bad_error_reporting_pl_4420.xs:178: error: expected ‘;’ before ‘}’ token
+ bad_error_reporting_pl_4420.xs:222: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ bad_error_reporting_pl_4420.xs:222: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ bad_error_reporting_pl_4420.xs:223: error: expected ‘;’ before ‘}’ token
+ bad_error_reporting_pl_4420.xs:267: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ bad_error_reporting_pl_4420.xs:267: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ bad_error_reporting_pl_4420.xs:268: error: expected ‘;’ before ‘}’ token
+ bad_error_reporting_pl_4420.xs:312: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
+ bad_error_reporting_pl_4420.xs:312: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
+ bad_error_reporting_pl_4420.xs:313: error: expected ‘;’ before ‘}’ token
+ bad_error_reporting_pl_4420.xs:357: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
+ bad_error_reporting_pl_4420.xs:357: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
+ bad_error_reporting_pl_4420.xs:358: error: expected ‘;’ before ‘}’ token
+ bad_error_reporting_pl_4420.xs:403: error: expected ‘;’ before ‘}’ token
+ bad_error_reporting_pl_4420.xs:448: error: expected ‘;’ before ‘}’ token
+
+If you're a seasoned C programmer, you'll recognize the warning: it arises
+because PDL::PP creates a branches of code for each data type that PDL
+supports, so using the C<%f> type is not correct. (The correct way to handle
+this is to use the C<$T> macro.) That's not our problem, though. The issue
+is the expected semicolon error. For a small function, you can probably just
+scan through the code and look for a missing semicolon, but when you are
+working on a much larger set of PP code, having the line number of the error
+would be B<much> more useful. You accomplish that by using the
+C<pp_line_numbers> function, which adds C<#line> directives into your code
+so that errors get reported on the correct lines. Here is a slightly
+doctored version to illustrate the issue:
+
+=for listing better-error-reporting
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ # Run the code on a 2x4 matrix:
+ sequence(2,4)->my_print_rows;
+ 
+ __END__
+ 
+ __Pdlpp__
+ #line 1 "my-inline-work"
+                   # This is reported as line 1
+ pp_def('my_print_rows',
+     Pars => 'in(n)',
+     Code => pp_line_numbers(__LINE__, q{
+         /* This line is reported as line 5
+          * Thanks to pp_line_numbers */
+         printf("About to start printing rows\n");
+         int row_counter = 0;
+         threadloop %{
+             printf("  Row %3d: ", row_counter);
+             loop(n) %{
+                 printf("%f, ", $in())
+             %}
+             printf("\n");
+             row_counter++;
+         %}
+         printf("All done!\n");
+         /* This is line 18 */
+     }),
+ );     # This is reported as line 20
+
+Apart from a couple of comments to indicate the line counting, I introduced
+two modifications: I added a C<#line> directive at the top of
+the Pdlpp section and I wrapped the C<Code> section in a call to
+C<pp_line_numbers>. (The C<#line> directive is only necessary when using
+L<Inline::Pdlpp>, and is not necessary in a .pd file.) Now the error output
+gives the line of the closing bracket that reports the missing semicolon:
+
+ my-inline-work: In function ‘pdl_my_print_rows_readdata’:
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ my-inline-work:13: error: expected ‘;’ before ‘}’ token
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ my-inline-work:13: error: expected ‘;’ before ‘}’ token
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
+ my-inline-work:13: error: expected ‘;’ before ‘}’ token
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
+ my-inline-work:13: error: expected ‘;’ before ‘}’ token
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
+ my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
+ my-inline-work:13: error: expected ‘;’ before ‘}’ token
+ my-inline-work:13: error: expected ‘;’ before ‘}’ token
+ my-inline-work:13: error: expected ‘;’ before ‘}’ token
+
+All the errors are reported as occurring on line 13, immediately directing
+your eye to where the problem lies. This lets you fix your problem and get
+on with your work.
+
+Sometimes PDL::PP's parser croaks on invalid input. Sometimes it doesn't.
+For those times when you when you feed PDL::PP bad code and the error
+reporting leaves you scratching your head, consider wrapping your code in a
+C<pp_line_numbers> call.
+
+=item Wart: /* */ doesn't always work; use #if 0
+
+For better or for worse, some of PDL::PP's replacements include comments
+indicating what they do. This is useful when you find yourself digging into
+the generated XS code as it helps you get your bearings. If you are like me,
+when there is a bug in your code, it is often helpful to comment-out
+a section of code to see if it caused the problem:
+
+=for listing bad-use-of-slash-star
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ # Run the code on a 2x4 matrix:
+ sequence(2,4)->my_printout;
+ 
+ __END__
+ 
+ __Pdlpp__
+ #line 1 "my-printout-pdlpp"
+ pp_def('my_printout',
+     Pars => 'in()',
+     Code => pp_line_numbers(__LINE__, q{
+         printf("This piddle contains:\n");
+         threadloop %{
+             /* grr, not working
+             printf("  %f\r", $in());
+             */
+             printf("  Here\n");
+         %}
+     }),
+ );
+
+The problem, by the way, is that I used a C<\r> instead of a C<\n> in
+the C<printf> statement, and if I try printing a sufficiently small piddle
+on a sufficiently fast machine, I will not see any values printed to the
+screen before they are covered up by whatever text comes next in my code. So
+I try blocking out the C<printf> statement and replacing it with a dummy
+statement that I believe will work withou a hitch. Unfortunately, this gives
+me these errors:
+
+ my-printout-pdlpp: In function ‘pdl_my_printout_readdata’:
+ my-printout-pdlpp:7: error: expected statement before ‘)’ token
+ my-printout-pdlpp:8: error: expected expression before ‘/’ token
+ my-printout-pdlpp:7: error: expected statement before ‘)’ token
+ my-printout-pdlpp:8: error: expected expression before ‘/’ token
+ my-printout-pdlpp:7: error: expected statement before ‘)’ token
+ my-printout-pdlpp:8: error: expected expression before ‘/’ token
+ my-printout-pdlpp:7: error: expected statement before ‘)’ token
+ my-printout-pdlpp:8: error: expected expression before ‘/’ token
+ my-printout-pdlpp:7: error: expected statement before ‘)’ token
+ my-printout-pdlpp:8: error: expected expression before ‘/’ token
+ my-printout-pdlpp:7: error: expected statement before ‘)’ token
+ my-printout-pdlpp:8: error: expected expression before ‘/’ token
+ my-printout-pdlpp:7: error: expected statement before ‘)’ token
+ my-printout-pdlpp:8: error: expected expression before ‘/’ token
+
+Lines seven and eight are these:
+
+             printf("  %f\r", $in());
+             */
+
+Perplexed? You bet. I just C<commented out some code>, how could I possibly
+have introduced a compile error? Using C<pp_line_numbers>, I
+understand where the error came from, but I'm even more confused as to why
+it arose in the first place.
+
+The fix to this problem is to use C<#if 0>, a common technique among C
+programmers for cutting out blocks of code:
+
+=for listing good-use-of-if-0
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ # Run the code on a 2x4 matrix:
+ sequence(2,4)->my_printout;
+ 
+ __END__
+ 
+ __Pdlpp__
+ #line 1 "my-printout-pdlpp"
+ pp_def('my_printout',
+     Pars => 'in()',
+     Code => pp_line_numbers(__LINE__, q{
+         printf("This piddle contains:\n");
+         threadloop %{
+           #if 0
+             printf("  %f\r", $in());
+           #endif
+             printf("  Here\n");
+         %}
+     }),
+ );
+
+PDL::PP will still merrily fiddle with the stuff between the C<#if 0> and
+C<#endif>, but the C preprocessor will get rid of it before it actually
+tries to compile the code. Now the code at least runs and printouts the
+exptected dumb results:
+
+ This piddle contains:
+   Here
+   Here
+   Here
+   Here
+   Here
+   Here
+   Here
+   Here
+
+Hopefully this gives me enough to find that errant C<\r>.
+
+=back
+
 =head1 Recap
 
 In this chapter, I've covered the very basics of using PDL::PP to write
