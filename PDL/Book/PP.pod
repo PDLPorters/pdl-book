@@ -1,0 +1,1098 @@
+=head1 The PDL PreProcessor
+
+The PDL PreProcessor, or PDL::PP, is PDL's secret weapon. With PDL::PP, you
+get support for bad values. Because of PDL::PP, you can easily generate code
+that threads over extra dimensions. Slices operate as first-class piddles in
+your Perl code because they are first-class piddles in PDL::PP code.
+
+Before getting any further, I want to acknowledge that Tuomas J. Lukka,
+Karl Glaazebrook, and Christian Soeller are (to the best of my knowledge)
+the original architects of PDL::PP. Contributions have come from others. My
+own work in the code of PDL::PP has been minimal, mostly working on bug
+fixes, better error reporting, and general code cleanup. However, I have
+used PDL::PP extensively and have learned quite about about the nuances of
+using it. I hope to expand this introduction in the coming months to include
+many of the insights that I have gained through my use and analysis of
+PDL::PP. However, at the moment it serves only as an introduction to the
+topic. After reading this, you should have a firm grasp on the basics of
+using PDL::PP and the full documentation should be fairly easy to follow.
+
+Note that the vast majority of these examples are tested and should work by
+simply pasting them directly into a text editor. The only correction you
+will need to make is to ensure that the C<__END__> and C<__Pdlpp__> markers
+are flush against the left edge, i.e. there are no spaces before the
+underscores.
+
+=head1 Basics
+
+In this section I discuss the basics of writing PP code using C<pp_def>.
+I will use L<Inline::Pdlpp> for all of my examples, including this first
+one. If you need help getting L<Inline::Pdlpp> to work, see Appendix A.
+
+=head2 First Example
+
+Let's begin with a variation on the canonical Hello World.
+
+=for listing first-example
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ my $a = sequence(10);
+ $a->printout;
+ 
+ __END__
+ 
+ __Pdlpp__
+ 
+ pp_def('printout',
+     Pars => 'a()',
+     Code => q{
+         printf("%f\n", $a());
+     },
+ );
+
+If you run that script, after a short pause you should see output that looks
+like this:
+
+ > perl my_script.pl
+ 0.000000
+ 1.000000
+ 2.000000
+ 3.000000
+ 4.000000
+ 5.000000
+ 6.000000
+ 7.000000
+ 8.000000
+ 9.000000
+
+During that pause, Inlne took the text below the C<__Pdlpp__> marker and
+sent it off to L<Inline::Pdlpp>, which generated a source file and a
+Makefile. Inline took it from there, compiling the function and then loading
+the newly compiled module into your current Perl interpreter. That module defined the
+function C<PDL::printout>, which the script ran a couple of lines below the
+C<use Inline 'Pdlpp'>. The cool part about Inline is that it caches the
+result of that build process and only rebuilds if you change the part below
+the C<__Pdlpp__> marker. You can freely play with the Perl part of the file
+and it will use the same cached Pdlpp code. Now that you understand what
+Inline did, let's take a closer look at how I actually defined the
+C<printout> function.
+
+PDL::PP is a Perl module that you use to B<generate> the XS and Perl code
+for your PDL functions. This means that everything below the C<__Pdlpp__>
+marker is actually a plain Perl script, except that you don't need to 
+C<use PDL::PP> because L<Inline::Pdlpp> took care of that for you.
+
+In order to generate your XS code, you call one of the
+many functions defined in PDL::PP. All of these are discussed in the PDL::PP
+documentation, and in this chapter I will focus entirely on PDL::PP's
+workhorse: C<pp_def>. In the above example, the code of interest is this:
+
+ pp_def('printout',
+     Pars => 'a()',
+     Code => q{
+         printf("%f\n", $a());
+     },
+ );
+
+The first argument to C<pp_def> is the name of the function you want to
+create. After that, you pass a number of key/value pairs to tell PDL::PP
+precisely what sort of function you are trying to create. The bare minimum
+for a normal computational function (as opposed to a slice function, for
+which there is sadly no documentation) is the C<Pars> key and the C<Code>
+key.
+
+The C<Pars> key specifies the B<piddle> arguments for your function. It
+accepts a simple Perl string with the argument names and dimensions, 
+delimited by semicolons. In the example I only use a single argument, but
+you can specify multiple input and output arguments, and you can even
+restrict (that is, force a coersion in) their data types. Note that the
+parentheses that follow the C<a> are important and cannot be omitted. They
+might make the statement look like a function, but we'll see soon why they
+are important.
+
+The C<Code> key specifies a Perl string with a quasi-C block of code that I
+am going to call PP code. This Perl string gets thoroughly transformed by
+PDL::PP and combined with other keys to produce the XS (and eventually C)
+code for your function. You can think of PP code as being regular C code 
+with a few special macros and notations. The first example already
+demonstrates one such notation: to access the value in a piddle, you must
+prefix the name with a dollar-sign and you must postfix it with parentheses.
+In the next section we'll see just what sort of arguments you can put in
+those parentheses.
+
+=over
+
+=item Best Practice: Use q{ } for Code Sections
+
+When creating a string for the Code key (as well as the BadCode, BackCode,
+and BadBackCode keys), I strongly recommend that you use Perl's C<q> quote
+operator with curly braces as delimiters, as I have used in the examples so
+far. Perl offers many ways to quote long blocks of text. Your first impulse
+may be to simply use normal Perl quotes like so:
+
+ Code => ' printf("%f\n", $a()); ',
+
+For longer lines, you would probably pull out the ever-useful heredoc:
+
+ Code => <<EOCode,
+ 
+     printf("%f\n", $a());
+ 
+ EOCode
+
+I have two reasons for recommending Perl's C<q> operator. First,
+it makes your Code section look like a code block:
+
+ Code => q{
+     printf("%f\n", $a());
+ }
+
+Second, PDL::PP's error reporting is not the greatest, and if you miss a
+curly brace, Perl's B<interpreter> will catch it as a problem. This is not
+the case with the other delimiters. In this example, I forgot to include a
+closing brace:
+
+ Code => <<'EOCode',
+     printf("Starting\n");
+     
+     for(i = 0; i < $SIZE(n); ++i) {
+         printf("%d: %f\n", i, $a(n => i));
+     
+     printf("All done\n");
+ EOCode
+
+The C compiler will croak on the above example with an error that is likely
+to be obscure and only tangentially helpful. However, Perl will catch this
+typo at compile time if you use C<q{ }>:
+
+ Code => q{
+     printf("Starting\n");
+     
+     for(i = 0; i < $SIZE(n); ++i) {
+         printf("%d: %f\n", i, $a(n => i));
+     
+     printf("All done\n");
+ },
+
+Also note that I do not recommend using the C<qq> quoting operator. Almost
+all the PDL::PP code strings delimit piddles using dollar-signs (like C<$a()>
+above) and you must escape each one of these unless you want Perl to
+interpolate a varible for you. Obviously C<qq> has its uses occationally,
+but in general I recommend sticking almost exclusively with C<q>.
+
+=back
+
+=for listing two-args-boilerplate
+ internal
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ my $a = sequence(10);
+
+=for listing Inline-intermediate-boilerplate
+ internal
+ __END__
+ __Pdlpp__
+
+Let's now expand the example so that the function takes two arguments.
+Replace the original C<pp_def> with this slightly more interesting code:
+
+=for listing two-args-test [use-printout-sum,two-args]
+ internal
+ # nothing here
+
+=for listing two-args [Inline-intermediate-boilerplate]
+
+ pp_def('printout_sum',
+     Pars => 'a(); b()',
+     Code => q{
+         printf("%f + %f = %f\n", $a(), $b(), $a() + $b());
+     },
+ );
+
+Change the line that reads
+
+ $a->printout;
+
+to the following two lines:
+
+=for listing use-printout-sum [two-args-boilerplate]
+
+ my $b = $a->random;
+ $a->printout_sum($b);
+
+and you should get output that looks like this:
+
+ > perl two-args.pl
+ 0.000000 + 0.690920 = 0.690920
+ 1.000000 + 0.907612 = 1.907612
+ 2.000000 + 0.479112 = 2.479112
+ 3.000000 + 0.421556 = 3.421556
+ 4.000000 + 0.431388 = 4.431388
+ 5.000000 + 0.022563 = 5.022563
+ 6.000000 + 0.014719 = 6.014719
+ 7.000000 + 0.354457 = 7.354457
+ 8.000000 + 0.705733 = 8.705733
+ 9.000000 + 0.827809 = 9.827809
+
+The differences between this and the previous example are not complicated
+but deserve some discussion. A cosmetic difference is that I have used a
+different name for the function, but a more substantial difference is that
+the function now takes two arguments, C<a()> and C<b()>, as specified by the
+C<Pars> key. The C<Code> block makes use of these two piddles, printing out
+the two and their sum. Notice that I access the value in C<a> with the
+expression C<$a()>, and the value in C<b> with C<$b()>. Also notice that I
+can use those values in an arithmetic expression.
+
+=head2 Returning Values
+
+The examples I have used have all demonstrated their behavior by printing
+out their results to STDOUT. If you are like me, you will be glad to know
+that you can use printfs throughout your PP code when it comes time to
+debug, but these functions would be far more useful if they returned piddles
+with the calculated results. Fortunately, PDL::PP functions are really just
+C functions in disguise, and ultimately the data are passed around in C
+arrays, essentially by reference. This means that you can modify incoming
+piddles in-place. For example, this function increments a piddle:
+
+=for listing dumb-increment
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ my $a = sequence(10);
+ print "a is initially $a\n";
+ $a->my_inc;
+ print "a is now $a\n";
+ 
+ __END__
+ __Pdlpp__
+ pp_def('my_inc',
+     Pars => 'a()',
+     Code => q{
+         $a()++;
+     },
+ );
+
+When I run that, I get this output:
+
+ a is initially [0 1 2 3 4 5 6 7 8 9]
+ a is now [1 2 3 4 5 6 7 8 9 10]
+
+If you want to modify a piddle in-place, PDL provides multiple
+mechanisms for handling this, depending on what you are trying to
+accomplish. In particular, there are ways to handle the C<inplace> flag for
+a given piddle. But I'm getting a bit ahead of myself. Generally speaking,
+you shouldn't modify a piddle in-place: you should return a result instead.
+To do this, you simply mark the argument in the C<Pars> key with the C<[o]>
+qualifier. Here, I show how to return two arguments:
+
+=for listing sum-and-diff-pp
+
+ pp_def('my_sum_and_diff',
+     Pars => 'left(); right(); [o] sum(); [o] diff()',
+     Code => q{
+         $sum() = $left() + $right();
+         $diff() = $left() - $right();
+     },
+ );
+
+This function takes C<$left> and C<$right> as input arguments (in that order)
+and it outputs C<$sum> and C<$diff> (also in that order, as a Perl list).
+For example, we could run the above pp-code with Perl code like this:
+
+=for listing sum-and-diff-perl
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ my $left = sequence(10);
+ my $right = $left->random;
+ 
+ my ($sum, $diff) = $left->my_sum_and_diff($right);
+ 
+ print "Left:  $left\n";
+ print "Right: $right\n";
+ print "Sum:   $sum\n";
+ print "Diff:  $diff\n";
+
+
+=for listing run-my-sum-and-diff [sum-and-diff-perl,Inline-intermediate-boilerplate,sum-and-diff-pp]
+ internal
+ # nothing here
+
+The functions defined using C<pp_def> actually allow for you to pass in
+the output piddles as arguments, but I'll explore that in one of the
+exercises rather than boring you with more details.
+
+=head2 Exercise Set 1
+
+So far I have shown you how to write basic PP code that prints values to the
+screen or returns values. The great thing about PDL::PP is that this code
+actually allows for two different calling conventions, and it Does What You
+Mean when you give it all manner of piddles. Rather than bore you to death
+with more prose, I am going to give you a couple of exercises. Solutions to
+these exercises are in Appendix B.
+
+=over
+
+=item 1. Slices
+
+Working with C<printout_sum>, replace C<$b> with a B<slice> from some other
+piddle. Does it do what you expect?
+
+=item 2. Threading
+
+With C<printout_sum>, what if you replace C<$b> with a two-dimensional
+piddle that is thread-compatible with C<$a>? Try to guess the order of the
+output that you'll get before running the example. Did you guess correctly?
+
+=item 3. Orthogonal Piddles
+
+What if C<$a> has dimensions M and C<$b> has dimensions (1, N) with
+C<printout_sum>? What about C<my_sum_and_diff>?
+
+=item 4. Varying Input Order
+
+The PP code that I present puts all the output piddles at the end of the
+C<Pars> section. What happens if you move them to the biggining of the
+section instead of the end?
+
+=item 5. Supplyling Outputs in the Function Call
+
+You can call C<pp_def>ined functions by supplying all the arguments to the
+function. For example, instead of calling C<my_sum_and_diff> like this:
+
+ # No output piddles in function call
+ my ($sum, $diff) = $left->my_sum_and_diff($right);
+
+you can call it like this:
+
+ # All in function call, both outputs null
+ my ($sum, $diff) = (PDL::null, PDL::null);
+ $sum->my_sum_and_diff($left, $diff, $right);
+
+What is the return value of this sort of invocation? How does the function
+call change if you alter the C<Pars> order? There's a good reason for this
+capability, can you guess why PDL lets you do this?
+
+=back
+
+=head2 Specifying Dimensions and Using Explicit Looping
+
+Exercises 1.2 and 1.3 demonstrate that PDL::PP automatically loops over the
+values in a piddle for you. What if you want to do some sort of aggregate
+behavior, such as computing the sum of all the values in a piddle? This
+requires more fine-grained control of the code over which PDL::PP loops.
+
+Our discussion begins by looking more closely at the C<Pars> key. When you
+have a parameter list like C<'input(); [o] output()'>, you are telling PDL::PP
+that you want it to present the data from the input and output piddles as
+scalars. The code you specify in the C<Code> key gets wrapped by a couple of
+C C<for> loops that loop through higher dimensions, something that we call
+I<threading>. There are many calculations you cannot do with this simplistic
+representation of the data, such as write a Fourier Transform, matrix-matrix
+multiplication, or a cumulative sum. For these, you need PDL::PP to represent
+your data as vectors or matrices.
+
+Note: I am about to cover some material that makes sense once you get it,
+but which is very easy to mis-interpret. Pay close attention!
+
+To tell PDL::PP that you want it to represent the data as a vector, you
+specify a I<dimension name> in the C<Pars> key, such as
+
+ Pars => 'input(n); [o] sum()'
+
+Notice that I have put something within the parentheses of the input piddle,
+C<n>. That means that I want PDL::PP to represent the input as a vector with
+one dimension and I am going to refer to its (single) dimension by the name
+C<n>. Then, to access the third element of that vector, you would write
+C<< $input(n => 2) >>. (Element access uses zero-offsets, just like Perl and
+C array access.) To sum all the values in the vector and store the result in
+the output variable, you could use a C for-loop like so:
+
+ int i;
+ $sum() = 0;
+ for (i = 0; i < $SIZE(n); i++) {
+     $sum() += $input(n => i);
+ }
+
+Here, C<$SIZE(n)> is a PDL::PP macro that returns the length of the vector
+(or more precisely, the size of the dimension that we have called C<n>).
+
+=over
+
+=item Best practice: optimize for clarity when using $SIZE
+
+When I first encountered the C<$SIZE> PDL::PP macro, I assumed it produced
+slow code. It turns out that it replaces itself with a direct variable
+access, which is quite fast. As a general rule regarding C<$SIZE>, optimize
+for clarity. The only exception is that, as of this writing, you B<cannot>
+use C<$SIZE> within a direct memory access, as I discuss next.
+
+=item Wart: no parenthisized expressions within direct memory access
+
+Due to a current limitation in PDL::PP, you cannot use parenthized
+expressions within a memory access. For example, this will fail to compile
+and will throw a most obscure error:
+
+ $sum() += $input(n => (i-1));
+
+The reason is that the parser isn't a real parser: it's just a series of
+regexes. It takes everything up until the first closing parenthesis and
+doesn't realize that you put C<i-1> in parentheses. This means that these
+also fail:
+
+ $sum() += $input(n => calculate_offset(i));
+ $sum() += $input(n => $SIZE(n)-1);
+
+You can use expressions that do not involve parentheses, even expressions
+involving arithmetic, so you can achieve the same ends with these
+work-arounds:
+
+ long calc_off = calculate_offset(i);
+ $sum() += $input(n => calc_off);
+ 
+ long N = $SIZE(n);
+ $sum() += $input(n => N-1);
+
+I intend to improve this soon so that at least parenthized expressions will
+work in memory access statements. However, fixing access statement parsing
+to allow C<$SIZE(n)> may require a more substanial overhaul of the parser
+and may not happen any time soon. Sorry.
+
+=cut
+
+# If I have not fixed that parser by summer 2012, the above promise should
+# be removed.
+
+=back
+
+PDL::PP also provides a convenient short-hand for this sort of loop:
+
+ $sum() = 0;
+ loop (n) %{
+     $sum() += $input();
+ %}
+
+Here, I declare a PDL::PP loop block. Standard blocks in C (and in Perl) are
+delimited with curly braces, but the loop block is delimited with C<%{> and
+C<%}>. You end up with code that is functionally identical to the previous
+method for writing this sum, but you can use fewer keystrokes to do it.
+
+Putting this all together, here is a complete example that performs a sum
+over a vector:
+
+=for listing my-sumover
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ my $a = sequence(10);
+ print "a is $a and its sumover is "
+     , $a->my_sumover, "\n";
+ 
+ my $b = sequence(3, 5);
+ print "b is $b and its sumover is "
+     , $b->my_sumover, "\n";
+ 
+ __END__
+ 
+ __Pdlpp__
+ 
+ pp_def('my_sumover',
+     Pars => 'input(n); [o] sum()',
+     Code => q{
+         $sum() = 0;
+         loop (n) %{
+             $sum() += $input();
+         %}
+     }
+ );
+
+That gives the following output:
+
+ a is [0 1 2 3 4 5 6 7 8 9] and its sumover is 45
+ b is 
+ [
+  [ 0  1  2]
+  [ 3  4  5]
+  [ 6  7  8]
+  [ 9 10 11]
+  [12 13 14]
+ ]
+  and its sumover is [3 12 21 30 39]
+
+As the calculation on C<$a> shows, when you perform the calculation on a
+one-dimensional piddle, it returns a single result with the sum of all the
+elements. The calculation on C<$b> treats each row as a vector and performs
+the calculation on each row.
+
+Let's look at another example, matrix-matrix multiplication. (You remember
+how to do matrix-matrix multiplication, right? No? Brush-up on
+L<Wikipedia|http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
+would we write such an algorithm using PDL::PP? First, the C<Pars> section
+needs to indicate what sort of input and output
+piddles we want to handle. The length of the row of the first matrix has to
+be equal to the length of the column of the second matrix. The output matrix
+will have as many rows as the second matrix, and as many columns as the first
+matrix. Second, we need to loop over the entire output dimensions. Altogether,
+my first guess at this function looked like this:
+
+=for listing my-matrix-multiplication
+
+ pp_def('my_matrix_mult',
+     Pars => 'left(n,m); right(m,p); [o] output(n,p)',
+     Code => q{
+         loop (n) %{
+             loop (p) %{
+                 loop (m) %{
+                     $output() = $left() * $right();
+                 %}
+             %}
+         %}
+     },
+ );
+
+"Wait," you say, "That's it? It's that simple?" Yep. Once you figure out the
+relationship of the dimension sizes, the threading engine just Does What You
+Mean. (As you'll see, I got the dimensions wrong, but it'll be a quick fix.)
+You can run that with this Perl code:
+
+=for listing my-perl-matrix-multiplication
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ my $left = sequence(2,4);
+ my $right = sequence(4, 5);
+ print "$left times $right is ", $left->my_matrix_mult($right);
+
+=for listing run-matrix-multiplication [my-perl-matrix-multiplication,Inline-intermediate-boilerplate,my-matrix-multiplication]
+ internal
+ # no code here, all includes. :-)
+
+and that gives this output:
+
+ [
+  [0 1]
+  [2 3]
+  [4 5]
+  [6 7]
+ ]
+  times 
+ [
+  [ 0  1  2  3]
+  [ 4  5  6  7]
+  [ 8  9 10 11]
+  [12 13 14 15]
+  [16 17 18 19]
+ ]
+  is 
+ [
+  [ 18  21]
+  [ 42  49]
+  [ 66  77]
+  [ 90 105]
+  [114 133]
+ ]
+
+Oops! You can see that PDL considers the first argument to the number of
+columns, not the number of rows! I'll let you fix that in an exercise.
+
+PDL::PP also has the C<threadloop> construct, which lets you declare the
+code over which PDL should thread, and the code that should come before
+and after the thread loop. Here's a simple example demonstrating the
+C<threadloop> construct in conjunction with the C<loop> construct:
+
+=for listing my-print-rows
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ # Run the code on a 2x4 matrix:
+ sequence(2,4)->my_print_rows;
+ 
+ # Run the code on a 3x4x5 matrix:
+ sequence(3,4,5)->my_print_rows;
+ 
+ __END__
+ 
+ __Pdlpp__
+ 
+ pp_def('my_print_rows',
+     Pars => 'in(n)',
+     Code => q{
+         printf("About to start printing rows\n");
+         int row_counter = 0;
+         threadloop %{
+             printf("  Row %3d: ", row_counter);
+             loop(n) %{
+                 printf("%f, ", $in());
+             %}
+             printf("\n");
+             row_counter++;
+         %}
+         printf("All done!\n");
+     },
+ );
+
+A snippet of that output looks like this:
+
+ About to start printing rows
+   Row   0: 0.000000, 1.000000, 
+   Row   1: 2.000000, 3.000000, 
+   Row   2: 4.000000, 5.000000, 
+   Row   3: 6.000000, 7.000000, 
+ All done!
+ About to start printing rows
+   Row   0: 0.000000, 1.000000, 2.000000, 
+   Row   1: 3.000000, 4.000000, 5.000000, 
+   ...
+   Row  19: 57.000000, 58.000000, 59.000000, 
+ All done!
+
+This is particularly useful if you are writing a function that needs access
+to a system resource that is costly to allocate with each iteration. For
+that sort of operation, you allocate it before entering the threadloop and
+de-allocate it after leaving:
+
+     Code => q{
+         /* allocate system resource */
+         threadloop %{
+             /* use system resource */
+         %}
+         /* Free system resource */
+     },
+
+To put this all together, I am going to consider writing a PDL::PP function
+that computes the first numerical derivative of a time series. You can read
+about finite difference formulas here:
+L<http://en.wikipedia.org/wiki/Numerical_differentiation>. Normally, finite
+difference formulas result in a numerical derivative with one less point
+than the original time series. Since I have not discussed how to
+set a return dimension with a calculated size, I'm going to use a slighly
+modified numerical derivative. The derivatives associated with the first
+and last points will be calculated using the right and left finite
+differences, respectively, whereas the points in the middle will be calculated
+using a centered-difference formula. I'll run this function on the sine
+wave and compare the results with the actual derivative of the sine wave,
+which is the cosine wave. I've marked a couple of points in the code for
+the discussion that follows.
+
+=for listing my-sine-derivative
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ # Create some sine data:
+ my $h = 0.3;
+ my $sine = sin(sequence(10) * $h);
+ my $derivative = $sine->my_first_derivative($h);
+ my $cosine = cos(sequence(10) * $h);
+ 
+ print "The difference between the computed and actual derivative:\n"
+    , $derivative - $cosine, "\n";
+ 
+ __END__
+ 
+ __Pdlpp__
+ 
+ pp_def('my_first_derivative',
+     Pars => 't_series(n); step(); [o] derivative(n)',
+     Code => q{
+         int N = $SIZE(n);
+         threadloop %{
+             /* Derivative for i = 0 */
+             $derivative(n => 0)
+                 = ($t_series(n => 1) - $t_series(n => 0))
+                     / $step();
+             /* Derivatives for 1 <= i <= N-2 */
+             /* (Point 1) */
+             loop (n) %{
+                 /* Skip the first and last elements (Point 2) */
+                 if (n == 0 || n == N - 1) {
+                     /* (Point 3) */
+                     continue;
+                     
+                 }
+                 /* (Points 4 and 5) */
+                 $derivative()
+                     = ($t_series(n => n+1) - $t_series(n => n-1))
+                         / 2.0 / $step();
+             %}
+             /* Derivative for i = N-1 */
+             $derivative(n => N-1)
+                 = ($t_series(n => N-1) - $t_series(n => N-2))
+                     / $step();
+         %}
+     },
+ );
+
+The output on my machine looks like this:
+
+The difference between the computed and actual derivative:
+[-0.014932644 -0.0142657 -0.012324443 -0.0092822807 -0.0054109595
+  -0.0010562935 0.0033927281 0.0075386874 0.011011238 0.077127808]
+
+These differences are fairly small, four times smaller than the (fairly
+large) step size. And if I decrease the size of C<$h> by 2, these errors
+should get smaller by a factor of 4 except at the endpoints. Not bad.
+
+But what we really care about is the code, which uses a number of tricks I
+haven't discussed yet. Let's run through each point in turn.
+
+=over
+
+=item point 1, a sub-optimal example
+
+The code within this loop does C<not> actually compute results for all indices
+from zero to N-1. As such, I should use a for loop that starts from 1 and
+runs to N-2. I dislike it when bad examples are used for pedagogical reasons,
+but that's what I'm going to do here. Sorry.
+
+=item point 2, a useful register
+
+The actual C code that gets generated by the C<loop> construct creates a
+register variable called C<n> within the scope of the loop block. Thus, we
+can access the current value of C<n> from within the loop by simply using
+that value in our code. I do that in this C<if> statement and in the memory
+accesses later.
+
+=item point 3, C looping commands
+
+The C<loop> construct creates a bona-fide C C<for> loop, so you can use
+C<break> and C<continue>, just like in a real C C<for> loop.
+
+=item point 4, explicit dimension values within a loop block
+
+When we C<loop> over C<n>, it saves you keystrokes in your memory access by
+making it unnecessary to specify C<n>. This is exploited when I say
+C<$derivative()> without specifying a value for C<n>. However, we can
+override that value for C<n> within the loop by explicitly specifying it,
+which is what I do with C<$t_series(n => n-2)>.
+
+=item point 5: which n?
+
+Look closely at the access statements for C<$t_series>:
+
+ $t_series(n => n-1)
+
+PDL::PP parses this as
+
+ $ <pars-variable-name> ( <dimension-name> => <value>,
+                          <dimension-name> => <value>,
+                          ...
+                        )
+and replaces it with a direct array access statement. In this statement,
+the C<n> on the left side of the fat comma (the C<< => >>) is the name of
+the dimension. The C<n> on the right side of the fat comma is part of a C
+expression and is not touched by PDL::PP. That means that the C<n> on the
+right side refers to the C variable C<n>. This makes two uses of the same
+token, C<n>, which can be a bit confusing. I'm not suggesting that this is
+a best practice, but it is a possible practice which may be useful to you.
+So now you know.
+
+=back
+
+In the above section I have explained how to use C<loop> and C<threadloop>
+to control how PDL::PP presents data to your code, and to control which
+sections of code PDL::PP threads over. I have also shown you how to access
+specific memory locations when you have vector representations of your data.
+
+=head2 Exercise Set 2
+
+=over
+
+=item 1. Matrix Multiplication, Fixed
+
+I noted above that my code for the matrix multiplication is incorrect and I
+explained why. Changing nothing more than the C<Pars> section, fix this code
+so that it performs proper matrix multiplication.
+
+=item 2. Threading Engine Tricks
+
+The function C<my_sumover> uses a C<loop> construct, so it only operates on
+individual rows. What if you wanted to perform the sum an entire matrix?
+Using Perl level operations, find a way to manipulate the incoming piddle
+so that you can call C<my_sumover> to get the sum over the entire matrix.
+Bonux points if the same technique works for higher dimensional piddles.
+
+=item 3. Cumulative Sum
+
+Modify C<my_sumover> to create a function, C<my_cumulative_sum>,
+which returns the cumulative sum for each row. By this I mean that it would
+take the input such as (1, 2, 3, 4) and return (1, 3, 6, 10), so that each
+element of the output corresponds to the sum of all the row's elements up
+to that point.
+
+=item 4. Full Cumulative Sum
+
+Take your code for C<my_cumulative_sum> and modify it so that it returns the
+cumulative sum over the entire piddle, regardless of the piddle's dimension.
+Your resulting code should not have any C<loop> constructs.
+
+=back
+
+=head1 Recap
+
+In this chapter, I've covered the very basics of using PDL::PP to write
+fast, versatile code. I have covered much less material than I had hoped,
+and I hope to expand this chapter in the coming months. Nonetheless, I hope
+and believe it will serve as a good starting point for learning PDL::PP, and
+I expect it will give you enough to dig into the PDL::PP documentation.
+
+Good luck, and happy piddling!
+
+=head1 Appendix A: Installing Inline::Pdlpp
+
+The PDL installation always installs L<Inline::Pdlpp>, but that does not
+mean it works for you because L<Inline> is not actually a prerequisite for
+PDL. The good news is that once you have installed L<Inline>, L<Inline::Pdlpp>
+will work automatically.
+
+To begin, you will need to have access to the C compiler that compiled your
+copy of Perl. On Mac and Linux, this amounts to ensuring that the developer
+tools that contain C<gcc> are installed on your system. On Windows, this will
+depend on your flavor of Perl. I personally have excellent experience working
+with Strawberry Perl, which ships with a working C compiler, but you can also
+work with Visual C or Cygwin. If you run into trouble, contact the PDL
+mailing list for help.
+
+If you are on Linux, you can probably install L<Inline> using your package
+manager. If you are not on Linux or you do not have administrative privileges,
+you will have to install L<Inline> using CPAN. To do this, enter the following
+commands at your console:
+
+ > cpan Inline
+
+This will likely ask you a few questions during the installation, so do not
+walk away to get a cup of coffee and expect it to be done.
+
+Once that's installed, you should be ready to work with the examples.
+
+=head1 Appendix B: Solutions to Exercises
+
+=head2 Excercise Set 1
+
+=over
+
+=item 1. Slices
+
+=for listing exercise-slices
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ use PDL::NiceSlice;
+ 
+ # Create $a
+ my $a = sequence(5);
+ print "a is $a\n";
+ 
+ # Create $b as a five-element slice from a sequence:
+ my $idx = pdl(1, 2, 7, 4, 8);
+ my $b = sequence(20)->index($idx);
+ print "b is $b\n";
+ 
+ print "printout_sum(a, b) says:\n";
+ $a->printout_sum($b);
+ 
+ no PDL::NiceSlice;
+ 
+ __END__
+ 
+ __Pdlpp__
+ pp_def('printout_sum',
+     Pars => 'a(); b()',
+     Code => q{
+         printf("%f + %f = %f\n", $a(), $b(), $a() + $b());
+     },
+ );
+
+=item 2. Threading
+
+=for listing exercise-threading
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ my $a = sequence(5);
+ print "a is $a\n";
+ my $b = sequence(5,3);
+ print "b is $b\n";
+ 
+ print "a + b = ", $a + $b, "\n";
+ 
+ print "printout_sum(a, b) says:\n";
+ $a->printout_sum($b);
+ 
+ __END__
+ 
+ __Pdlpp__
+ pp_def('printout_sum',
+     Pars => 'a(); b()',
+     Code => q{
+         printf("%f + %f = %f\n", $a(), $b(), $a() + $b());
+     },
+ );
+
+=item 3. Orthogonal Piddles
+
+=for listing exercise-orthogonal
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ 
+ my $a = sequence(5);
+ print "a is $a\n";
+ my $b = sequence(1,3);
+ print "b is $b\n";
+ 
+ print "a + b = ", $a + $b, "\n";
+ 
+ print "printout_sum(a, b) says:\n";
+ $a->printout_sum($b);
+ 
+ __END__
+ 
+ __Pdlpp__
+ pp_def('printout_sum',
+     Pars => 'a(); b()',
+     Code => q{
+         printf("%f + %f = %f\n", $a(), $b(), $a() + $b());
+     },
+ );
+
+=item 4. Varying Input Order
+
+Different input order would be like this:
+
+ Pars => '[o] sum(); left(); [o] diff(); right()';
+ Pars => '[o] sum(); [o] diff(); left(); right()';
+
+The only consistency here is that C<sum> always comes before C<diff>, and
+C<left> always comes before right.
+
+=item 5. Supplyling Outputs in the Function Call
+
+For a C<Pars> key like this:
+
+ Pars => 'left(); right(); [o] sum(); [o] diff()';
+
+You can call the function like this:
+
+ my ($sum, $diff) = $left->my_sum_and_diff($right);
+ 
+ my ($sum, $diff);
+ $left->my_sum_and_diff($right
+     , ($sum = PDL::null), ($diff = PDL::null));
+ 
+ my $sum = $left->zeroes;
+ my $diff = PDL::null;
+ $left->my_sum_and_diff($right, $sum, $diff);
+
+For the latter calling convention, the function returns nothing (rather than
+C<$sum> and C<$diff>). When you supply a null piddle (as in the middle
+example) or you call the function with the input piddles only (as in the
+first example), PDL will allocate memory for you. As demonstrated with the
+last example, you can supply a pre-allocated piddle, in which case PDL will
+B<not> allocate memory for you. This can be a performance issue when you
+regularly call functions 
+
+=back
+
+=head2 Exercise Set 2
+
+=over
+
+=item 1. Matrix Multiplication, Fixed
+
+The corrected C<Pars> section should look like this:
+
+ Pars => 'left(m,n); right(p,m); [o] output(n,p)',
+
+=item 2. Threading Engine Tricks
+
+The key is to use C<clump(-1)>:
+
+ my $matrix = sequence(2,4);
+ my $result = $matrix->clump(-1)->my_sumover;
+
+=item 3. Cumulative Sum
+
+=for listing exercise-cumulative-sum
+
+ use strict;
+ use warnings;
+ use PDL;
+ use Inline 'Pdlpp';
+ my $a = sequence(10);
+ print "Cumulative sum for a:\n";
+ print $a->my_cumulative_sum;
+ my $b = grandom(10,3);
+ print "\nCumulative sum for b:\n";
+ print $b->my_cumulative_sum;
+ 
+ __END__
+ 
+ __Pdlpp__
+ 
+ pp_def('my_cumulative_sum',
+     Pars => 'input(n); [o] output(n)',
+     Code => q{
+         double cumulative_sum;
+         threadloop %{
+             cumulative_sum = 0.0;
+             loop (n) %{
+                 cumulative_sum += $input();
+                 $output() = cumulative_sum;
+             %}
+         %}
+     }
+ );
+
+=item 4. Full Cumulative Sum
+
+ pp_def('my_full_cumulative_sum',
+     Pars => 'input(); [o] output()',
+     Code => q{
+         double cumulative_sum = 0.0;
+         threadloop %{
+             cumulative_sum += $input();
+             $output() = cumulative_sum;
+         %}
+     }
+ );
+
+=back
+
+=head1 AUTHOR, COPYRIGHT
+
+David Mertens <dcmertens.perl@gmail.com>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2011 David Mertens. All rights reserved.
+
+This is free documentation; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=cut
