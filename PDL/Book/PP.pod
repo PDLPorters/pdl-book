@@ -1,21 +1,23 @@
 =head1 The PDL PreProcessor
 
-The PDL PreProcessor, or PDL::PP, is PDL's secret weapon. With PDL::PP, you
-get support for bad values. Because of PDL::PP, you can easily generate code
-that threads over extra dimensions. Slices operate as first-class piddles in
-your Perl code because they are first-class piddles in PDL::PP code.
+The PDL PreProcessor, or PDL::PP, is PDL's secret weapon. With
+PDL::PP, you can quickly and easily implement new "primitive" compiled
+C-language PDL functions that follow the PDL threading rules, without
+having to write tedious loops. or glue code.  You can write simple
+computations with zero or more active dimensions (see
+L<PDL::Book::Threading>), write functions that contain a mix of Perl
+and compiled code, and/or generate output PDLs that remain linked to
+the source PDL in trivial or nontrivial ways.
 
-Before getting any further, I want to acknowledge that Tuomas J. Lukka,
-Karl Glaazebrook, and Christian Soeller are (to the best of my knowledge)
-the original architects of PDL::PP. Contributions have come from others. My
-own work in the code of PDL::PP has been minimal, mostly working on bug
-fixes, better error reporting, and general code cleanup. However, I have
-used PDL::PP extensively and have learned quite about about the nuances of
-using it. I hope to expand this introduction in the coming months to include
-many of the insights that I have gained through my use and analysis of
-PDL::PP. However, at the moment it serves only as an introduction to the
-topic. After reading this, you should have a firm grasp on the basics of
-using PDL::PP and the full documentation should be fairly easy to follow.
+The PDL::PP module is a preprocessor that accepts a metalanguage
+("PP") and emits both Perl and XS code.  PDL::PP is not generally
+invoked directly by you, the coder, at run time -- it is invoked by
+make(1) as part of module compilation under the control of MakeMaker,
+or by Inline::PP as part of inline compilation of snippets of PP.
+
+After reading this introduction, you should have a firm grasp on the
+basics of using PDL::PP and the full documentation in the PDL::PP man
+page should be fairly easy to follow.
 
 Note that the vast majority of these examples are tested and should work by
 simply pasting them directly into a text editor. The only correction you
@@ -28,6 +30,21 @@ underscores.
 In this section I discuss the basics of writing PP code using C<pp_def>.
 I will use L<Inline::Pdlpp> for all of my examples, including this first
 one. If you need help getting L<Inline::Pdlpp> to work, see Appendix A.
+
+PP code generally consists of a collection of function declarations
+that produce new Perl functions in the "PDL" package.  Each declaration is
+implemented by a (Perl language) call to a PDL::PP method such as C<pp_def>,
+that sets up data structures within the PDL::PP module.  The makefile 
+ultimately causes these data structures to be emitted as both Perl code and as
+C/PerlXS code, then to be compiled and linked to create the operator in the
+PDL package.
+
+C<pp_def> accepts a collection of parameters that describe both the 
+way the new operator should interact with the threading engine (e.g.
+its dimensional signature and which data types it should support natively),
+and also the code for the core of the 
+
+=head1 Getting Started 
 
 =head2 First Example
 
