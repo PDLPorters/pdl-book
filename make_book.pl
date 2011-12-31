@@ -56,6 +56,8 @@ foreach (split " ",$book_chapters) {
         next;
     }
 
+###    $chapter = "test_book.tmp";
+
     # filter on each chapter to put in O<image.png> tags
     print "Found $chapter...";
 
@@ -63,11 +65,24 @@ foreach (split " ",$book_chapters) {
 
     while (<FIN>) {
 
-        if (/^=for html .*\"(.*)\">/) {
-            print FOUT "O<".$book_dir."$1>\n";
-#### uncomment next line to see how the regex did
-####            print "O<".$book_dir."$1>\n";
-        } else { print FOUT; }
+        my $whole_line = "";
+        if (/^=for html/) { # now push on non-empty lines until finished
+
+            chomp;
+            $whole_line = $_;
+
+            # ugly, but it works
+            while(1) {
+                $_ = <FIN>; chomp;
+                last if ($_ =~ /^$/); # match blank lines
+                $whole_line = $whole_line . $_;
+            }
+
+            $whole_line =~ /.*src=\"(.*)\">/; # search for quoted image filename
+            print FOUT "O<" . $book_dir . "$1>\n\n";
+
+       } else {print FOUT $_;}
+
     }
 
     close(FIN);
