@@ -1,0 +1,57 @@
+=for comment
+:!podchecker Creating.pod && pod2html --infile=Creating.pod --outfile=Creating.html
+open Creating.html and click 'reload'
+also
+conversion for PDF reading is:
+pod2pdf Creating.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file Creating.pdf
+
+=head1 Creating Piddles
+
+Creation of new piddles has to be done via a PDL function. Otherwise Perl doesn't know the variable has PDL magic.
+
+The simplest method for small piddles is to use the pdl function which can accept numbers and lists of numbers, as well as other piddles:
+
+   $a = pdl (1,2,3,4,5);                  # Create 1D piddle
+   $a = pdl ([1,2,3,4,5], [2,3,4,5,6]);   # Create 2D piddle
+   $a = pdl 42;                           # Create 0D (scalar) piddle
+
+The numbers are specified using Perl's `[]' list reference syntax. See the help on pdl for more details. It is not normally necessary to worry about converting single numbers (Perl 'scalars') to piddles -- all PDL functions will do this on-the-fly. So you can say:
+
+   $a = pdl (1,2,3,4,5); 
+   $b = $a + 2;
+
+without having to care whether `2' is a piddle or not. The result, $b, is a piddle of course.
+
+Of course if you are a heavy-duty PDL user your piddles will be BIG. Thus you will need to use a PDL I/O function to read your data from a file in some format. For example, in Chapter 1 we used rfits:
+
+  $a = rfits "fixed_gal.fits";
+
+rfits is a PDL function which reads the data and returns it as a piddle. Another useful function is rcols which reads columns of data from a text file:
+
+  ($a, $b) = rcols 'text.dat';
+
+It is actually surprisingly easy to write these I/O functions -- most of the code for rfits is straight forward Perl. PDL comes with a plethora of I/O functions for reading free-formatted data, raw binary formats and specially defined formats like FITS and GIFs.
+
+Another way of creating BIG piddles is using functions such as zeroes. This creates piddles, filled with zeroes, of whatever dimensions you specify:
+
+   $a = zeroes 10;      # 10 element 1D piddle
+   $a = zeroes 100,100; # 100x100 2D piddle
+   $a = zeroes 3,4,5,6  # 3x4x5x6 4D piddle
+
+Or you can use another piddle as a template for the dimensionaligy:
+
+   $a = zeroes $b;
+
+Other creation functions like random and rvals work in this way.
+
+=head1 Credits
+
+Original text from "PDL - Scientific Programming in Perl" (2001) Chap. 1
+
+Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian SoÌˆller,
+Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
+Doug Hunt, Tim Pickering.
+
+Modified to LyX by Chris Marshall for PDL 2.4.3, December 2006.
+
+Converted to POD format by Mike Burns, May 2010.
