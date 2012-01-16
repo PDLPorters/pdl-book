@@ -1,0 +1,34 @@
+=head1 PDL Book Credits
+
+Several separate sources of material have been used to make this 2012
+version of the PDL Book. The biggest source of material has been ``PDL -
+Scientific Programming in Perl'', written in 2001 and added to over the
+past decade by Karl Glazebrook, Christian Soller, Tuomas J.  Lukka, Marc
+Lehmann, Jarle Brinchmann, Doug Hunt, John Cerney, Robin Williams and
+Tim Pickering.
+
+The original source was written in LaTeX and LyX, which allowed
+embedding of figures in the document. However, this has presented a
+small hurdle for other authours to add their own material. With this in
+mind, Matthew Kenworthy set about converting one chapter of the PDL book
+into POD to see what could be done, and the result didn't look too bad
+at all. Although this may seem to be a step back from the finer
+formatting of LaTeX, tags can be included in POD so that the basic
+documentation is readable at the command line, and there are enough
+filters to provide clean output in HTML and PDF formats.
+
+Several other people have carried out conversion of the original book
+and figures into POD, and others have also contributed original new
+material for the PDL Book.
+
+In alphabetical order, we have:
+
+Karl Glazebrook
+
+Matthew Kenworthy
+
+David Mertens
+
+XXX TO ADD MORE
+
+

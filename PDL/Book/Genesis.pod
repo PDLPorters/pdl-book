@@ -1,0 +1,280 @@
+=for comment
+:!podchecker chap0.pod && pod2html --infile=chap0.pod --outfile=chap0.html
+open chap0.html and click 'reload'
+also
+conversion for PDF reading is:
+pod2pdf chap0.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file chap0.pdf
+
+=for comment
+Converted from Latex to POD by Karl Glazebrook 5/Jan/2012, grep for 'XXX' for conversion comments.
+
+=head1 The Beginnings of PDL
+
+I<"Why is it that we entertain the belief that for every purpose odd
+numbers are the most effectual?" - Pliny the Elder.>
+
+The PDL project began in February 1996, when I decided to experiment
+with writing my own 'Data Language'.  I am an astronomer. My day job
+involves a lot of analysis of digital data accumualated on many nights
+observing on telescopes around the world. Such data might for example be
+images containing millions of pixels and thousands of images of distant
+stars and galaxies. Or more abstrusely, many hundreds of digital
+spectral revealing the secrets of the composition and propertues of
+these distant objects.
+
+Obviously many astronomers before have dealt with these problems, and a
+large amount of software has been constructed to facilitate their
+analysis. However, like many of my colleagues, I was constantly
+frustrated by the lack of generality and flexibility of these programs
+and the difficulty of doing anything out of the ordinary quickly and
+easily. What I wanted had a name: 'Data Language', i.e. a language which
+allowed the manipulation of large amounts of data with simple arithmetic
+expressions.  In fact some commericial software worked like this, and I
+was impressed with the capabilities but not with the price tag. And I
+thought I could do better.
+
+As a fairly computer literate astronomer (read 'nerd' or 'geek'
+according to your local argot) I was very familiar with 'Perl', a
+computer language which now seems to fill the shelves of many bookstores
+around the world. I was impressed by it's power and flexibility, and
+especially it's ease of use.  I had even explored the depths of it's
+internals and written an interface to allow graphics - the PGPLOT module
+(The PGPLOT module for perl is an interface to the pgplot graphics
+library (written in C and Fortran) created by Tim Pearson of Caltech.
+More information about this library can be obtained from:
+L<http://astro.caltech.edu/~tjp/pgplot/>). The ease with which I could
+then create charts and graphs, for my papers, was refreshing.
+
+Version 5 of Perl had just been released, and I was fascinated by the
+new features available. Especially the support of arbitrary data
+structures (or 'objects' in modern parlance) and the ability to
+'overload' operators --- i.e. make mathematical symbols like B<+-*/> do
+whatever you felt like.  It seemed to me it ought to be possible to
+write an extension to Perl where I could play with my data in a general
+way: for example using the maths operators manipulate whole images at
+once.
+
+Well one slow night at an observatory I just thought I would try a
+little experiment.  In a bored moment I fired up a text editor and
+started to create a file called C<PDL.xs> - a Perl extension module to
+manipulate data vectors. A few hours later I actually had something half
+decent working, where I could add two images in the Perl language,
+B<fast>! This was something I could not let rest, and it probably cost
+me one or two scientific papers worth of productivity. A few weeks later
+the Perl Data Language version 1.0 was born. It was a pretty bare
+infant: very little was there apart from the basic arithmetic operators.
+But encouraged I made it available on the Internet to see what people
+thought.
+
+Well people were fairly critical - among the most vocal were Tuomas
+Lukka and Christian Soeller. Unfortunately for them they were both Perl
+enthusiasts too and soon found themselves improving my code to implement
+all the features they thought PDL ought to have and I had heinously
+neglected. PDL is a prime example of that modern phenomenon of authoring
+large free software packages via the Internet. Large numbers of people,
+most of whom have never met, have made contributions ranging for core
+functionality to large modules to the smallest of bug patches. PDL
+version 2.0 is now here (though it should perhaps have been called
+version 10 to reflect the amount of growth in size and functionality)
+and the phenomenon continues.
+
+I firmly believe that PDL is a great tool for tackling general problems
+of data analysis. It is powerful, fast, easy to add too and freely
+available to anyone.  I wish I had had it when I was a graduate student!
+I hope you too will find it of immense value, I hope it will save you
+from heaps of time and frustration in solving complex problems. Of
+course it can't do everything, but it provides the framework, the
+hammers and the nails for building solutions without having to reinvent
+wheels or levers.
+
+I<   - Karl Glazebrook, Sydney, Australia. 4/March/1999>
+
+=head2 The case for a high-level approach
+
+We've all been there. You know how you want to analyse your data. You
+need to Fourier transform it, take the square root, multiply by a
+high-pass filter and sum up all the high frequence modes. But it's two
+in the morning and you are staring at the guts of your C or FORTRAN
+program trying to figure out why your program keeps crashing with array
+overflow errors. You know these problems have been solved individually
+innumerable times in the past, carefully written subroutines are
+available to do it. Why should it be so difficult?
+
+The reason is though subroutines are available low-level languages still
+force a lot of complexity on you. You must manage memory yourself,
+declare variables however trivial, call subroutines with a whole bunch
+of arguments in case just one of them is needed, etc. And you must be
+able to pull together seperate subroutine libraries to do file
+input/output, user interaction, data processing and graphics.
+
+Whereas all you really want to do is tell the computer things like 'read
+this', 'Fourier transform that', and 'Plot this', and have it be smart
+enough to do the right thing. What you are wishing for is in effect a
+high-level language, in this case it is called 'English'.
+
+While natural language understanding is still quite a long way off,
+high-level computer languages are currently proliferating. Examples
+include Perl, TCL, JAVAscriptm, Visual Basic, Python, and many more.
+Such systems have also been developed for data processing. Worthy of
+note are commericial software such as C<IDL> ('Image Data Language' from
+Research Systems Inc.L<http://www.rsinc.com>), C<MATLAB> (from The
+Mathworks, Inc. L<http://www.mathworks.com>) and the public domain
+program C<Octave> L<http://www.octave.org>.  These implement
+special-purpose high-level languages where data is handled in large
+chunks, via 'vector operations'. 
+
+What does this mean in practice? It means if you say:
+
+   C=A+B  
+
+then the operation is performed even if C<A> and C<B> are large arrays
+containing many millions of numbers. Further you can say something like:
+
+   D=FFT(C) 
+
+(to apply a Fast Fourier Transform) and get what you want. No messing
+about. These data analysis languages also implement nice graphics
+layers, as well as a large suite of mathematical algorithms.
+
+Having used these systems ourselves the authors of PDL can attest to the
+superiority of that approach in terms of plain getting things done. We
+of course believe that PDL is now better than all those systems, for
+quite a few reasons, and that your life will be easier if you get it and
+use it.
+
+=head2 The case for a free Data Language
+
+The free software community has taken off to an extraordinary extent in
+the few years. This has been most vivid in the success of the Linux, a
+free UNIX-like Operating System. Sometimes this movement is also
+described as 'Open Source' rather than 'free,' and the term 'free' is
+often used to mean freedom of use rather than freedom from price.
+Athough much of the code is indeed free/public domain money is made out
+of the sale of packaged distributions, support, books, etc.
+Nevertheless the software is usually available at minimal cost.
+
+One key point is that the source code is available, so that however the
+software is obtained one has the ability to take it and in principle be
+able to change it to do whatever is required with it.
+
+How is this relevant to data languages? The authors of PDL are all
+scientists. We write, obviously, as scientists but believe our ideas are
+directly relevant to all users of PDL.  The scientific community has for
+hundreds of years believed in the free exchange of ideas. It has been
+traditional to publish I<full details> about how research is done openly
+in journals. This is very close in spirit to the ideas behind the free
+software. These days much of what scientists do involves software, in
+fact large software packages to facilitate certain kinds of analysis are
+often the subject of major papers themselves with the software being
+freely available on the Internet. Such software is commonly written in C
+or FORTRAN to allow general use.
+
+Why aren't they working at a higher level? As we explained above this
+would allow faster creation and make the software more portable and more
+easily customisable. Well in our view one of the reasons this has not
+happened is because of the lack of a suitable free high-level
+data-centric language, with powerful enough facilities. 
+
+This is not just a minor point, it is critical. Even if software is not
+published and is for internal use among a team of researchers, in the
+modern world the team is often distributed among dozens of individuals
+across many instititutes and nations. The only way to ensure that all
+will be able to use software is if  it is freely available. All the PDL
+authors have had direct experience with this problem in the past. We
+have often been hindered in sharing our code by collaborators having
+lack of access to software.
+
+Moreover scientific work often involves extensive innovations and
+modifications to old ways of doing things. For software as well as being
+freely available it is critical to have access to the source code to
+permit easy customisation.
+
+Finally there I<is> also the issue of cost. Equivalent commercial
+packages cost several thousand dollars per workstation. We are not
+anti-commericial, these packages are very powerful and useful. However
+we certainly think there should be something like PDL that I<anybody>
+can use and develop for free. Science is a worldwide activity and we
+like to think that anybody with a PC could use PDL to do research and
+analysis.
+
+In our view PDL - a free, public domain, Open Source, data language -
+meets a great need. Today it is openly developed by a group of several
+dozen people collaborating via the Internet. Anybody with time,
+expertise or dedication can contribute to improving PDL.
+
+=head2 So why Perl?
+
+So we chose Perl as our implementation language. Our basic data language
+extensions could have been built around quite a few high-level languages
+so why did we choose Perl? {Of course the real reason we chose Perl was
+because we were using it already and liked it a lot. These 'reasons' are
+really 'compelling rationalisations'!)
+
+=over
+
+=item 1.
+
+We need a high-level language which looks after messy details for the user.
+This of course is why we don't want to use C or FORTRAN.
+
+=item 2.
+
+The language should be a commonly used and widely available on
+many platforms and with a good chance that you already use it for something
+else. Like the reader, the authors get tired of constantly have to learn
+new languages.
+
+=item 3.
+
+For the system to be fast and interactive the language should be able
+to run in an interpreted mode, i.e. commands typed can be instantly executed
+without having to mess around with compiling and linking. Most high-level
+languages offer this.
+
+=item 4.
+
+The language must be Open Source (i.e. free, in the public domain and
+with the source code freely available and redistributable) as we wish
+our data language to be Open Source too. Why? So people can use it
+without restrictions, share their code, make improvements to the core
+language as well as extensions. 
+
+=item 5.
+
+The language must offer a full suite of modern features. Users of PDL
+don't just need access to numerical and graphics features. They also
+want quick and convenient access to databases, network connectivity, the
+World Wide Web, Object-Oriented and modular programming, graphical user
+interfaces, multi-process and multi-processor interactions, text
+handling, the list could go on for several more sentences. In fact none
+of the data languages mentioned above have all these features, in
+particular the commercial systems are hampered in their access to these
+features by their propritary nature and specialist syntax. We think it
+is easier to add numerical features to a robust language which has all
+these other features than to do it the other way around.
+
+=item 6.
+
+The language must have a clean and well-documented way of incorporating
+new subroutines, in low-level languages such as C and Fortran, in to the
+core. First this lets us implement PDL, secondly it allows diverse
+groups of people to create their own PDL modules and include compiled
+code with their own specialist subroutines.
+
+=item 7.
+
+The language must be very easy to use, with a reasonably familiar syntax
+to new users. To some extent this item and the previous one are
+contradictory. For example the Python language, which is admirable
+for it's sophisticated and clean Object-Oriented model, meets all
+the above requirements. Indeed their is already a numerical extension
+- NumPy (L<http://numpy.scipy.org/>). However in our 
+view the syntax is a bit too strange for
+new users. We prefer a language where simple code can still achieve useful
+results and which grows with the user. We recognise of course that much
+of this is just a matter of preference. NumPy snd SciPy have grown into
+a well supported set of modules, so if you are into Python, go on and
+use them!
+
+=back
+

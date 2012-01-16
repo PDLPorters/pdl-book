@@ -1,0 +1,72 @@
+=for comment
+podchecker Contents.pod && pod2html -noindex Contents.pod > Contents.html
+open Contents.html
+
+=head1 Contents of the PDL Book
+
+Here is the table of contents and suggested reading order for the PDL
+Book.
+
+=head2 Table of Contents
+
+=over
+
+=item L<PDL::Book::FirstSteps|PDL::Book::FirstSteps> Trying out PDL for the first time.
+
+=item L<PDL::Book::Piddle|PDL::Book::Piddle> What is a PDL object?
+
+=item L<PDL::Book::Creating|PDL::Book::Creating> Basic Operations to make PDLs
+
+=item L<PDL::Book::NiceSlice|PDL::Book::NiceSlice> Cutting out bits of a PDL
+
+=item L<PDL::Book::Functions|PDL::Book::Functions> Writing your own functions for PDL
+
+=item L<PDL::Book::Threading|PDL::Book::Threading> Threading and Getting rid of FOR loops
+
+=item L<PDL::Book::PGPLOT|PDL::Book::PGPLOT> Graphics with PGPLOT
+
+=item L<PDL::Book::PLplot|PDL::Book::PLplot> Graphics with PLplot
+
+=item L<PDL::Book::TriD|PDL::Book::TriD> 3D Graphics with TriD
+
+=item L<PDL::Book::Transform|PDL::Book::Transform> Rotating, Scaling and Translating with PDL::Transform
+
+=item L<PDL::Book::Complex|PDL::Book::Complex> Complex Numbers
+
+=item L<PDL::Book::Pthreads|PDL::Book::Pthreads> Parallel Computations with pthreads
+
+=item L<PDL::Book::PP|PDL::Book::PP> Getting C routines into PDL with PDL::PP
+
+=item L<PDL::Book::Genesis|PDL::Book::Genesis> A history lesson on PDL from the creator, Karl Glazebrook.
+
+=item L<PDL::Book::Credits|PDL::Book::Credits> Credits for the Book
+
+=back
+
+=head2 Suggested Reading Orders
+
+We assume you know Perl, but that you are new to PDL.
+
+First, try out the PDL command line by going through FirstSteps. PDL has
+several ways of displaying two-dimensional images and producing
+publication quality plots, and so we have PGPLOT and PLplot for
+producing two dimensional plots either in a computer window or as
+written file formats (PostScript, PNG, JPEG and more), and we also have
+the capability to produce three dimensional plots in TriD.
+
+The power of PDL is in the ability to carry out threading (known as
+broadcasting in Python) over N-dimensional PDLs. When you code with
+threading you eliminate the multiple FOR loops that are the source of
+many slow-downs in code. Reading Threading and Functions will get you up
+to speed and in the right mind-set.
+
+If you require the speed of C routines in your PDL code, there is also
+the powerful PDL:PP capability of PDL - you can write C code INLINE in
+your PDL code, and it will be compiled and run when you call your
+Perl/PDL scripts!
+
+PDL is primarily used by scientists who want access to Scientific
+libraries and data types, so we have Complex numbers handled by PDL and
+the capabilities of PDL::Transform, the Slatec libraries accessible in
+PDL::Slatec, and any other libraries that you can access through Perl.
+
