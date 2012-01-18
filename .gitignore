@@ -5,3 +5,5 @@
 *.pdf
 # no temp files from pod2html
 *.tmp
+# tmp mac finder dirs
+*DS_Store

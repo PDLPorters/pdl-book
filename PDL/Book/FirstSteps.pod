@@ -94,7 +94,7 @@ mean it is very similar to C and FORTRAN in how expressions are constructed.
 how much C code would be required to generate the same display, even given
 the existence of some convenient graphics library.
 
-=for html <img WIDTH=400 src="Figures/whirl-sync.png">
+=for html <img WIDTH=400 src="firststeps/whirl-sync.png">
 
 Figure 1.1: A two dimensional C<sin>  function.
 
@@ -184,7 +184,7 @@ Let's look at M51:
 
  imag $a;
 
-=for html <img WIDTH=400 src="Figures/whirl-m51a.png">
+=for html <img WIDTH=400 src="firststeps/whirl-m51a.png">
 
 Figure 1.2: The raw image C<m51_raw.fits> from the I<PDL Book example data set> shown with 
 progressively greater  contrast using the C<imag> command.
@@ -225,7 +225,7 @@ This is shown in Fig. 1.3. Because the image is of a uniform field,
 the actual image reflects the detector sensitivity. To correct our M51
 image, we merely have to divide the image by the flatfield:
 
-=for html <img WIDTH=400 src="Figures/whirl-flat.png">
+=for html <img WIDTH=400 src="firststeps/whirl-flat.png">
 
 Figure 1.3: The 'flatfield' image showing the detector sensitivity of the raw data.
 
@@ -245,7 +245,7 @@ perl arrays rather than piddles it would be about ten to twenty times slower
 (and use ten times more memory). In fact we can
 do whatever arithmetic operations we like on image piddles:
 
-=for html <img WIDTH=400 src="Figures/whirl-flattened.png">
+=for html <img WIDTH=400 src="firststeps/whirl-flattened.png">
 
 Figure 1.4: The M51 image corrected for the flatfield.
 
@@ -303,7 +303,10 @@ Remember C<rvals>? It replaces all the pixels in an image with it's distance fro
   $mask = $r<50;
   imag $mask;
 
-=for html <img WIDTH=400 src="Figures/whirl-mask.png">
+=for html <img WIDTH=400 src="firststeps/whirl-maska.png">
+=for html <img WIDTH=400 src="firststeps/whirl-maskb.png">
+=for html <img WIDTH=400 src="firststeps/whirl-maskc.png">
+=for html <img WIDTH=400 src="firststeps/whirl-maskd.png">
 
 Figure 1.5: Using  C<rvals> to generate a mask image to isolate the galaxy bulge 
 and disk>    B<XXX need to mosaic PNGs and add labels> 
@@ -410,7 +413,7 @@ by the 'Full Width Half Maximum' (FWHM) - or in plain terms how
 fat the profile is across when it drops by half. Looking at Figure 1.6
 it looks like this is about 2-3 pixels - pretty compact!
 
-=for html <img WIDTH=400 src="Figures/whirl-starradial.png">
+=for html <img WIDTH=400 src="firststeps/whirl-starradiala.png">
 
 Figure 1.6: Radial light profile of the bright star with fitted curve.
 
@@ -504,7 +507,8 @@ as a feature!). Using the C<PDL::Graphics::TriD> library
 which does OpenGL graphics we can look at our simulated
 star in 3D (Figure 1.7(b)):
 
-=for html <img WIDTH=400 src="Figures/whirl-starsim.png">
+=for html <img WIDTH=400 src="firststeps/whirl-starsima.png">
+=for html <img WIDTH=400 src="firststeps/whirl-starsimb.png">
 
 Figure 1.7: Two different views of the 2D simulated Point Spread Function. B<XXX need to mosaic the panels>
 
@@ -575,7 +579,7 @@ and quite like C except that the entities being manipulated here are entire
 arrays of data, not single numbers. The result is shown, for amusement,
 in Fig. 1.8 and takes virtually no time to compute.
 
-=for html <img WIDTH=400 src="Figures/whirl-fakestars.png">
+=for html <img WIDTH=400 src="firststeps/whirl-fakestars.png">
 
 Figure 1.8: M51 covered in fake stars.
 
@@ -627,7 +631,8 @@ see the result:
    ifftnd $gal2, $imag2;
    imag $gal2,0,300;
 
-=for html <img WIDTH=400 src="Figures/whirl-fft.png">
+=for html <img WIDTH=400 src="firststeps/whirl-ffta.png">
+=for html <img WIDTH=400 src="firststeps/whirl-fftb.png">
 
 Figure 1.9: Fourier filtered smoothed image and contrast enhanced image with 
 the smoothed image subtracted. B<XXX need to mosaic the PNGs>
