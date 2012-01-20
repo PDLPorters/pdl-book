@@ -11,9 +11,28 @@ repository at:
 
     http://pdl.git.sourceforge.net/git/gitweb.cgi?p=pdl/pdl-book;a=tree
 
-If you want to make the HTML and PDF versions of the book, you can 
+To get a local copy on your computer, use:
 
-    git clone ssh://anonymous@pdl.git.sourceforge.net/gitroot/pdl/pdl-book
+    git clone ssh://pdl.git.sourceforge.net/gitroot/pdl/pdl-book
+
+=head2 Making a PDF from the POD - Installing C<pod2pdf>
+
+To make the PDF files, you need to install the Perl modules
+C<Image::Size>, C<File::Type> and finally C<pod2pdf>. I use the C<CPAN>
+shell:
+
+    sudo cpan
+    install Image::Size
+    install File::Type
+    install App:pod2pdf
+
+All images are included in the PODs as HTML tags. A small script
+can convert these tags into PDF tags suitable for C<pod2pdf>.
+
+If you want to make the HTML and PDF versions of the book, you can then
+run:
+
+    ./make_book.pl
 
 =head1 Adding new material and getting write access to the PDL Book
 
@@ -24,8 +43,7 @@ things, clone this URL:
     git clone ssh://USERNAME@pdl.git.sourceforge.net/gitroot/pdl/pdl-book
     git clone ssh://kenworthy@pdl.git.sourceforge.net/gitroot/pdl/pdl-book
 
-where USERNAME is your sf.net username, or use C<anonymous> as a
-USERNAME. When you've downloaded it, do:
+where USERNAME is your sf.net username. When you've downloaded it, do:
 
     cd pdl-book
     <edit files and make modifications>
@@ -51,18 +69,3 @@ To delete a file from the repository (careful there, Ted) you do a:
     git push
 
 You can wait on the git push for other changes in your current session.
-
-=head1 Making a PDF from the POD - Installing C<pod2pdf>
-
-To make the PDF files, you need to install the Perl modules
-C<Image::Size>, C<File::Type> and finally C<pod2pdf>. I use the C<CPAN>
-shell myself:
-
-    sudo cpan
-    install Image::Size
-    install File::Type
-    install App:pod2pdf
-
-All images are included in the PODs as HTML tags. A small script
-can convert these tags into PDF tags suitable for C<pod2pdf>.
-
