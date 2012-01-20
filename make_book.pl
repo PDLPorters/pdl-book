@@ -30,7 +30,7 @@ Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2011 Dec 30
 # USER SELECTABLE OPTIONS
 
 my $book_dir        = "PDL/Book/"; # relative path to the PDL Book files
-my $book_chapters   = "Contents FirstSteps Creating NiceSlice Functions Threading PGPLOT PLplot Transform Complex Pthreads PP Genesis Credits"; # an ordered list of POD files to process
+my $book_chapters   = "../Book FirstSteps Creating NiceSlice Functions Threading PGPLOT PLplot Transform Complex Pthreads PP Genesis Credits"; # an ordered list of POD files to process
 
 my $book_pdf        = "book.pdf"; # output name of PDF book
 

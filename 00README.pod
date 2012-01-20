@@ -4,7 +4,12 @@ perldoc -F 00README.pod
 ...but the html is a prettier version with:
 pod2html --infile=00README.pod --outfile=00README.html --noindex
 
-=head1 Using C<git> to access the PDL Book
+=head1 The PDL Book
+
+This POD shows how to get a local copy of the PDL Book, and what
+programs you need to use to compile an HTML and PDF version of the book.
+
+=head2 Using C<git> to access the PDL Book
 
 The Book source is in POD format and can be read online in the git
 repository at:
@@ -17,7 +22,11 @@ To get a local copy on your computer, use:
 
 =head2 Making a PDF from the POD - Installing C<pod2pdf>
 
-To make the PDF files, you need to install the Perl modules
+The repository does not automatically generate a PDF version of the Book
+from the POD files in it, so if you do see a C<book.pdf> file in there,
+it's almost certainly not built on the latest PODs.
+
+To make a PDF version of the book, you need to install the Perl modules
 C<Image::Size>, C<File::Type> and finally C<pod2pdf>. I use the C<CPAN>
 shell:
 
@@ -34,14 +43,13 @@ run:
 
     ./make_book.pl
 
-=head1 Adding new material and getting write access to the PDL Book
+=head2 Adding new material and getting write access to the PDL Book
 
 You need to have a sourceforge account, and be authorised by one of the
 PDL gurus to have access to this repository. When you have both of these
 things, clone this URL:
 
     git clone ssh://USERNAME@pdl.git.sourceforge.net/gitroot/pdl/pdl-book
-    git clone ssh://kenworthy@pdl.git.sourceforge.net/gitroot/pdl/pdl-book
 
 where USERNAME is your sf.net username. When you've downloaded it, do:
 
@@ -58,9 +66,8 @@ Check with:
 
 To update your local repository and working copy to the latest revision
 committed to the remote repository, you need to execute C<git pull>.
-This
-pulls all of the changesets down from the remote repository and merges
-them with your current changes (if there are any).
+This pulls all of the changesets down from the remote repository and
+merges them with your current changes (if there are any).
 
 To delete a file from the repository (careful there, Ted) you do a:
 
@@ -69,3 +76,7 @@ To delete a file from the repository (careful there, Ted) you do a:
     git push
 
 You can wait on the git push for other changes in your current session.
+
+Read L<Overview> to see notes on style and how to generate figures for
+the PDL Book.
+
