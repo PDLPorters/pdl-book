@@ -381,7 +381,7 @@ by the 'Full Width Half Maximum' (FWHM) - or in plain terms how
 fat the profile is across when it drops by half. Looking at Figure 1.6
 it looks like this is about 2-3 pixels - pretty compact!
 
-=for html <img WIDTH=400 src="firststeps/whirl-starradiala.png">
+=for html <img WIDTH=400 src="firststeps/whirl-starradial.png">
 
 Figure 1.6: Radial light profile of the bright star with fitted curve.
 
