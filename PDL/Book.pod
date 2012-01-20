@@ -2,7 +2,7 @@
 podchecker Contents.pod && pod2html -noindex Contents.pod > Contents.html
 open Contents.html
 
-=head1 Contents of the PDL Book
+=head1 The PDL Book
 
 Here is the table of contents and suggested reading order for the PDL
 Book.

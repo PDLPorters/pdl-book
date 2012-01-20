@@ -1,5 +1,5 @@
 =for comment
-:!podchecker chap1.pod && pod2html --infile=chap1.pod --outfile=chap1.html
+:!podchecker FirstSteps.pod && pod2html --infile=chap1.pod --outfile=chap1.html
 open chap1.html and click 'reload'
 also
 conversion for PDF reading is:
@@ -8,95 +8,85 @@ pod2pdf chap1.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output
 =for comment
 Converted from Latex to POD by Karl Glazebrook 5/Jan/2012, grep for 'XXX' for conversion comments.
 
-
-=head1 A Whirlwind tour through PDL 
-
-=head2 Or 'PDL for the Impatient'...
-
+=head1 First Steps with  PDL
 
 I<"Maybe there are a few civilizations out there that have decided to stay
 home, piddle around and send out some radio waves once in a while.">
 
 I<- Annette Foglino, Space: Is Anyone Out There? Most astronomers say yes, Life, 1 Jul 1989.>
 
+It can be very frustrating to read an introductory book which takes a
+long time teaching you the very basis of a topic, in a "Janet and John"
+style.  While you wish to learn, you are anxious to see something a bit
+more exciting and interesting to see what the language can do.
 
-It can be very frustrating to read an introductory book 
-which takes a long time
-teaching you the very basis of a topic, in a `Janet and John' style.
-While you wish to learn, you are anxious to see something a bit more
-exciting and interesting to see what the language can do.
+Fortunately our task in this book on PDL is made very much easier by the
+high-level of the language. We can take a tour through PDL, looking at
+the advanced features it offers without getting involved in complexity.
 
-Fortunately our task in this book on PDL is made very much easier
-by the high-level of the language. We can take a tour through PDL,
-looking at the advanced features it offers without getting involved in
-complexity.
-
-The aim of this chapter is to cover a breadth of PDL features rather
-than any in depth, to give the reader a flavour of what he or she
-can do using the language and a useful reference for getting started
-doing real work. Later chapters will focus on looking at the features
-introduced here, in more depth.
+The aim of this section is to cover a breadth of PDL features rather
+than any in depth, to give the reader a flavour of what he or she can do
+using the language and a useful reference for getting started doing real
+work. Later sections will focus on looking at the features introduced
+here, in more depth.
 
 =head2 Alright let's I<do> something.
 
 We'll assume PDL is correctly installed and set up on your computer
-system (see Appendix A for details of obtaining and installing PDL).
+system (see L<http://pdl.perl.org/> for details of obtaining and installing PDL).
 
-For interactive use PDL comes with a program called C<perldl>. This allows
+For interactive use PDL comes with a program called C<pdl>. This allows
 you to type raw PDL (and perl) commands and see the result right away. It
 also allows command line recall and editting (via the arrow keys) on most
-systems. So we begin by running the C<perldl> program from the system
-command line. On a Mac/UNIX/Linux system we would simply type C<perldl>
-in a 'terminal window'. On a Windows system we would type C<perldl>
+systems. So we begin by running the C<pdl> program from the system
+command line. On a Mac/UNIX/Linux system we would simply type C<pdl>
+in a 'terminal window'. On a Windows system we would type C<pdl>
 in a command prompt window. If PDL is installed correctly this is
-all that is required to bring up C<perldl>.
+all that is required to bring up C<pdl>.
 
-	 myhost% perldl
-	perlDL shell v1.30
-	 PDL comes with ABSOLUTELY NO WARRANTY. For details, see the file
-	 'COPYING' in the PDL distribution. This is free software and you
-	 are welcome to redistribute it under certain conditions, see
-	 the same file for details.
-	ReadLines enabled
-	Reading /home/kgb/.perldlrc...
-	Found docs database /usr/lib/perl5/site_perl/5.6.0/i386-linux/PDL/pdldoc.db
-	Type 'help' for online help
-	Type 'demo' for online demos
-	Loaded PDL v2.2.1
-	Reading local.perldlrc ...
-	perldl> 
+	 myhost% pdl
+    perlDL shell v1.354_001
+    PDL comes with ABSOLUTELY NO WARRANTY. For details, see the file
+    'COPYING' in the PDL distribution. This is free software and you
+    are welcome to redistribute it under certain conditions, see
+    the same file for details.
+    ReadLines, NiceSlice, MultiLines  enabled
+    Reading /Users/kenworthy/.perldlrc...
+    Found docs database /Library/Perl/5.12/darwin-thread-multi-2level/PDL/pdldoc.db
+    Type 'help' for online help
+    Type 'demo' for online demos
+    Loaded PDL v2.4.9_009 (supports bad values)
+    pdl>
 
 We get a whole bunch of informational messages about what it is loading for
 startup and the help system. Note; the startup is I<completely> configurable,
 an advanced user can completely customize which PDL modules
 are loaded. We are left with the 
-C<perldl>> prompt at which we can type commands. This kind
+C<pdl>> prompt at which we can type commands. This kind
 of interactive program is called a 'shell'.
 
 Let's create something, and display it:
 
- perldl> use PDL::Graphics::PGPLOT
- perldl> imag (sin(rvals(200,200)+1))
+ pdl> use PDL::Graphics::PGPLOT
+ pdl> imag (sin(rvals(200,200)+1))
  Displaying 200 x 200 image from -1 to 0.999999940395355 ... 
 
-The result should look like 
-Fig.1.1 - a two dimensional C<sin> function. 
-C<rvals> is a handy PDL function for creating an image whose pixel
-values are the radial distance from the central pixel of the image.
-With these arguments it creates a 200 by 200 'radial' image.
-(Try 'C<imag(rvals(200,200))>' and you will see better what we mean!)
-C<sin()> is the mathematical sine function, this
-already exists in perl but in the case of PDL is applied to all 40000
-pixels at once, a topic we will come back to. The C<imag()> function displays
-the image. You will see the syntax of perl/PDL is algebraic - by which we
-mean it is very similar to C and FORTRAN in how expressions are constructed.
-(In fact much more like C than FORTRAN). It is interesting to reflect on
-how much C code would be required to generate the same display, even given
-the existence of some convenient graphics library.
+The result should look like the image below a two dimensional C<sin> function.
+C<rvals> is a handy PDL function for creating an image whose pixel values are
+the radial distance from the central pixel of the image.  With these arguments
+it creates a 200 by 200 'radial' image.  (Try 'C<imag(rvals(200,200))>' and you
+will see better what we mean!) C<sin()> is the mathematical sine function, this
+already exists in perl but in the case of PDL is applied to all 40000 pixels at
+once, a topic we will come back to. The C<imag()> function displays the image.
+You will see the syntax of perl/PDL is algebraic - by which we mean it is very
+similar to C and FORTRAN in how expressions are constructed.  (In fact much
+more like C than FORTRAN). It is interesting to reflect on how much C code
+would be required to generate the same display, even given the existence of
+some convenient graphics library.
 
 =for html <img WIDTH=400 src="firststeps/whirl-sync.png">
 
-Figure 1.1: A two dimensional C<sin>  function.
+Figure of a two dimensional C<sin>  function.
 
 That's all fine. But what if we wanted to achieve the same results in a standalone
 perl script? Well it is pretty simple:
@@ -116,14 +106,14 @@ Two comments:
 =item 1.
 
 The statements are all terminated by the 'C<;>' character. Perl is like C
-in this regard. When entering code at the C<perldl> command line the final
+in this regard. When entering code at the C<pdl> command line the final
 'C<;>' may be omitted if you wish, note you can also use it to put multiple
 statements on one line. In our examples from now on we'll often omit the 
-C<perldl> prompt for clarity.
+C<pdl> prompt for clarity.
 
 =item 2.
 
-The directive C<use PDL> tells Perl to load the PDL module, which makes
+The directive C<use PDL;> tells Perl to load the PDL module, which makes
 available all the standard PDL extensions. (Advanced users 
 will be interested in knowing
 there are other ways of starting PDL which allows one to select which bits
@@ -134,51 +124,46 @@ of it you want).
 =head2 Whirling through the Whirlpool
 
 Enough about the mechanics of using PDL, let's look at some real data! To work
-through these examples exactly
-you should have access to the I<PDL Book example data set>
-available on the Internet at the locations mentioned in Appendix A.
+through these examples exactly you should be able to find them in the directory
+C<PDL/Book/> on your system.
 
-For much of this chapter we'll be playing with an image of the famous
-spiral galaxy discovered by Charles Messier, known to astronomrs
-as M51 and commonly as the Whirlpool Galaxy. This is a 
-'nearby' galaxy, a mere 25 million light years from Earth. 
-The image file is stored
-in the 'FITS' format, a common astronomical format, which is one of
-the many formats standard PDL can read. (FITS stores more shades of
-grey than GIF or JPEG, PDL can also read these formats).
+We'll be playing with an image of the famous spiral galaxy discovered by
+Charles Messier, known to astronomrs as M51 and commonly as the Whirlpool
+Galaxy. This is a 'nearby' galaxy, a mere 25 million light years from Earth.
+The image file is stored in the 'FITS' format, a common astronomical format,
+which is one of the many formats standard PDL can read. (FITS stores more
+shades of grey than GIF or JPEG, PDL can also read these formats).
 
-  $a = rfits("m51_raw.fits");
+    $a = rfits("PDL/Book/m51_raw.fits");
 
-This looks pretty simple. As you can probably guess by now C<rfits> is
-the PDL function to read a FITS file. This is stored in the perl
-variable C<$a>. 
+    Reading IMAGE data...
+    BITPIX =  -32  size = 262144 pixels 
+    Reading  1048576  bytes
+    BSCALE =  &&  BZERO = 
 
-B<This is an important PDL concept: PDL stores it's data arrays in
-simple perl variables> (C<$a, $x, $y, $MyData>, etc.). 
-PDL data arrays are special arrays which use a more efficient, compact
-storage than standard perl arrays (C<@a, @x, ...>) and are
-much faster to access for numerical computations. To avoid confusion
-it is convenient to introduce a special name for them, we call
-them I<piddles> (short for 'PDL variables') to distinguish
-them from ordinary Perl 'arrays', which are in fact really lists.
-We'll say more about this
-later.
+This looks pretty simple. As you can probably guess by now C<rfits> is the PDL
+function to read a FITS file. This is stored in the perl variable C<$a>.
 
-Before we start seriously playing around with M51 it is worth noting
-that we can also say:
+B<This is an important PDL concept: PDL stores it's data arrays in simple perl
+variables> (C<$a, $x, $y, $MyData>, etc.).  PDL data arrays are special arrays
+which use a more efficient, compact storage than standard perl arrays (C<@a,
+@x, ...>) and are much faster to access for numerical computations. To avoid
+confusion it is convenient to introduce a special name for them, we call them
+I<piddles> (short for 'PDL variables') to distinguish them from ordinary Perl
+'arrays', which are in fact really lists.  We'll say more about this later.
+
+Before we start seriously playing around with M51 it is worth noting that we
+can also say:
 
   $a = rfits "m51_raw.fits";
 
-Note we have now left off the brackets on the C<rfits>
-function. Perl is rather simpler than C
-and allows one to omit the brackets
-on a function all together. It assumes all the
-items in a list are function arguments and can be
-pretty convenient. If you are calling more than one
-function it is however better to use some brackets
-so the meaning is clear. For the rules on this 'list operator'
-syntax see the Perl syntax documentation.
-From now on we'll mostly use the list operator syntax for conciseness
+Note we have now left off the brackets on the C<rfits> function. Perl is rather
+simpler than C and allows one to omit the brackets on a function all together.
+It assumes all the items in a list are function arguments and can be pretty
+convenient. If you are calling more than one function it is however better to
+use some brackets so the meaning is clear. For the rules on this 'list
+operator' syntax see the Perl syntax documentation.  From now on we'll mostly
+use the list operator syntax for conciseness
 
 Let's look at M51:
 
@@ -186,54 +171,47 @@ Let's look at M51:
 
 =for html <img WIDTH=400 src="firststeps/whirl-m51a.png">
 
-Figure 1.2: The raw image C<m51_raw.fits> from the I<PDL Book example data set> shown with 
-progressively greater  contrast using the C<imag> command.
+Figure of the raw image C<m51_raw.fits> shown with progressively greater
+contrast using the C<imag> command.
 
-An image like Figure 1.2 should be seen. A couple of bright spots
-but where is the galaxy? It's the faint blob in the middle: by default
-the display range is autoscaled linearly from the faintest
-to the brightest pixel, and only the bright star slightly
-to the bottom right of the center can be seen
-without contrast enhancement. We can easily change
-that by specifying the black/white data values (Note: C<#> starts a Perl
-comment and can be ignored - i.e. no need to type the stuff after it!):
+A couple of bright spots can be seen, but where is the galaxy? It's the faint
+blob in the middle: by default the display range is autoscaled linearly from
+the faintest to the brightest pixel, and only the bright star slightly to the
+bottom right of the center can be seen without contrast enhancement. We can
+easily change that by specifying the black/white data values (Note: C<#> starts
+a Perl comment and can be ignored - i.e. no need to type the stuff after it!):
 
   imag $a,0,1000; # More contrast
   imag $a,0,300;  # Even more contrast
 
-You can see that C<imag> takes additional arguments to specify
-the display range. In fact C<imag> takes quite a few arguments,
-many of them optional. By typing 'C<help imag>' at the C<perldl>
-prompt we can find out all about the function.
+You can see that C<imag> takes additional arguments to specify the display
+range. In fact C<imag> takes quite a few arguments, many of them optional. By
+typing 'C<help imag>' at the C<pdl> prompt we can find out all about the
+function.
 
-Anyway the results of this exercise are 
-shown in Figures 1.2(b) and  
-1.2(c). Well. It is certainly a spiral
-galaxy with a few foreground stars thrown in for good measure. But what is
-that horrible stripey pattern running from bottom right to top left? That
-certainly is not part of the galaxy? Well no. What we have here is the
-uneven senistivity of the detector used to record the image, a common
-artifact in digital imaging. (Though it is rarely as bad as this!
-(Alright. KGB confesses: he faked this up.) We can
-correct for this using an image of a uniformly illuminated screen,
-what is commonly known as a 'flatfield'.
+It is certainly a spiral galaxy with a few foreground stars thrown in for good
+measure. But what is that horrible stripey pattern running from bottom right to
+top left? That certainly is not part of the galaxy? Well no. What we have here
+is the uneven senistivity of the detector used to record the image, a common
+artifact in digital imaging. We can correct for this using an image of a
+uniformly illuminated screen, what is commonly known as a 'flatfield'.
 
   $flat = rfits "m51_flatfield.fits";
   imag $flat;
 
-This is shown in Fig. 1.3. Because the image is of a uniform field,
+This is shown in the next figure. Because the image is of a uniform field,
 the actual image reflects the detector sensitivity. To correct our M51
 image, we merely have to divide the image by the flatfield:
 
 =for html <img WIDTH=400 src="firststeps/whirl-flat.png">
 
-Figure 1.3: The 'flatfield' image showing the detector sensitivity of the raw data.
+Figure: The 'flatfield' image showing the detector sensitivity of the raw data.
 
   $gal = $a / $flat;
   imag $gal,0,300;  
   wfits $gal, 'fixed_gal.fits'; # Save our work as a FITS file
 
-Well that's a lot better Fig. 1.4.  But think what we have
+Well that's a lot better.  But think what we have
 just done. Both C<$a>  and C<$flat> are I<images>, with 512 pixels by
 512 pixels. B<The divide operator 'C</>' has been applied over all
 262144 data values in the piddles C<$a>  and C<$flat>.> And it was
@@ -247,7 +225,7 @@ do whatever arithmetic operations we like on image piddles:
 
 =for html <img WIDTH=400 src="firststeps/whirl-flattened.png">
 
-Figure 1.4: The M51 image corrected for the flatfield.
+Figure: The M51 image corrected for the flatfield.
 
  $funny = log(($gal/300)**2 - $gal/100  + 4); 
  imag $funny; # Surprise!
@@ -256,7 +234,6 @@ Or on 1-D line piddles. On on 3-D cubic piddles. In fact piddles can support an 
 number of dimensions (though your computers memory won't). 
 
 B<This the key to PDL: the ability to process large chunks of data at once.>
-
 
 =head2 Measuring the brightness of M51
 
@@ -267,7 +244,7 @@ the 'disk' of the galaxy (the outer region which contains the spiral
 arms) compares with the 'bulge' (the compact inner nucleus). Well
 let's find out the total sum of all the light in the image:
 
-  perldl> print sum($gal);
+  pdl> print sum($gal);
   17916010
 
 {\tt sum} just sums up all the data values in all the pixels in the 
@@ -279,12 +256,12 @@ a luminosity of about 1E36 Watts, so we can work out what
 one data value corresponds to in physical units:
 
 
- perldl> p 10**36/sum($gal)
+ pdl> p 10**36/sum($gal)
  5.58159992096455e+28
 
 
 This is also about 200 solar luminosities, (Note we have switched to using 'C<p>'
-as a shorthand for 'C<print>' - this only works in the C<perldl>' shell.)
+as a shorthand for 'C<print>' - this only works in the C<pdl>' shell.)
 which gives 4 billion solar luminosities for the whole galaxy.
 
 OK we do not need PDL for this simple arithmetic, let's get back to
@@ -298,7 +275,9 @@ function:
   $r = rvals $gal;
   imag $r;
 
-Remember C<rvals>? It replaces all the pixels in an image with it's distance from the centre (Figure 1.5(a)). We can turn this into a I<mask> with a simple operation like:
+Remember C<rvals>? It replaces all the pixels in an image with its distance
+from the centre. We can turn this into a I<mask> with a simple
+operation like:
 
   $mask = $r<50;
   imag $mask;
@@ -308,8 +287,8 @@ Remember C<rvals>? It replaces all the pixels in an image with it's distance fro
 =for html <img WIDTH=400 src="firststeps/whirl-maskc.png">
 =for html <img WIDTH=400 src="firststeps/whirl-maskd.png">
 
-Figure 1.5: Using  C<rvals> to generate a mask image to isolate the galaxy bulge 
-and disk>    B<XXX need to mosaic PNGs and add labels> 
+Figure: Using  C<rvals> to generate a mask image to isolate the galaxy bulge 
+and disk>    B<XXX need to mosaic PNGs and add labels>
 
 The Perl I<less than operator> is applied to all pixels in the
 image. You can see the result (Figure 1.5(b)) 
@@ -321,16 +300,16 @@ components (Figures 1.5(c) and
 very easy to find the brightness of both pieces of the M51
 galaxy:
 
- perldl> $bulge = $mask * $gal
- perldl> imag $bulge,0,300
+ pdl> $bulge = $mask * $gal
+ pdl> imag $bulge,0,300
  Displaying 512 x 512 image from 0 to 300 ...
- perldl> print sum $bulge;
+ pdl> print sum $bulge;
  3011125
  
- perldl> $disk = $gal * (1-$mask)
- perldl> imag $disk,0,300
+ pdl> $disk = $gal * (1-$mask)
+ pdl> imag $disk,0,300
  Displaying 512 x 512 image from 0 to 300 ...
- perldl> print sum $disk
+ pdl> print sum $disk
  14904884
 
 You can see that the disk is about 5 times brighter than the bulge in
@@ -345,63 +324,52 @@ compare between bulge and disk? This is again quite straight forward:
 We work out the area by simply summing up the 0,1 pixels in the mask
 image. The answer is the bulge has about 7 times the surface
 brightness than the disk - something we might have guessed from
-looking at Figure 1.4 - which tells astronomers it's stellar density is
+looking at Figure 1.4 - which tells astronomers its stellar density is
 much higher.
 
 Of course PDL being so powerful, we could have figured this out in one line:
 
-	perldl> print average($gal->where(rvals($gal)<50)) 
+	pdl> print average($gal->where(rvals($gal)<50)) 
 	    / average($gal->where(rvals($gal)>=50))
 	6.56590509414673
 
-We'll say more about C<where> and it's friends in Chapter 3.
-
 =head2 Twinkle, twinkle, little star.
-
-=for comment 
-OK guys, I am committing to PDL::NiceSlice! - Karl
 
 Let's look at something else, we'll zoom in on a small piece of the image:
 
  $section = $gal(337:357,178:198);
- imag $section; # It's the bright star
+ imag $section; # the bright star
 
 
 Here we are introducing something new - we can see that PDL supports
-I<extensions> to the Perl syntax. We can say C<$var(a:b,c:d...)> to
-specify I<multidimensional slices>. In this case
-we have produced a sub-image ranging from pixel
-327 to 367 along the first dimension, and 168 through 208 along the
-second. We'll talk some more about I<slicing and dicing> 
-in Chapter 3. This sub-image happens to contain
-a bright star.
+I<extensions> to the Perl syntax. We can say C<$var(a:b,c:d...)> to specify
+I<multidimensional slices>. In this case we have produced a sub-image ranging
+from pixel 327 to 367 along the first dimension, and 168 through 208 along the
+second. We'll talk some more about I<slicing and dicing> later on. This
+sub-image happens to contain a bright star.
 
-At this point you will probably be able to work out for yourself the
-amount of light coming from this star, compared to the whole 
-galaxy. (Answer: about 2%)
-But let's look at something more involved: the radial profile of the
-star. Since stars are a long way away they are almost point sources,
-but our camera will blur them out into little disks, and for our
-analysis we might want an exact figure for this blurring.
+At this point you will probably be able to work out for yourself the amount of
+light coming from this star, compared to the whole galaxy. (Answer: about 2%)
+But let's look at something more involved: the radial profile of the star.
+Since stars are a long way away they are almost point sources, but our camera
+will blur them out into little disks, and for our analysis we might want an
+exact figure for this blurring.
 
-We want to plot all the brightness of all the pixels in this section,
-against the distance from the centre. (We've chosen the section to
-be conveniently centred on the star, you could think if you
-want about how you
-might determine the centroid automatically using the C<xvals> and
-C<yvals> functiona). Well it is simple enough to get the distance
-from the centre:
+We want to plot all the brightness of all the pixels in this section, against
+the distance from the centre. (We've chosen the section to be conveniently
+centred on the star, you could think if you want about how you might determine
+the centroid automatically using the C<xvals> and C<yvals> functions). Well it
+is simple enough to get the distance from the centre:
 
   $r = rvals $section;
 
-But to produce a one-dimensional plot 
-of one against the other we need to reduce the 2D data arrays
-to one dimension. (i.e our 21 by 21 image section becomes a 
-441 element vector). This can be done using the PDL C<clump> function,
-which 'clumps' together an arbitrary number of dimensions:
+But to produce a one-dimensional plot of one against the other we need to
+reduce the 2D data arrays to one dimension. (i.e our 21 by 21 image section
+becomes a 441 element vector). This can be done using the PDL C<clump>
+function, which 'clumps' together an arbitrary number of dimensions:
 
-  $rr  = clump($r,2); # Clump first two dimensions
-  $sec = clump($section,2);
+  $rr  = $r->clump(2); # Clump first two dimensions
+  $sec = $section->clump(2);
   
   points $rr, $sec;  # Radial plot
 
@@ -452,12 +420,13 @@ with 'C<?>' and 'C<??>' when using the C<perldl> shell.
 
 
 Let's fit a Gaussian:
-  
+
+   use PDL::Fit::Gaussian
   ($peak, $fwhm, $background) = fitgauss1dr($rr, $sec); 
   print  $peak, $fwhm, $background;
 
 
-C<fitgauss1dr> is a function in the module PDL::Fit::Gaussian which fits
+C<fitgauss1dr> is a function in the module L<PDL::Fit::Gaussian> which fits
 a Gaussian constrained to be radial (i.e. whose peak is at the origin).
 You can see that, unlike C and FORTRAN, Perl functions can return
 more than one result value. This is pretty convenient. You can see the
@@ -515,34 +484,31 @@ Figure 1.7: Two different views of the 2D simulated Point Spread Function. B<XXX
    use PDL::Graphics::TriD; # Load the 3D graphics module
    imag3d [$fit2d];
 
-If you do this on your computer you should be able to look at
-the graphic from different sides by simply dragging in the plot window
-with the mouse! You can also zoom in and out with the right mouse button. 
-Note that C<imag3d> has it's a rather different syntax for processing
-it's arguments - for very good reasons - we'll explore 3D graphics further
-in Chapter 4.
+If you do this on your computer you should be able to look at the graphic from
+different sides by simply dragging in the plot window with the mouse! You can
+also zoom in and out with the right mouse button.  Note that C<imag3d> has it's
+a rather different syntax for processing it's arguments - for very good reasons
+- we'll explore 3D graphics further in L<PDL::Book::TriD>.
 
-Finally here's something interesting. Let's take our fake star
-and place it elsewhere on the galaxy image.
+Finally here's something interesting. Let's take our fake star and place it
+elsewhere on the galaxy image.
 
    $newsection = $gal(50:70,70:90);
    $newsection +=  $fit2d;
    imag $gal,0,300;
 
-We have a bright new star where none existed before! The C-style
-C<+=>  increment operator is worth noting - it actually
-modifies the contents of C<$newsection> in-place. And because C<$newsection> 
-is a I<slice> of C<$gal>
+We have a bright new star where none existed before! The C-style C<+=>
+increment operator is worth noting - it actually modifies the contents of
+C<$newsection> in-place. And because C<$newsection> is a I<slice> of C<$gal>
 the change also affects C<$gal>. This is an important property of slices - any
 change to the slice affects the I<parent>. This kind of parent/child
 relationship is a powerful property of many PDL functions, not just slicing.
-What's more in many cases it leads to memory efficiency, when this kind
-of linear slice is stored we only store the start/stop/step and not a new
-copy of the actual data.
+What's more in many cases it leads to memory efficiency, when this kind of
+linear slice is stored we only store the start/stop/step and not a new copy of
+the actual data.
 
-Of course sometimes we DO want a new copy of the actual data, for example
-if we plan to do something evil to it. To do this we could use the alternative
-form:
+Of course sometimes we DO want a new copy of the actual data, for example if we
+plan to do something evil to it. To do this we could use the alternative form:
 
  $newsection = $newsection +  $fit2d
 
@@ -648,12 +614,11 @@ subtract our filtered image from the original
 
 =head2 Roundoff
 
-Well that is probably enough abuse of Messier 51. We have demonstrated the ease of
-simple and complex data processing with PDL and how PDL fit's neatly in to the Perl syntax
-as well as extending it.
-You have come across basic arithmetical operations and a scattering of useful
-functions - and learned how to find more. 
-You certainly ought now to have a good feel of what PDL is all about.
-In the next chapter we'll take a more comprehensive look at the basic parts of PDL
-that all keen PDL users should know.
+Well that is probably enough abuse of Messier 51. We have demonstrated the ease
+of simple and complex data processing with PDL and how PDL fits neatly in to
+the Perl syntax as well as extending it.  You have come across basic
+arithmetical operations and a scattering of useful functions - and learned how
+to find more.  You certainly ought now to have a good feel of what PDL is all
+about.  In the next chapter we'll take a more comprehensive look at the basic
+parts of PDL that all keen PDL users should know.
 
