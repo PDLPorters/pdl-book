@@ -37,26 +37,26 @@ system (see L<http://pdl.perl.org/> for details of obtaining and installing PDL)
 
 For interactive use PDL comes with a program called C<pdl>. This allows
 you to type raw PDL (and perl) commands and see the result right away. It
-also allows command line recall and editting (via the arrow keys) on most
+also allows command line recall and editing (via the arrow keys) on most
 systems. So we begin by running the C<pdl> program from the system
 command line. On a Mac/UNIX/Linux system we would simply type C<pdl>
 in a 'terminal window'. On a Windows system we would type C<pdl>
 in a command prompt window. If PDL is installed correctly this is
 all that is required to bring up C<pdl>.
 
-	 myhost% pdl
-    perlDL shell v1.354_001
-    PDL comes with ABSOLUTELY NO WARRANTY. For details, see the file
-    'COPYING' in the PDL distribution. This is free software and you
-    are welcome to redistribute it under certain conditions, see
-    the same file for details.
-    ReadLines, NiceSlice, MultiLines  enabled
-    Reading /Users/kenworthy/.perldlrc...
-    Found docs database /Library/Perl/5.12/darwin-thread-multi-2level/PDL/pdldoc.db
-    Type 'help' for online help
-    Type 'demo' for online demos
-    Loaded PDL v2.4.9_009 (supports bad values)
-    pdl>
+   myhost% pdl
+  perlDL shell v1.354_001
+  PDL comes with ABSOLUTELY NO WARRANTY. For details, see the file
+  'COPYING' in the PDL distribution. This is free software and you
+  are welcome to redistribute it under certain conditions, see
+  the same file for details.
+  ReadLines, NiceSlice, MultiLines  enabled
+  Reading /Users/kenworthy/.perldlrc...
+  Found docs database /Library/Perl/5.12/darwin-thread-multi-2level/PDL/pdldoc.db
+  Type 'help' for online help
+  Type 'demo' for online demos
+  Loaded PDL v2.4.9_009 (supports bad values)
+  pdl>
 
 We get a whole bunch of informational messages about what it is loading for
 startup and the help system. Note; the startup is I<completely> configurable,
@@ -67,9 +67,9 @@ of interactive program is called a 'shell'.
 
 Let's create something, and display it:
 
- pdl> use PDL::Graphics::PGPLOT
- pdl> imag (sin(rvals(200,200)+1))
- Displaying 200 x 200 image from -1 to 0.999999940395355 ... 
+  pdl> use PDL::Graphics::PGPLOT
+  pdl> imag (sin(rvals(200,200)+1))
+  Displaying 200 x 200 image from -1 to 0.999999940395355 ... 
 
 The result should look like the image below a two dimensional C<sin> function.
 C<rvals> is a handy PDL function for creating an image whose pixel values are
@@ -92,6 +92,7 @@ That's all fine. But what if we wanted to achieve the same results in a standalo
 perl script? Well it is pretty simple:
 
   use PDL;
+  use PDL::Graphics::PGPLOT;
   imag (sin(rvals(200,200)+1));
 
 That's it. This is a complete perl/PDL program. One could run it by typing 
@@ -134,12 +135,11 @@ The image file is stored in the 'FITS' format, a common astronomical format,
 which is one of the many formats standard PDL can read. (FITS stores more
 shades of grey than GIF or JPEG, PDL can also read these formats).
 
-    $a = rfits("PDL/Book/m51_raw.fits");
-
-    Reading IMAGE data...
-    BITPIX =  -32  size = 262144 pixels 
-    Reading  1048576  bytes
-    BSCALE =  &&  BZERO = 
+  pdl> $a = rfits("PDL/Book/m51_raw.fits");
+  Reading IMAGE data...
+  BITPIX =  -32  size = 262144 pixels 
+  Reading  1048576  bytes
+  BSCALE =  &&  BZERO = 
 
 This looks pretty simple. As you can probably guess by now C<rfits> is the PDL
 function to read a FITS file. This is stored in the perl variable C<$a>.
@@ -155,7 +155,7 @@ I<piddles> (short for 'PDL variables') to distinguish them from ordinary Perl
 Before we start seriously playing around with M51 it is worth noting that we
 can also say:
 
-  $a = rfits "m51_raw.fits";
+  pdl> $a = rfits "m51_raw.fits";
 
 Note we have now left off the brackets on the C<rfits> function. Perl is rather
 simpler than C and allows one to omit the brackets on a function all together.
@@ -167,7 +167,7 @@ use the list operator syntax for conciseness
 
 Let's look at M51:
 
- imag $a;
+  pdl> imag $a;
 
 =for html <img WIDTH=400 src="firststeps/whirl-m51a.png">
 
@@ -181,8 +181,8 @@ bottom right of the center can be seen without contrast enhancement. We can
 easily change that by specifying the black/white data values (Note: C<#> starts
 a Perl comment and can be ignored - i.e. no need to type the stuff after it!):
 
-  imag $a,0,1000; # More contrast
-  imag $a,0,300;  # Even more contrast
+  pdl> imag $a,0,1000; # More contrast
+  pdl> imag $a,0,300;  # Even more contrast
 
 You can see that C<imag> takes additional arguments to specify the display
 range. In fact C<imag> takes quite a few arguments, many of them optional. By
@@ -196,8 +196,8 @@ is the uneven senistivity of the detector used to record the image, a common
 artifact in digital imaging. We can correct for this using an image of a
 uniformly illuminated screen, what is commonly known as a 'flatfield'.
 
-  $flat = rfits "m51_flatfield.fits";
-  imag $flat;
+  pdl> $flat = rfits "m51_flatfield.fits";
+  pdl> imag $flat;
 
 This is shown in the next figure. Because the image is of a uniform field,
 the actual image reflects the detector sensitivity. To correct our M51
@@ -207,9 +207,9 @@ image, we merely have to divide the image by the flatfield:
 
 Figure: The 'flatfield' image showing the detector sensitivity of the raw data.
 
-  $gal = $a / $flat;
-  imag $gal,0,300;  
-  wfits $gal, 'fixed_gal.fits'; # Save our work as a FITS file
+  pdl> $gal = $a / $flat;
+  pdl> imag $gal,0,300;  
+  pdl> wfits $gal, 'fixed_gal.fits'; # Save our work as a FITS file
 
 Well that's a lot better.  But think what we have
 just done. Both C<$a>  and C<$flat> are I<images>, with 512 pixels by
@@ -227,8 +227,8 @@ do whatever arithmetic operations we like on image piddles:
 
 Figure: The M51 image corrected for the flatfield.
 
- $funny = log(($gal/300)**2 - $gal/100  + 4); 
- imag $funny; # Surprise!
+  pdl> $funny = log(($gal/300)**2 - $gal/100  + 4); 
+  pdl> imag $funny; # Surprise!
 
 Or on 1-D line piddles. On on 3-D cubic piddles. In fact piddles can support an infinite
 number of dimensions (though your computers memory won't). 
@@ -256,8 +256,8 @@ a luminosity of about 1E36 Watts, so we can work out what
 one data value corresponds to in physical units:
 
 
- pdl> p 10**36/sum($gal)
- 5.58159992096455e+28
+  pdl> p 10**36/sum($gal)
+  5.58159992096455e+28
 
 
 This is also about 200 solar luminosities, (Note we have switched to using 'C<p>'
@@ -272,15 +272,15 @@ this phenomenon TIMTOWTDI). In this case, because we really want
 the brightness in a circular aperture, we'll use the C<rvals>
 function:
 
-  $r = rvals $gal;
-  imag $r;
+  pdl> $r = rvals $gal;
+  pdl> imag $r;
 
 Remember C<rvals>? It replaces all the pixels in an image with its distance
 from the centre. We can turn this into a I<mask> with a simple
 operation like:
 
-  $mask = $r<50;
-  imag $mask;
+  pdl> $mask = $r<50;
+  pdl> imag $mask;
 
 =for html <img WIDTH=400 src="firststeps/whirl-maska.png">
 =for html <img WIDTH=400 src="firststeps/whirl-maskb.png">
@@ -318,8 +318,8 @@ spiral galaxies. We might ask a different question: how does the average
 I<surface brightness>, the brightness per unit area on the sky,
 compare between bulge and disk? This is again quite straight forward:
 
-  print sum($bulge)/sum($mask);
-  print sum($disk)/sum(1-$mask);
+  pdl> print sum($bulge)/sum($mask);
+  pdl> print sum($disk)/sum(1-$mask);
 
 We work out the area by simply summing up the 0,1 pixels in the mask
 image. The answer is the bulge has about 7 times the surface
@@ -329,24 +329,24 @@ much higher.
 
 Of course PDL being so powerful, we could have figured this out in one line:
 
-	pdl> print average($gal->where(rvals($gal)<50)) 
-	    / average($gal->where(rvals($gal)>=50))
-	6.56590509414673
+  pdl> print avg($gal->where(rvals($gal)<50)) / avg($gal->where(rvals($gal)>=50))
+  6.56590509414673
 
 =head2 Twinkle, twinkle, little star.
 
 Let's look at something else, we'll zoom in on a small piece of the image:
 
- $section = $gal(337:357,178:198);
- imag $section; # the bright star
+  pdl> $section = $gal(337:357,178:198);
+  pdl> imag $section; # the bright star
 
 
 Here we are introducing something new - we can see that PDL supports
 I<extensions> to the Perl syntax. We can say C<$var(a:b,c:d...)> to specify
 I<multidimensional slices>. In this case we have produced a sub-image ranging
-from pixel 327 to 367 along the first dimension, and 168 through 208 along the
-second. We'll talk some more about I<slicing and dicing> later on. This
-sub-image happens to contain a bright star.
+from pixel 337 to 357 along the first dimension, and 178 through 198 along the
+second. Remember pdl data dimension indexes start from zero.  We'll talk some
+more about I<slicing and dicing> later on. This sub-image happens to contain
+a bright star.
 
 At this point you will probably be able to work out for yourself the amount of
 light coming from this star, compared to the whole galaxy. (Answer: about 2%)
@@ -361,17 +361,17 @@ centred on the star, you could think if you want about how you might determine
 the centroid automatically using the C<xvals> and C<yvals> functions). Well it
 is simple enough to get the distance from the centre:
 
-  $r = rvals $section;
+  pdl> $r = rvals $section;
 
 But to produce a one-dimensional plot of one against the other we need to
 reduce the 2D data arrays to one dimension. (i.e our 21 by 21 image section
 becomes a 441 element vector). This can be done using the PDL C<clump>
 function, which 'clumps' together an arbitrary number of dimensions:
 
-  $rr  = $r->clump(2); # Clump first two dimensions
-  $sec = $section->clump(2);
+  pdl> $rr  = $r->clump(2); # Clump first two dimensions
+  pdl> $sec = $section->clump(2);
   
-  points $rr, $sec;  # Radial plot
+  pdl> points $rr, $sec;  # Radial plot
 
 You should see a nice graph with points like those
 in Figure 1.6
@@ -395,7 +395,7 @@ enough a special function for this very purpose. (One could use
 more general fitting packages like C<PDL::Fit::LM> or
 C<PDL::Opt::Simplex> but that would require more care).
 
-  use PDL::Fit::Gaussian;
+  pdl> use PDL::Fit::Gaussian;
 
 This loads in the module to do this. PDL, like Perl, is modular. We
 don't load all the available modules by default just a convenient
@@ -403,16 +403,16 @@ subset. How can we find useful PDL functions and modules? Well
 C<help> tells us more about what we already know, to find out
 about what we don't know use C<apropos>:
 
-	perldl> apropos gaussian
-	PDL::Fit::Gaussian ...
-					Module: routines for fitting gaussians
-	PDL::Gaussian   Module: Gaussian distributions.
-	fitgauss1d      Fit 1D Gassian to data piddle
-	fitgauss1dr     Fit 1D Gassian to radial data piddle
-	gefa            Factor a matrix using Gaussian elimination.
-	grandom         Constructor which returns piddle of Gaussian random numbers
-	ndtri           The value for which the area under the Gaussian probability density function (integrated from minus
-					infinity) is equal to the argument (cf erfi). Works inplace.
+  pdl> apropos gaussian
+  PDL::Fit::Gaussian ...
+  				Module: routines for fitting gaussians
+  PDL::Gaussian   Module: Gaussian distributions.
+  fitgauss1d      Fit 1D Gassian to data piddle
+  fitgauss1dr     Fit 1D Gassian to radial data piddle
+  gefa            Factor a matrix using Gaussian elimination.
+  grandom         Constructor which returns piddle of Gaussian random numbers
+  ndtri           The value for which the area under the Gaussian probability density function (integrated from minus
+  				infinity) is equal to the argument (cf erfi). Works inplace.
 
 This tells us a whole lot about various functions and modules to do with
 Gaussians. Note that we can abbreviate C<help> and C<apropos>
@@ -421,9 +421,9 @@ with 'C<?>' and 'C<??>' when using the C<perldl> shell.
 
 Let's fit a Gaussian:
 
-   use PDL::Fit::Gaussian
-  ($peak, $fwhm, $background) = fitgauss1dr($rr, $sec); 
-  print  $peak, $fwhm, $background;
+  pdl> use PDL::Fit::Gaussian;
+  pdl> ($peak, $fwhm, $background) = fitgauss1dr($rr, $sec); 
+  pdl> p $peak, $fwhm, $background;
 
 
 C<fitgauss1dr> is a function in the module L<PDL::Fit::Gaussian> which fits
@@ -433,11 +433,11 @@ more than one result value. This is pretty convenient. You can see the
 FWHM is more like 2.75 pixels. Let's generate a fitted curve with this
 functional form.
 
-  $rrr = sequence(2000)/100  # Generate radial values 0,0.01,0,02..20
+  pdl> $rrr = sequence(2000)/100;  # Generate radial values 0,0.01,0,02..20
        
   # Generate gaussian with given FWHM
-  
-  $fit = $peak * exp(-2.772 * ($rrr/$fwhm)**2) + $background;
+
+  pdl> $fit = $peak * exp(-2.772 * ($rrr/$fwhm)**2) + $background;
 
 
 Note the use of a new function, C<sequence(N)>, which 
@@ -446,8 +446,8 @@ using this to generate the horizontal axis values for the plot.
 Now let's overlay it on the previous plot.
 
 
-  hold; # This command stops new plots starting new pages
-  line $rrr, $fit, {Colour=>2} ; # Line plot
+  pdl> hold; # This command stops new plots starting new pages
+  pdl> line $rrr, $fit, {Colour=>2} ; # Line plot
 
 
 The last C<line> command shows
@@ -462,10 +462,10 @@ do a bit better by exactly centroiding the image but it will do for now.
 Let's make a I<simulation> of the 2D stellar image. This is equally
 easy:
 
-  $fit2d = $peak * exp(-2.772 * ($r/$fwhm)**2);
-  release; # Back to new page for new plots;
-  imag $fit2d;
-  wfits $fit2d, 'fake_star.fits'; # Save our work
+  pdl> $fit2d = $peak * exp(-2.772 * ($r/$fwhm)**2);
+  pdl> release; # Back to new page for new plots;
+  pdl> imag $fit2d;
+  pdl> wfits $fit2d, 'fake_star.fits'; # Save our work
 
 
 But that plot (Figure 1.7(a)) is a bit 
@@ -481,8 +481,8 @@ star in 3D (Figure 1.7(b)):
 
 Figure 1.7: Two different views of the 2D simulated Point Spread Function. B<XXX need to mosaic the panels>
 
-   use PDL::Graphics::TriD; # Load the 3D graphics module
-   imag3d [$fit2d];
+   pdl> use PDL::Graphics::TriD; # Load the 3D graphics module
+   pdl> imag3d [$fit2d];
 
 If you do this on your computer you should be able to look at the graphic from
 different sides by simply dragging in the plot window with the mouse! You can
@@ -493,9 +493,9 @@ a rather different syntax for processing it's arguments - for very good reasons
 Finally here's something interesting. Let's take our fake star and place it
 elsewhere on the galaxy image.
 
-   $newsection = $gal(50:70,70:90);
-   $newsection +=  $fit2d;
-   imag $gal,0,300;
+  pdl> $newsection = $gal(50:70,70:90);
+  pdl> $newsection +=  $fit2d;
+  pdl> imag $gal,0,300;
 
 We have a bright new star where none existed before! The C-style C<+=>
 increment operator is worth noting - it actually modifies the contents of
@@ -510,7 +510,7 @@ the actual data.
 Of course sometimes we DO want a new copy of the actual data, for example if we
 plan to do something evil to it. To do this we could use the alternative form:
 
- $newsection = $newsection +  $fit2d
+  pdl> $newsection = $newsection +  $fit2d
 
 Now a new version of C<$newsection>  is created which has nothing to 
 do with the original C<$gal>. In fact there is more than one way to do
@@ -521,6 +521,7 @@ stars of random brightnesses:
 
    use PDL;
    use PDL::Graphics::PGPLOT;
+   use PDL::NiceSlice;  # must use in each program file
 
    srand(42); # Set the random number seed
    $gal  = rfits "fixed_gal.fits";
@@ -562,9 +563,9 @@ complex numbers, where each pixel
 represents the strength of wavelengths of different scales in the image. 
 Let's do it:
 
-   use PDL::FFT; # Load Fast Fourier Transform package
-   
-   $gal = rfits "fixed_gal.fits";
+  pdl> use PDL::FFT; # Load Fast Fourier Transform package
+  
+  pdl> $gal = rfits "fixed_gal.fits";
 
 Now C<$gal> contains real values, to do the Fourier transform it has to
 have complex values. We create a variable C<$imag> to hold the imaginary
@@ -572,9 +573,9 @@ component and set to zero.(For reasons of efficiency complex numbers
 are represented in PDL by seperate real and imaginary arrays - more about this
 in Chapter 2.)
 
-   $imag = $gal * 0;       # Create imaginary component, equal to zero
-   
-   fftnd $gal, $imag;      # Perform Fourier transform
+  pdl> $imag = $gal * 0;       # Create imaginary component, equal to zero
+  
+  pdl> fftnd $gal, $imag;      # Perform Fourier transform
 
 C<fftnd> performs a Fast Fourier Transform, in-place, on arbitrary-dimensioned data (i.e.
 it is 'N-dimensional').  You can display C<$gal>  after the FFT but you won't see
@@ -584,18 +585,18 @@ C<$gal>  back.
 If we want to enhance the large-scale structure we want to make a filter to only
 let through low-frequencies:
 
-   $tmp = rvals($gal)<10;        # Radially-symmetric filter function
-   $filter = kernctr $tmp, $tmp; # Shift origin to 0,0
-   imag $filter;
+  pdl> $tmp = rvals($gal)<10;        # Radially-symmetric filter function
+  pdl> $filter = kernctr $tmp, $tmp; # Shift origin to 0,0
+  pdl> imag $filter;
 
 You can see from the image that C<$filter>  is zero everywhere except near the origin
 (0,0) (and the 3 reflected corners). As a result it only let's through
 low-frequency wavelengths. So we multiply by the filter and  FFT back to
 see the result:
 
-   ($gal2, $imag2) = cmul $gal, $imag, $filter, 0; # Complex multiplication
-   ifftnd $gal2, $imag2;
-   imag $gal2,0,300;
+  pdl> ($gal2, $imag2) = cmul $gal, $imag, $filter, 0; # Complex multiplication
+  pdl> ifftnd $gal2, $imag2;
+  pdl> imag $gal2,0,300;
 
 =for html <img WIDTH=400 src="firststeps/whirl-ffta.png">
 =for html <img WIDTH=400 src="firststeps/whirl-fftb.png">
@@ -609,8 +610,8 @@ information has vanished. To see the high-frequency information we can just
 subtract our filtered image from the original 
 (Figure 1.9(b) - double yuk!):
 
-   $orig = rfits "fixed_gal.fits";
-   imag $orig-$gal2,0,100;
+  pdl> $orig = rfits "fixed_gal.fits";
+  pdl> imag $orig-$gal2,0,100;
 
 =head2 Roundoff
 
