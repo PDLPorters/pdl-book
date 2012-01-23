@@ -16,7 +16,7 @@ home, piddle around and send out some radio waves once in a while.">
 I<- Annette Foglino, Space: Is Anyone Out There? Most astronomers say yes, Life, 1 Jul 1989.>
 
 It can be very frustrating to read an introductory book which takes a
-long time teaching you the very basis of a topic, in a "Janet and John"
+long time teaching you the very basics of a topic, in a "Janet and John"
 style.  While you wish to learn, you are anxious to see something a bit
 more exciting and interesting to see what the language can do.
 
@@ -40,7 +40,7 @@ you to type raw PDL (and perl) commands and see the result right away. It
 also allows command line recall and editing (via the arrow keys) on most
 systems. So we begin by running the C<pdl> program from the system
 command line. On a Mac/UNIX/Linux system we would simply type C<pdl>
-in a 'terminal window'. On a Windows system we would type C<pdl>
+in a terminal window. On a Windows system we would type C<pdl>
 in a command prompt window. If PDL is installed correctly this is
 all that is required to bring up C<pdl>.
 
@@ -71,7 +71,7 @@ Let's create something, and display it:
   pdl> imag (sin(rvals(200,200)+1))
   Displaying 200 x 200 image from -1 to 0.999999940395355 ... 
 
-The result should look like the image below a two dimensional C<sin> function.
+The result should look like the image below - a two dimensional C<sin> function.
 C<rvals> is a handy PDL function for creating an image whose pixel values are
 the radial distance from the central pixel of the image.  With these arguments
 it creates a 200 by 200 'radial' image.  (Try 'C<imag(rvals(200,200))>' and you
@@ -98,7 +98,7 @@ perl script? Well it is pretty simple:
 That's it. This is a complete perl/PDL program. One could run it by typing 
 C<perl filename>. (In fact there are many ways of running it, most systems
 allows it to be setup so you can just type I<filename>. See your local
-Perl documentation - the the C<perlrun> manual page.)
+Perl documentation - then the C<perlrun> manual page.)
 
 Two comments:
 
@@ -133,7 +133,7 @@ Charles Messier, known to astronomrs as M51 and commonly as the Whirlpool
 Galaxy. This is a 'nearby' galaxy, a mere 25 million light years from Earth.
 The image file is stored in the 'FITS' format, a common astronomical format,
 which is one of the many formats standard PDL can read. (FITS stores more
-shades of grey than GIF or JPEG, PDL can also read these formats).
+shades of grey than GIF or JPEG, but PDL can read these formats too).
 
   pdl> $a = rfits("PDL/Book/m51_raw.fits");
   Reading IMAGE data...
@@ -144,7 +144,7 @@ shades of grey than GIF or JPEG, PDL can also read these formats).
 This looks pretty simple. As you can probably guess by now C<rfits> is the PDL
 function to read a FITS file. This is stored in the perl variable C<$a>.
 
-B<This is an important PDL concept: PDL stores it's data arrays in simple perl
+B<This is an important PDL concept: PDL stores its data arrays in simple perl
 variables> (C<$a, $x, $y, $MyData>, etc.).  PDL data arrays are special arrays
 which use a more efficient, compact storage than standard perl arrays (C<@a,
 @x, ...>) and are much faster to access for numerical computations. To avoid
@@ -169,7 +169,7 @@ Let's look at M51:
 
   pdl> imag $a;
 
-=for html <img WIDTH=400 src="firststeps/whirl-m51a.png">
+=for html <img WIDTH=600 src="firststeps/whirl-m51.png">
 
 Figure of the raw image C<m51_raw.fits> shown with progressively greater
 contrast using the C<imag> command.
@@ -247,7 +247,7 @@ let's find out the total sum of all the light in the image:
   pdl> print sum($gal);
   17916010
 
-{\tt sum} just sums up all the data values in all the pixels in the 
+C<sum> just sums up all the data values in all the pixels in the 
 image - in this case the answer is 17916010. If the image is linear
 (which it is) and if it was calibrated (i.e. we knew the relation
 between data numbers and brightness units) we could work out the
@@ -260,8 +260,8 @@ one data value corresponds to in physical units:
   5.58159992096455e+28
 
 
-This is also about 200 solar luminosities, (Note we have switched to using 'C<p>'
-as a shorthand for 'C<print>' - this only works in the C<pdl>' shell.)
+This is also about 200 solar luminosities, (Note we have switched to using C<p>
+as a shorthand for C<print> - this only works in the C<pdl> shell.)
 which gives 4 billion solar luminosities for the whole galaxy.
 
 OK we do not need PDL for this simple arithmetic, let's get back to
@@ -282,22 +282,18 @@ operation like:
   pdl> $mask = $r<50;
   pdl> imag $mask;
 
-=for html <img WIDTH=400 src="firststeps/whirl-maska.png">
-=for html <img WIDTH=400 src="firststeps/whirl-maskb.png">
-=for html <img WIDTH=400 src="firststeps/whirl-maskc.png">
-=for html <img WIDTH=400 src="firststeps/whirl-maskd.png">
+=for html <img WIDTH=400 src="firststeps/whirl-mask.png">
 
 Figure: Using  C<rvals> to generate a mask image to isolate the galaxy bulge 
-and disk>    B<XXX need to mosaic PNGs and add labels>
+and disk. Top row: radial gradient image C<$r>, and radial gradient
+masked with  less than operator C<$r < 50>. Bottom row: Bulge and disk of
+the galaxy.
 
-The Perl I<less than operator> is applied to all pixels in the
-image. You can see the result (Figure 1.5(b)) 
-is an image which is
-0 on the outskirts and 1 in the area of the nucleus. We can then
-simply use the mask image to isolate in a simple way the bulge and disk
-components (Figures 1.5(c) and 
-1.5(d)) and it is then
-very easy to find the brightness of both pieces of the M51
+The Perl I<less than operator> is applied to all pixels in the image.
+You can see the result is an image which is 0 on the outskirts and 1 in
+the area of the nucleus. We can then simply use the mask image to
+isolate in a simple way the bulge and disk components (lower row) and it
+is then very easy to find the brightness of both pieces of the M51
 galaxy:
 
  pdl> $bulge = $mask * $gal
@@ -313,7 +309,7 @@ galaxy:
  14904884
 
 You can see that the disk is about 5 times brighter than the bulge in
-total, despite it's more diffuse appearance. This is typical for
+total, despite its more diffuse appearance. This is typical for
 spiral galaxies. We might ask a different question: how does the average
 I<surface brightness>, the brightness per unit area on the sky,
 compare between bulge and disk? This is again quite straight forward:
@@ -324,7 +320,7 @@ compare between bulge and disk? This is again quite straight forward:
 We work out the area by simply summing up the 0,1 pixels in the mask
 image. The answer is the bulge has about 7 times the surface
 brightness than the disk - something we might have guessed from
-looking at Figure 1.4 - which tells astronomers its stellar density is
+looking at the above figure, which tells astronomers its stellar density is
 much higher.
 
 Of course PDL being so powerful, we could have figured this out in one line:
@@ -374,7 +370,7 @@ function, which 'clumps' together an arbitrary number of dimensions:
   pdl> points $rr, $sec;  # Radial plot
 
 You should see a nice graph with points like those
-in Figure 1.6
+in the figure below
 showing the drop-off
 from the bright centre of the star. The blurring is usually measured
 by the 'Full Width Half Maximum' (FWHM) - or in plain terms how
@@ -383,10 +379,10 @@ it looks like this is about 2-3 pixels - pretty compact!
 
 =for html <img WIDTH=400 src="firststeps/whirl-starradial.png">
 
-Figure 1.6: Radial light profile of the bright star with fitted curve.
+Figure: Radial light profile of the bright star with fitted curve.
 
 Well we don't just want a guess - let's fit the profile with a function.
-These blurring functions are usually represented by the 'Gaussian'
+These blurring functions are usually represented by the C<Gaussian>
 function. PDL comes with a whole variety of general purpose and
 special purpose fitting functions which people have written for
 their own purposes (and so will you we hope!). Fitting Gaussians
@@ -416,7 +412,7 @@ about what we don't know use C<apropos>:
 
 This tells us a whole lot about various functions and modules to do with
 Gaussians. Note that we can abbreviate C<help> and C<apropos>
-with 'C<?>' and 'C<??>' when using the C<perldl> shell.
+with 'C<?>' and 'C<??>' when using the C<pdl> shell.
 
 
 Let's fit a Gaussian:
@@ -450,14 +446,11 @@ Now let's overlay it on the previous plot.
   pdl> line $rrr, $fit, {Colour=>2} ; # Line plot
 
 
-The last C<line> command shows
-the PDL syntax for optional function arguments. This is based on
-the Perl's built in hash syntax. We'll say more about this later in 
-Chapter 4.
-The result should look a lot like Figure 1.6 
-- except unlike this book you should have some colour on your screen!. 
-Not too bad. We could perhaps
-do a bit better by exactly centroiding the image but it will do for now.
+The last C<line> command shows the PDL syntax for optional function
+arguments. This is based on the Perl's built in hash syntax. We'll say
+more about this later in L<PDL::Book::PGPLOT>.  The result should look a
+lot like the figure above.  Not too bad. We could perhaps do a bit
+better by exactly centroiding the image but it will do for now.
 
 Let's make a I<simulation> of the 2D stellar image. This is equally
 easy:
@@ -468,18 +461,17 @@ easy:
   pdl> wfits $fit2d, 'fake_star.fits'; # Save our work
 
 
-But that plot (Figure 1.7(a)) is a bit 
+But the figure below is a
 boring. So far we have been using simple 2D graphics from the
 C<PDL::Graphics::PGPLOT> library. In fact PDL has more
 than one graphics library (some see this as a flaw, some
 as a feature!). Using the C<PDL::Graphics::TriD> library
 which does OpenGL graphics we can look at our simulated
-star in 3D (Figure 1.7(b)):
+star in 3D (see the right hand panel);
 
-=for html <img WIDTH=400 src="firststeps/whirl-starsima.png">
-=for html <img WIDTH=400 src="firststeps/whirl-starsimb.png">
+=for html <img WIDTH=600 src="firststeps/whirl-starsim.png">
 
-Figure 1.7: Two different views of the 2D simulated Point Spread Function. B<XXX need to mosaic the panels>
+Figure: Two different views of the 2D simulated Point Spread Function.
 
    pdl> use PDL::Graphics::TriD; # Load the 3D graphics module
    pdl> imag3d [$fit2d];
@@ -544,11 +536,11 @@ stars of random brightnesses:
 This ought to give the casual reader some flavour of the Perl syntax - quite simple
 and quite like C except that the entities being manipulated here are entire
 arrays of data, not single numbers. The result is shown, for amusement,
-in Fig. 1.8 and takes virtually no time to compute.
+in the figure below and takes virtually no time to compute.
 
 =for html <img WIDTH=400 src="firststeps/whirl-fakestars.png">
 
-Figure 1.8: M51 covered in fake stars.
+Figure: M51 covered in fake stars.
 
 =head2 Getting Complex with M51
 
@@ -564,7 +556,6 @@ represents the strength of wavelengths of different scales in the image.
 Let's do it:
 
   pdl> use PDL::FFT; # Load Fast Fourier Transform package
-  
   pdl> $gal = rfits "fixed_gal.fits";
 
 Now C<$gal> contains real values, to do the Fourier transform it has to
@@ -574,7 +565,6 @@ are represented in PDL by seperate real and imaginary arrays - more about this
 in Chapter 2.)
 
   pdl> $imag = $gal * 0;       # Create imaginary component, equal to zero
-  
   pdl> fftnd $gal, $imag;      # Perform Fourier transform
 
 C<fftnd> performs a Fast Fourier Transform, in-place, on arbitrary-dimensioned data (i.e.
@@ -590,7 +580,7 @@ let through low-frequencies:
   pdl> imag $filter;
 
 You can see from the image that C<$filter>  is zero everywhere except near the origin
-(0,0) (and the 3 reflected corners). As a result it only let's through
+(0,0) (and the 3 reflected corners). As a result it only lets through
 low-frequency wavelengths. So we multiply by the filter and  FFT back to
 see the result:
 
@@ -598,17 +588,15 @@ see the result:
   pdl> ifftnd $gal2, $imag2;
   pdl> imag $gal2,0,300;
 
-=for html <img WIDTH=400 src="firststeps/whirl-ffta.png">
-=for html <img WIDTH=400 src="firststeps/whirl-fftb.png">
+=for html <img WIDTH=400 src="firststeps/whirl-fft.png">
 
-Figure 1.9: Fourier filtered smoothed image and contrast enhanced image with 
-the smoothed image subtracted. B<XXX need to mosaic the PNGs>
+Figure: Fourier filtered smoothed image and contrast enhanced image with 
+the smoothed image subtracted.
 
-Well that looks quite a bit different! (Figure 1.9(a)). 
-Just about all the high-frequency
-information has vanished. To see the high-frequency information we can just 
-subtract our filtered image from the original 
-(Figure 1.9(b) - double yuk!):
+Well that looks quite a bit different!  Just about all the
+high-frequency information has vanished. To see the high-frequency
+information we can just subtract our filtered image from the original to
+form the right hand image.
 
   pdl> $orig = rfits "fixed_gal.fits";
   pdl> imag $orig-$gal2,0,100;
@@ -622,4 +610,6 @@ arithmetical operations and a scattering of useful functions - and learned how
 to find more.  You certainly ought now to have a good feel of what PDL is all
 about.  In the next chapter we'll take a more comprehensive look at the basic
 parts of PDL that all keen PDL users should know.
+
+=ff
 
