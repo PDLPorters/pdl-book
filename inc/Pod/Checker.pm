@@ -1019,7 +1019,7 @@ sub command {
             }
             $arg = ''; # do not expand paragraph below
         }
-        elsif($cmd =~ /^(pod|cut)$/) {
+        elsif($cmd =~ /^(pod|cut|ff)$/) {
             # check for argument
             $arg = $self->interpolate_and_check($paragraph, $line,$file);
             if($arg && $arg =~ /(\S+)/) {
