@@ -1,5 +1,6 @@
 # gitignore - we don't want swap files from editors
 *.swp
+*~
 # no generated html or pdf files
 *.html
 *.pdf
