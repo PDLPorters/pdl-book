@@ -1,0 +1,480 @@
+=pod
+
+=head1 3D Graphics with OpenGL
+
+=head2 Introduction
+
+=for html <img WIDTH=400 src="graphics_3d/gnuplot-eg.png">
+
+  Figure 3.1: A 3D surface graph plotted using gnuplot,
+  using the commands
+  
+  set isosamples 30; splot [0:7] [0:7] sin(x)*sin(y). 
+
+=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg1.png">
+
+=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg2.png">
+
+  Figure 3.2: The same 3D surface, plotted using the
+  PDL::TriD module. The two different images were obtained
+  literally by grabbing the image in the window opened by
+  PDL and dragging it with the mouse to rotate. 
+
+There are lots of programs that let you plot so-called 3D surface 
+graphs, such as the one shown in Fig. 3.1. However, from 
+the beginning, PDL's 3D graphics have had something different 
+that we feel is really useful: motion, or as we call it “twiddling”.
+Dragging the 3D image with the mouse rotates the image, at the
+speed allowed by your display hardware. This turned 
+out to be quite useful for displaying functions: the human eye is 
+able to grasp the presented 3D surface much better when it moves, 
+especially in response to the mouse.
+
+Let's start with plotting the surface we showed using gnuplot in 
+the beginning: 
+
+  pdl> use PDL::Graphics::TriD;
+  pdl> $x = xlinvals(zeroes(30), 0, 7);
+  pdl> imag3d [ sin($x) * sin($x->dummy(0)) ];
+
+This should produce a new window with the image seen in Fig. 3.2.
+Notice that your console window is now frozen: it is waiting 
+for you to twiddle in the graphics window using the mouse and to 
+press C<q> in that window once you're done.
+
+If the above commands produce an error instead of a new window, 
+it might be that your PDL wasn't compiled with the option to 
+include the 3D graphics library---tough luck.  (See the appendix
+on installing PDL---TBD!).
+
+That above expression is a bit more difficult than the gnuplot 
+version, and there's a simple reason for that: gnuplot is 
+primarily meant for plotting functions; PDL is meant for handling 
+and plotting numerical data. So to plot a function, we have to 
+create the data for the function first which is a bit more 
+difficult.
+
+Now let's go through that part by part.
+
+  pdl> use PDL::Graphics::TriD;
+
+The first line simply tells Perl to load the
+PDL::Graphics::TriD module. The name comes from the
+fact that you can't have parts of module names starting
+with numbers, unfortunately. The second line
+
+  pdl> $x = xlinvals(zeroes(30), 0, 7);
+
+creates a one-dimensional piddle with 30 elements that has linear 
+values from 0 to 7:
+
+  pdl> p $x
+  [0 0.24137931 0.48275862 0.72413793 0.96551724.....
+
+The C<xlinvals> and the corresponding C<ylinvals> and C<zlinvals> are 
+useful for exactly this purpose: creating piddles of equally 
+spaced values. The final line,
+
+  pdl> imag3d [ sin($x) * sin($x->dummy(0)) ];
+
+is what draws the actual image. The expression inside, uses the 
+variable C<$x> for both the X and Y coordinates, via a clever use of 
+the dummy operation. (See chapter [chap_slice] for some 
+explanation).  This results in a 2-dimensional piddle with the 
+values for the Z coordinate. So far you've already seen all this. 
+And the final part, C<imag3d [vals]> is the call that creates the 3D 
+plot and opens the new window for it. The brackets around the 
+parameter may be slightly surprising: the 2-D commands work well 
+without those but there is a good reason for this, as you'll 
+learn later on: otherwise there would be a bad ambiguity.
+
+=cut
+
+=head2 Parametric Graphics
+
+We alluded in the introduction that allowing
+
+  pdl> imag3d $piddle;
+
+could be ambiguous and should be written
+
+  pdl> imag3d [$piddle];
+
+if C<$piddle> is intended to be the Z axis values of a rectangular 
+2D plot. Now is the time to find out why. The simple truth is 
+that
+
+  pdl> imag3d $piddle;
+
+is in fact legal code---if and only if the first dimension of
+C<$piddle> has exactly three elements. As you probably have already guessed, 
+these three elements are X, Y and Z. So what you can do is pass 
+C<$piddle> with shape C<[3,t,u]> which is the same as a 
+2-dimensional C<[t,u]> lattice with a 3-vector at each point. This 
+piddle will then be interpreted parametrically: the mesh will be 
+drawn as a function of C<$t> and C<$u>.
+
+Let's have an example: a curve that is not possible to plot with 
+just Z axis values, say the surface of a torus, with colors 
+coming from somewhere. First, set up the piddles and the 
+parameter variables:
+
+   use PDL;
+   use PDL::Graphics::TriD;
+   use PDL::NiceSlice;
+   
+   $torus = zeroes(3, 60, 20);
+   
+   $x = $torus((0));
+   $y = $torus((1));
+   $z = $torus((2));
+   
+   $t = xlinvals $x, 0, 6.28;
+   $u = ylinvals $x, 0, 6.28;
+
+Note that the coordinate separation can be done in just one line:
+
+   ($x, $y, $z) = map { $torus(($_)) } 0..2;
+
+Next, we color the torus. Let's put stripes on it:
+
+   $r = (1 + sin(2*$t +   $u))/2;
+   $g = (1 + cos(2*$t + 2*$u))/2;
+   $b = (1 + sin(2*$t + 3*$u))/2;
+
+Then, we choose the outer and inner radii and put the coordinates 
+into the slices. We'll let the torus lie in the XY plane so the 
+parametric coordinates can be easily derived.
+
+   $r_o = 3;
+   $r_i = 1;
+   $x .= ($r_o + $r_i * sin($u)) * sin($t) ;
+   $y .= ($r_o + $r_i * sin($u)) * cos($t);
+   $z .=         $r_i * cos($u);
+   imag3d_ns $torus, [$r, $g, $b];
+
+And there's our colorful torus! It looks a bit more like a barrel 
+because TriD automatically scales the axes but there it is. Note 
+how we use C<imag3d_ns> to get the colors instead of the shaded 
+version.
+
+Now, there is more than one way to do it. If your data is not by 
+default in the three-vector format (as ours wasn't above), it is 
+probably easier to do
+
+   imag3d [$x, $y, $z], [$r, $g, $b];
+
+which will produce the same results. Also, we could concatenate 
+the RGB piddles to form TBD.
+
+Now, since PDL does its best to make dimensions usable anywhere, 
+we can easily plot several parametrics of the same parameters at 
+once, if we pack all the surfaces into a piddle of shape C<[3,n_t,n_u,...]>
+where the three periods in the end indicate the beginning of the 
+extra parameters.
+
+For example, we can plot a family of shrinking toruses by adding 
+an extra dimension into C<$torus>:
+
+   $cone = $torus->dummy(3, 4)->copy();
+   $fac = axisvals($cone, 3);
+   $cone *= $fac + 2;
+   $cone(2) += 4 * $fac;
+   imag3d $cone;
+
+And further, if we want to distort them, it's perfectly possible:
+
+   $x = $cone(0);
+   $cone(2) += 0.1 * $x ** 2;
+   imag3d $cone;
+
+Any other kind of mutilation is also possible but we leave you to 
+discovering the interesting things that are possible by yourself, 
+because we have to move to something else that's important to 
+cover: coordinate systems. So far, all the examples you've seen 
+have happened in the Euclidean coordinate system where the 
+coordinates are specified as measures X, Y and Z on three 
+orthogonal axes.
+
+Or actually this is not true: in fact, we have used two kinds of 
+coordinates, the explicit X, Y and Z given in this section but in 
+the preceding sections, only Z has been given and X and Y have 
+been assumed by the system from the context.
+
+Of course, since PDL tries to follow “simple things simple, 
+complicated things possible”, it is possible to override the 
+default context.
+
+=head2 Types of 3D Graphical Objects
+
+So far, we've only been toying with surfaces. However, PDL can do 
+much more. We can plot points; here's a picture of two samples 
+from different (overlapping) probability distributions, plotted 
+with different colors:
+
+   use PDL::Graphics::TriD;
+   
+   $i = zeroes(8000);
+   $which = random($i) < 0.5;
+   $x = grandom($i) * (1   + $which);
+   $y = grandom($i) * (0.5 + $which);
+   $z = grandom($i) * (2   - $which);
+   $x += $which * $y; $y += $which * $z; # Make it oblique
+   points3d [$x, $y, $z], [$which, 0.5*(1-$which), 1-$which];
+
+A lot of fun things can be done with points but we'll go into 
+that later.
+
+Then, there are---of course---lines. As a fun demo of lines, 
+let's plot a number of flowlines moving in the Lorenz attractor. 
+As you may know, the Lorenz attractor is described by
+
+  dx/dt = sigma*(y - x)
+  dy/dt = (r - z)*x - y
+  dz/dt = (y - b)*z
+
+where sigma=10, r=28 and b=8/3. Because we're just doing this 
+as a simple demo, we'll use the extremely unstable d=Delta 
+method integration. We'll plot six trajectories that start close 
+to each other.
+
+   use PDL::Graphics::TriD;
+   $n = 500;
+   $nstart = 0;
+   $nc = 6;
+   $delta = 0.015;
+   # $x = pdl(1, 1, 1, 1, 1);
+   # $y = pdl(1, 1, 1, 1, 1);
+   # $z = pdl(1, 1.01, 1.02, 1.03, 1.04);
+   $xs = zeroes($n, $nc);
+   $ys = zeroes($n, $nc);
+   $zs = zeroes($n, $nc);
+   $x = -23 * ones($nc);
+   $y = -2 * ones($nc);
+   $z = 20 * ones($nc) + 0.02 * xvals($nc);
+   $sigma = 10; $r = 28; $b = 8.0/3.0;
+   for (-$nstart..$n-1) {
+      if($_ >= 0) {
+         $xs(($_)) .= $x;
+         $ys(($_)) .= $y;
+         $zs(($_)) .= $z;
+      }
+      $dx = $sigma * ($y - $x);
+      $dy = ($r - $z)*$x - $y;
+      $dz = $x*$y - $b * $z;
+   
+      $x += $delta * $dx;
+      $y += $delta * $dy;
+      $z += $delta * $dz;
+   }
+   $col = yvals(1, $nc) / ($nc-1);
+   $tim = xvals($n) / ($n-1);
+   line3d [$xs, $ys, $zs], [$col, $tim , 1-$col];
+
+Unfortunately, this plot has too much stuff going on so it's 
+difficult to see where the functions diverge even though they 
+have different colors at different times. This is an excellent 
+time to change variables: let's get rid of X and plot the time 
+step instead:
+
+   line3d [$tim, $ys, $zs], [$col, $tim , 1-$col];
+
+This yields a much clearer plot of the chaotic behaviour when the 
+lines diverge with time (Fig. XXX). In the latest versions of PDL 
+it is possible to adjust the line width as well: 
+
+   line3d [$tim, $ys, $zs], [$col, $tim , 1-$col], {LineWidth => 10}
+
+gives the same plot but with much thicker lines. The basic 
+rectangular surface you already saw in the preceding sections. It 
+also has an option to turn off the lines. (XXX?) There is also a 
+command mesh3d similar to the surface which just draws the 
+surface as a wire mesh instead of a solid surface. On slow 
+machines this can be of great help.
+
+Finally, there are two commands for quickly painting strictly 
+rectangular truecolor images: C<imagrgb> and C<imagrgb3d>. This can be 
+demonstrated by Tuomas J. Lukka's 4-liner:
+
+   use PDL; use PDL::Graphics::TriD;$a=zeroes 300,300;$r=$a->xlinvals(-1.5,
+   0.5);$i=$a->ylinvals(-1,1);$t=$r;$u=$i;for(1..30){$q=$r**2-$i**2+$t;$h=2
+   *$r*$i+$u;$d=$r**2+$i**2;$a=lclip($a,$_*($d>2.0)*($a==0));($r,$i)=map{$_
+   ->clip(-5,5)}($q,$h);}imagrgb[$a/30];
+
+This, as odd as it may sound, plots a grayscale Mandelbrot. If 
+you work your way through the code, you'll see that it simply 
+iterates the standard Mandelbrot iteration formula
+
+     z <-- z**2 + C     
+
+where C<C> is the original point. Then it uses C<lclip> to keep the 
+numbers in a reasonable range and colors the points according to 
+the iteration when the point crossed the distance C<sqrt(2)> from 
+the origin. The piddle C<$a> is two-dimensional so just like for 
+coordinates, it is enclosed in an array ref. It is also possible 
+to use
+
+   imag3gb [$r, $g, $b];
+   imag3gb $colors;
+
+where the RGB piddles are two-dimensional and C<$colors> has three 
+dimensions, the first of which is of length three.
+
+The command C<imagrgb3d> does the same but allows the user to place 
+the rectangle anywhere in 3-space. This is useful e.g. for 
+putting an image underneath a plotted surface of the same 
+function, as we shall see in the next section.
+
+=head2 More than one Image
+
+If you have used the PDL PGPLOT interface for plotting multiple 
+graphs then TriD is not going to surprise you: the commands 
+C<hold3d> and C<release3d> work just like their PGPLOT counterparts. 
+Before going further, however, let me remind you that for many 
+plots, it is not necessary to explicitly plot several points, 
+lines, surfaces or whatever: it can be easier just to use extra 
+dimensions, like we used for the torus cone in the first section.
+
+However, if you want to put objects of more than one type, or 
+objects of more than one resolution on the same graph, then you 
+do need to do so explicitly. As an example we'll use some fractal 
+mountain code by Tuomas J. Lukka from the 3D Gallery. Unlike with 
+the mandelbrot that has a well-known algorithm, this code we'd 
+just better format clearly from the start (the parameters have 
+also been slightly modified and the code has been modified to 
+plot all the iterations on top of each other).
+
+   use PDL; # XXX FIX - LOOKS BAD.
+   use PDL::Image2D;
+   use PDL::Graphics::TriD;
+   $k = ones(3,3) / 9;
+   $a = 20;
+   $b = $a*(random(2,2)-0.5);
+   hold3d(); # Set the coordinate system: XXX hack!!! FIX TriD
+   line3d pdl([[0, 0, 0,], [0, 0, 10]]);
+   for (0..4) {
+      if ($_ != 0) {
+         $c = $b->dummy(0,2)->clump(2)->xchg(0,1)->
+                   dummy(0,2)->clump(2)->xchg(0,1)->copy;
+         $c += $a*($c->random-0.5);
+         $a /= 1.5;
+         $b = conv2d($c,$k);
+      }
+      imag3d [xlinvals($b,0,1), ylinvals($b,0,1), $b + 2.0*$_], {Lines => 0};
+   }
+   release3d();
+
+Even laid out bare, this code is a mouthful with that big double 
+dummy-clump-xchg thing in the middle. But in fact the function is 
+really simple: the dummy-clump-xchg thing simply doubles the 
+length of each dimension, copying each value to two consecutive 
+locations. After doubling the resolution, we add some noise from 
+the random function (the magnitude of the noise is diminished 
+each time). Finally, we pull in PDL::Image2D for the C<conv2d> 
+routine that does 2-dimensional convolutions (optimized for small 
+kernels like ours). We use a 5x5 kernel to smooth our data at 
+each step by convolution. That's the numerical part, now for the 
+graphics part.
+
+=head2 Animation
+
+
+=head2 Putting it all together---cool hacks
+
+Here's one where the original idea is by Robin Williams, done for 
+the 3D Gallery. This gallery is available in the PDL distribution 
+in the file Demos/TriDGallery.pm. The idea is to put interesting 
+scripts that do a lot using just 4 lines of 72 characters. The 
+crux of the idea is to use OpenGL points to perform volume-like 
+rendering.  This is just a quick hack. However, the principles
+are interesting enough that we thought you might 
+enjoy them. Let's start with a function of three variables, whose 
+zeroes are a sphere and an ellipsoid inside the sphere, with the 
+Y axis slightly distorted to form a parabola with the Z axis:
+
+   sub f {
+      my($x, $y, $z) = @_;
+      $y = $y + 0.04 * $z**2;
+      return (($x**2 + $y**2 + $z**2) - 100) *
+             ((2*$x**2 + 4*$y**2 + 4*$z**2) - 100);
+   }
+
+Note here that we can't use the += operator for C<$y> since below we 
+use the same piddle for the three coordinates (with a simple 
+dummy transformation). Now, we want to picture approximately 
+where the function crosses zero, but since there are two separate 
+zero surfaces we can't just use an algorithm that finds a zero and 
+creates an isosurface. Besides, an isosurface renderer wouldn't 
+be able to show both the sphere and the ellipsoid simultaneously. 
+So rather, let's first calculate the sign of the function in a 
+50x50x50 lattice. The radius of the sphere is C<sqrt(100)=10> so we 
+make the coordinate system slightly larger.
+
+   use PDL::Graphics::TriD;
+   $x = xlinvals(zeroes(float,50), -11, 11);
+   $f = f($x, $x->dummy(0), $x->dummy(0)->dummy(0));
+   $sign = byte($f>0);
+
+Now that we have the sign, why don't we simply find the set of 
+points where the sign has changed. It is simplest to do this over 
+just one dimension:
+
+   $df = ($sign(0:-2) != $sign(1:-1))
+   points3d [whichND($df)]
+
+And indeed, we get a rotatable set of points in 3-space that are 
+in the shape of a sphere with an ellipsoid inside, slightly 
+distorted, just as ordered. This is not yet a good picture: there 
+is a hole in the point set where the surface is parallel to the X 
+axis, naturally, since there there is no difference between the 
+sigh between the points next to each other on X axis.
+
+To do a more complete job, we need to compare the signs not only 
+along X but other dimensions as well. This is possible due to the 
+wonderful invention by Robin Williams:
+
+   $a = $sign;
+   foreach (1,2,4) {
+      $t=($a(0:-2)<<$_);
+      $t+=$a(1:-1);
+      $a=$t->mv(0,2);
+   }
+   points3d [whichND(($a != 0) & ($a != 255))];
+
+It's a bit cryptic but truly beautiful so bear with us while we 
+go through it. The loop is executed thrice, once for each 
+dimension. In the beginning, we know that all the values in C<$a>
+are either 0 or 1. The first line of the loop takes a slice from 
+C<$a>, leaving the last element of dimension one out and shifts if 
+by the loop index C<$_>. The second line takes another slice, this 
+time leaving out the first element and adds it to the first. 
+Finally, the dimensions are rotated for the next invocation.
+
+Choosing the shifts to be 1,2,4 is the key: this way after the 
+first round, the piddle contains values 0,1,2,3 after the second 
+it contains 0...15 and after the third, 0..255. None of the 
+shifts shift anything on top of each other so the plus operation 
+could be replaced with a bitwise or.
+
+So after the loop, we have a three-dimensional piddle with one 
+index less in each dimension, and each value in that piddle 
+contains in its 8 bits the 8 corners of a small cube. Finally, to 
+find whether the function crosses zero at that cube, we simply 
+check whether all the bits are equal, i.e. whether the number is 
+255 or 0 and if it isn't we know the function changes sign.
+
+The image quality can be slightly improved by removing the Moire 
+effect through randomization:
+
+   points3d [map {$_+$_->float->random} whichND(($a != 0) & ($a != 255))]
+
+note how the map is necessary: the whole point is that C<whichND>
+returns a list of piddles (NOT ANY MORE).
+
+Now, to further improve image quality we could add 
+different-color pixels but that would require alpha blending to 
+the OpenGL parameters and this would get into complications we 
+don't necessarily want here. So now we're going to KISS[footnote:
+Keep It Simple, Stupid] this topic away and move to the next one.
+
+=head2 The VRML backend
