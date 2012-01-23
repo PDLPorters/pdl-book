@@ -6,29 +6,65 @@
 
 =for html <img WIDTH=400 src="graphics_3d/gnuplot-eg.png">
 
-  Figure 3.1: A 3D surface graph plotted using gnuplot,
-  using the commands
-  
-  set isosamples 30; splot [0:7] [0:7] sin(x)*sin(y). 
+=for man
+  +-----------------------------+
+  |,,'........................',|
+  |                             |
+  |                             |
+  |           ...  ...          |
+  |   .  .',,'.  .'......       |
+  |   . ..  .';,'... .....      |
+  |   .      .......'           |
+  |             ...             |
+  |                             |
+  |                             |
+  |                             |
+  |. . . . . .                  |
+  +-----------------------------+
 
-=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg1.png">
-
-=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg2.png">
-
-  Figure 3.2: The same 3D surface, plotted using the
-  PDL::TriD module. The two different images were obtained
-  literally by grabbing the image in the window opened by
-  PDL and dragging it with the mouse to rotate. 
+ Figure 3.1: A 3D surface graph plotted using gnuplot,
+ using the commands:
+ 
+ set isosamples 30; splot [0:7] [0:7] sin(x)*sin(y). 
 
 There are lots of programs that let you plot so-called 3D surface 
 graphs, such as the one shown in Fig. 3.1. However, from 
 the beginning, PDL's 3D graphics have had something different 
-that we feel is really useful: motion, or as we call it “twiddling”.
+that we feel is really useful: motion, or as we call it "twiddling".
 Dragging the 3D image with the mouse rotates the image, at the
 speed allowed by your display hardware. This turned 
 out to be quite useful for displaying functions: the human eye is 
 able to grasp the presented 3D surface much better when it moves, 
 especially in response to the mouse.
+
+
+=for html
+<img WIDTH=200 src="graphics_3d/pdltrid-eg1.png">
+<img WIDTH=200 src="graphics_3d/pdltrid-eg2.png">
+
+=for man
+  +-----------------------------++-----------------------------+
+  |                             ||                             |
+  |                             ||                             |
+  |                             ||        . :c.                |
+  |     .                       ||          .cd,               |
+  |          ,.     .           ||          .'ldl.'            |
+  |     .   .od   ..c:          ||           .;l.'od.          |
+  |        .'dkl....,;.         ||       c.   .. .;ox,         |
+  |     .    ..,;..'. dc        ||     .dxc.      .:oxdd,      |
+  |              .,   :.        ||       ,o:.     .'lxxx:      |
+  |     .   ..   .              ||         ,ol.    .;dkd;      |
+  |    ...                      ||      .    ;c'.    .. .      |
+  |           .                 ||             ..              |
+  |                             ||                             |
+  |                             ||                             |
+  +-----------------------------++-----------------------------+
+
+ Figure 3.2: The same 3D surface, plotted using the
+ PDL::TriD module. The two different images were obtained
+ literally by grabbing the image in the window opened by
+ PDL and dragging it with the mouse to rotate. 
+
 
 Let's start with plotting the surface we showed using gnuplot in 
 the beginning: 
@@ -37,15 +73,15 @@ the beginning:
   pdl> $x = xlinvals(zeroes(30), 0, 7);
   pdl> imag3d [ sin($x) * sin($x->dummy(0)) ];
 
-This should produce a new window with the image seen in Fig. 3.2.
+This should produce a new window with the image seen in Figure 3.2.
 Notice that your console window is now frozen: it is waiting 
 for you to twiddle in the graphics window using the mouse and to 
 press C<q> in that window once you're done.
 
 If the above commands produce an error instead of a new window, 
 it might be that your PDL wasn't compiled with the option to 
-include the 3D graphics library---tough luck.  (See the appendix
-on installing PDL---TBD!).
+include the 3D graphics library.  (See the appendix on installing
+PDL---TBD!).
 
 That above expression is a bit more difficult than the gnuplot 
 version, and there's a simple reason for that: gnuplot is 
