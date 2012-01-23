@@ -38,9 +38,9 @@ able to grasp the presented 3D surface much better when it moves,
 especially in response to the mouse.
 
 
-=for html
-<img WIDTH=200 src="graphics_3d/pdltrid-eg1.png">
-<img WIDTH=200 src="graphics_3d/pdltrid-eg2.png">
+=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg1.png">
+
+=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg2.png">
 
 =for man
   +-----------------------------++-----------------------------+
