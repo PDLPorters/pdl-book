@@ -265,9 +265,24 @@ Then, there are---of course---lines. As a fun demo of lines,
 let's plot a number of flowlines moving in the Lorenz attractor. 
 As you may know, the Lorenz attractor is described by
 
-  dx/dt = sigma*(y - x)
-  dy/dt = (r - z)*x - y
-  dz/dt = (y - b)*z
+=for asciitex
+\begin{array}{ccl}
+\frac{dx}{dt} & = & \sigma (y-x)\\
+\frac{dy}{dt} & = & (r-z) x - y\\
+\frac{dz}{dt} & = & (y-b) z\\
+\end{array} 
+
+  dx                        
+  --    =    sigma (y - x)  
+  dt                        
+                            
+  dy                        
+  --    =    (r - z) x  -  y
+  dt                        
+                            
+  dz                        
+  --    =    (y - b) z      
+  dt                        
 
 where sigma=10, r=28 and b=8/3. Because we're just doing this 
 as a simple demo, we'll use the extremely unstable d=Delta 
