@@ -125,13 +125,10 @@ optionally print the result of the function:
     }
     1;
 
-
-
 =head2 Documenting your Functions
 
 Just like any other Perl script, you can add Plain Old Documentation
 (POD) inside your PDL functions. 
-
 
 For a detailed look at what you can have in a POD, look at L<perlpod>
 with C<perldoc perlpod> or look online for a tutorial.
@@ -142,3 +139,4 @@ examples so that a new user can test it and check they understand what
 the function behaves, look at L<perlpod> with C<perldoc perlpod> or look
 online for a tutorial.
 
+=ff

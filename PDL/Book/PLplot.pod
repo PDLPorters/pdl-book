@@ -5,14 +5,7 @@ also
 conversion for PDF reading is:
 pod2pdf PLplot.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file PLplot.pdf
 
-=over 4
-
-
-=item NAME 
-
-B<PDL::Graphics::PLplot::Cookbook>
-
-=item B<SYNOPSIS>
+=head1 Graphics with PLplot
 
 A practical user's guide to B<PDL::GRAPHICS::PLplot>. Showing code usage in both functional
 and object oriented styles, so that new users can find the example code usages for thier
@@ -32,8 +25,6 @@ Finally, it is intended that this be a user-contributed userguide.
 I want others to contribute (or edit) code, which demonstrates
 a clear usage of some method or option.   
 
-=item B<DESCRIPTION>
-
 The B<PDL::GRAPHICS::PLplot> perl module, is an interface to the 
 L<http://plplot.sourceforge.net> PLplot C library. It is an excellent
 2d plotting library, but also does 1d bargraphs and 3d projection graphs.
@@ -41,11 +32,7 @@ As usual, the devil is in the details of actually using the module,
 and this document hopes to point out as many code details as possible,
 without getting too tedious or boring.
 
-=back
-
-
-=head1 About the examples.
-
+=head2 About the examples.
 
 Many of the examples, discussed below, are from the PDL::Graphics-PLplot/t subdirectory,
 of the source module. These are written in the functional style, and are
@@ -61,7 +48,7 @@ to use, so I will tend to show that style in the examples.
 
 
 
-=head1 Introducing C<PDL::Graphics::PLplot>
+=head2 Introducing C<PDL::Graphics::PLplot>
 
 =head2 basic methods available
 
@@ -1810,23 +1797,4 @@ unpack the module source then build:
 	make install # as root
 
 
-
-
-
-=head1 AUTHOR
-
-Joe Milosch, also known as zentara on perlmonks, assembled this document.
-David Merten, wrote most of the section and examples on Object Oriented usage,
-which were taken from his slideshow on PLplot.
-
-=head1 Credits
-
-   Matthew Kenworthy,
-   
-   David Merten's slideshow on B<PDL::Graphics-PLplot>.
-   His very informative slideshow can be downloaded or viewed at L<http://www.slideshare.net/dcmertens/p-lplot-talk>  
-   
-   
-   
-
-
+=ff

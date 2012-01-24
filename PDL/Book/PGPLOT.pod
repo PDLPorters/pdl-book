@@ -1747,15 +1747,4 @@ the C<PGPLOT> package, but for day-to-day use it is hoped that
 PDL::Graphics::PGPLOT will address most people's needs. And if doesn't
 then let us know!
 
-=head1 Credits
-
-Original text from "PDL - Scientific Programming in Perl" (2001) Chap. 4
-
-Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Söller,
-Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
-Doug Hunt, Tim Pickering.
-
-Modified to LyX by Chris Marshall for PDL 2.4.3, December 2006.
-
-Converted to POD format by Matthew Kenworthy, May 2010.
-
+=ff

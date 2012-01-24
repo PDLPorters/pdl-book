@@ -1,9 +1,9 @@
 =head1 PDL Book Credits
 
 Several separate sources of material have been used to make this 2012
-version of the PDL Book. The biggest source of material has been ``PDL -
-Scientific Programming in Perl'', written in 2001 and added to over the
-past decade by Karl Glazebrook, Christian Soller, Tuomas J.  Lukka, Marc
+version of the PDL Book. The biggest source of material has been "PDL -
+Scientific Programming in Perl", written in 2001 and added to over the
+past decade by Karl Glazebrook, Christian Soller, Tuomas J. Lukka, Marc
 Lehmann, Jarle Brinchmann, Doug Hunt, John Cerney, Robin Williams and
 Tim Pickering.
 
@@ -29,6 +29,55 @@ Matthew Kenworthy
 
 David Mertens
 
-XXX TO ADD MORE
+Chris Marshall
+
+Joe Milosch
+
+Creating.pod:
+
+Original text from "PDL - Scientific Programming in Perl" (2001) Chap. 1
+
+Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Soller,
+Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
+Doug Hunt, Tim Pickering.
+
+Modified to LyX by Chris Marshall for PDL 2.4.3, December 2006.
+
+Converted to POD format by Mike Burns, May 2010.
+
+Functions:
+
+Written by Matthew Kenworthy 2011
+
+PGPLOT.pod:
+
+Original text from "PDL - Scientific Programming in Perl" (2001) Chap. 4
+
+Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Söller,
+Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
+Doug Hunt, Tim Pickering.
+
+Modified to LyX by Chris Marshall for PDL 2.4.3, December 2006.
+
+Converted to POD format by Matthew Kenworthy, May 2010.
+
+PLplot:
+
+Joe Milosch, also known as zentara on perlmonks, assembled this document.
+David Merten, wrote most of the section and examples on Object Oriented usage,
+which were taken from his slideshow on PLplot.
+
+David Merten's slideshow on B<PDL::Graphics-PLplot>.  His very
+informative slideshow can be downloaded or viewed at
+L<http://www.slideshare.net/dcmertens/p-lplot-talk>  
+
+PP.pod:
+
+David Mertens <dcmertens.perl@gmail.com>
+
+Copyright (c) 2011 David Mertens. All rights reserved.
+
+This is free documentation; you can redistribute it and/or
+modify it under the same terms as Perl itself.
 
 

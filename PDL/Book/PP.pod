@@ -1375,15 +1375,4 @@ The key is to use C<clump(-1)>:
 
 =back
 
-=head1 AUTHOR, COPYRIGHT
-
-David Mertens <dcmertens.perl@gmail.com>
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright (c) 2011 David Mertens. All rights reserved.
-
-This is free documentation; you can redistribute it and/or
-modify it under the same terms as Perl itself.
-
-=cut
+=ff
