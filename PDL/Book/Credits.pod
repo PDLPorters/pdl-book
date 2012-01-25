@@ -35,15 +35,8 @@ Joe Milosch
 
 Creating.pod:
 
-Original text from "PDL - Scientific Programming in Perl" (2001) Chap. 1
-
-Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Soller,
-Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
-Doug Hunt, Tim Pickering.
-
-Modified to LyX by Chris Marshall for PDL 2.4.3, December 2006.
-
-Converted to POD format by Mike Burns, May 2010.
+Section 2.4 from PDL-4.lyx book by Craig DeForest
+PODded by M. Kenworthy
 
 Functions:
 

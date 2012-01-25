@@ -5,43 +5,788 @@ also
 conversion for PDF reading is:
 pod2pdf Creating.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file Creating.pdf
 
-=head1 Creating Piddles
+=head1 Constructing PDLs
 
-Creation of new piddles has to be done via a PDL function. Otherwise Perl doesn't know the variable has PDL magic.
+PDL variables are a new class of object within Perl. There are three
+main ways to construct them: via the pdl constructor; via one of the
+special index PDL constructors; or by reading in some external data. In
+addition, there are hooks for stuffing your own raw data into a PDL
+variable. The more basic constructors are here.
 
-The simplest method for small piddles is to use the pdl function which can accept numbers and lists of numbers, as well as other piddles:
+=head2 The basic constructor, C<pdl()>
 
-   $a = pdl (1,2,3,4,5);                  # Create 1D piddle
-   $a = pdl ([1,2,3,4,5], [2,3,4,5,6]);   # Create 2D piddle
-   $a = pdl 42;                           # Create 0D (scalar) piddle
+The most basic way to make a PDL is with the function C<pdl()>. You can
+feed pdl just about anything that makes sense: a perl scalar, a perl
+list, a nested perl list, another PDL, or even a perl list of PDLs. It
+will return an appropriately-dimensioned PDL containing those values.
+Here are some examples:
 
-The numbers are specified using Perl's `[]' list reference syntax. See the help on pdl for more details. It is not normally necessary to worry about converting single numbers (Perl 'scalars') to piddles -- all PDL functions will do this on-the-fly. So you can say:
+  $a = pdl(5);                 # double-precision scalar
+  $a = pdl(short,5);           # short-integer scalar
+  $a = pdl(1,2,3);             # 3-PDL (one dim)
+  $a = pdl([1,2,3]);           # 3-PDL, another way (just one dim)
+  $a = pdl([[1,2,3]]);         # 3x1-PDL (two dims)
+  $a = pdl([[1,2,3],[4,5,6]]); # 3x2-PDL (two dims)
 
-   $a = pdl (1,2,3,4,5); 
-   $b = $a + 2;
+In the last couple of examples, notice that the innermost nested 
+lists form the 0th dimension of the PDL.
 
-without having to care whether `2' is a piddle or not. The result, $b, is a piddle of course.
+If you aren't sure whether a particular variable contains a PDL 
+or not (and sometimes you care: there's a slight difference 
+between a scalar PDL and a perl scalar!) you can always safely 
+wrap a C<pdl> call around it to be sure. 
 
-Of course if you are a heavy-duty PDL user your piddles will be BIG. Thus you will need to use a PDL I/O function to read your data from a file in some format. For example, in Chapter 1 we used rfits:
+=head2 Array allocation: C<zeroes()> and C<ones()>
 
-  $a = rfits "fixed_gal.fits";
+The two operations zeroes and ones generate PDLs full of the 
+value 0 and of the value 1, respectively. (well, what did you 
+expect?) They're useful for allocating data in a hurry. If you 
+feed in a list of perl scalars, they are used as a list of 
+dimensions for the new PDL that gets returned. If you feed in a 
+PDL, either one will simply match the size of the PDL. Examples:
 
-rfits is a PDL function which reads the data and returns it as a piddle. Another useful function is rcols which reads columns of data from a text file:
+  $a = zeroes(3,3);           # $a becomes a 3x3 array filled with 0
+  $a = zeroes(byte,3,3);      # ditto, only bytes instead of doubles
+  $b = ones($a);              # $b becomes a 3x3 array filled with 1
+  $p = pdl(1,2,3);            # A PDL containing [1 2 3]
+  $c = zeroes($p);            # A 3-PDL containing [0 0 0]
+  $d = zeroes($p->list);      # A 1x2x3-PDL ($p->list is a Perl list)
 
-  ($a, $b) = rcols 'text.dat';
+=head2 Index PDLs: xvals, yvals, rvals, sequence, ndcoords
 
-It is actually surprisingly easy to write these I/O functions -- most of the code for rfits is straight forward Perl. PDL comes with a plethora of I/O functions for reading free-formatted data, raw binary formats and specially defined formats like FITS and GIFs.
+It is surprisingly useful to be able to generate "index PDLs": 
+arrays whose elements merely enumerate their coordinates. PDL 
+supplies a passel of index PDL constructors. 
 
-Another way of creating BIG piddles is using functions such as zeroes. This creates piddles, filled with zeroes, of whatever dimensions you specify:
+The basics are C<xvals>, C<yvals> and C<zvals>, which work like
+C<zeroes> and 
+C<ones>, but construct an index PDL that works along the 0, 1, or 2 
+axis, respectively. For example:
 
-   $a = zeroes 10;      # 10 element 1D piddle
-   $a = zeroes 100,100; # 100x100 2D piddle
-   $a = zeroes 3,4,5,6  # 3x4x5x6 4D piddle
+  pdl> print xvals(3,3)
+  [  
+    [0 1 2]  
+    [0 1 2]  
+    [0 1 2] 
+  ]
+  pdl> print yvals(3,3)
+  [
+    [0 0 0]
+    [1 1 1]
+    [2 2 2]
+  ]
 
-Or you can use another piddle as a template for the dimensionaligy:
+If you want more generality or higher dimensionality, C<axisvals> 
+works the same way but lets you specify the index dimension by 
+number.
 
-   $a = zeroes $b;
+Sometimes you want a PDL that contains radii from a given point. 
+You could always apply the Pythagorean theorem explicitly:
 
-Other creation functions like random and rvals work in this way.
+  $x=xvals(10,10)-5;
+  $y=yvals(10,10)-5;
+  $a=sqrt( $x*$x + $y*$y );
 
-=ff
+but it's much easier to use C<rvals>, which does that stuff for you:
+
+  pdl> $a = rvals(3,3); print $a;
+  [
+    [ 1.4142136        1  1.4142136]
+    [         1        0          1]
+    [ 1.4142136        1  1.4142136]
+  ]
+
+As with the others, C<rvals> works in any number of dimensions, and 
+can either take a dimension list or another PDL to match. There 
+are a number of adjustments that you can make to C<rvals>; see the 
+online documentation for details.
+
+Finally, sometimes you want to create a full vector index PDL; 
+for example, to enumerate all the coordinates in a 100x100 image 
+you would want a 2x100x100-PDL. You can assemble one from C<xvals>, 
+C<yvals>, or just use C<ndcoords>. Here's how to do it either 
+way:
+
+  $a = pdl( xvals(100,100), yvals(100,100) )->mv(0,1); # slow way
+  $a = ndcoords(100,100);                              # fast way
+
+C<ndcoords> works like all the other index constructors, except that 
+it adds an additional dim to the beginning of its return value, 
+to handle the fact that each index is a vector that points into 
+an N-dimensional array. C<ndcoords> and C<range> together can be used 
+to chop up an image into manageable tiles; see Section [sub:Range]
+, below.
+
+=head2 Specialty constructors
+
+PDL contains two important internal constructors, 
+C<PDL::new_from_specification> and C<null>, that are useful for 
+importing data en masse or for other special applications. If 
+you're just starting out, you probably don't really need to know 
+this stuff just yet - you'll probably find the various data 
+import techniques in [sec:Getting-values-into] more useful. So 
+skip ahead if you like. 
+
+C<null> takes no arguments and returns a null PDL. A null PDL has no 
+values, but (unlike the empty PDL) can be assigned to. Null PDLs 
+are placeholders that automatically resize themselves to fit any 
+dimensional context. They're mainly intended for internal use, 
+but you might find them helpful in odd contexts (for example, you 
+can pass a null PDL into a function as a write-back return 
+value).
+
+C<PDL::new_from_specification> is the engine that C<zeroes>, C<rvals>, and 
+such use for initial construction. It takes the same sort of 
+arguments as C<zeroes> (an optional type and a PDL template or a 
+size list), but doesn't bother with any initialization of the 
+newly allocated RAM. This is especially useful if you're just 
+going to stuff your own values into the new PDL anyway. 
+
+=head1 Getting values into and out of PDLs
+
+Unless you can get data in and out of your PDLs they won't do you 
+much good. Most large blocks of data are handled by direct file 
+I/O (Chapter [cha:File-I/O]), but you will also want to get 
+normal Perl values into and out of your PDLs. Here are the basic 
+ways to get data into your PDLs (from perl, other PDLs, or random 
+chunks of memory), and back out again (into perl, into random 
+chunks of memory, or into ASCII). For displaying your data you 
+will want to look at Chapter [cha:Graphics].
+
+=head2 Construction: slurping Perl arrays
+
+The simplest way to turn a bunch of Perl data into a PDL is by 
+calling C<pdl()>, the PDL constructor. The constructor pokes and 
+prods the array structure of its argument(s), and creates a PDL 
+that contains all the values in whatever nested array you've come 
+up with. For example,
+
+  $pdl_all = pdl(@pdl_source);
+  $pdl_3x3 = pdl([00,01,02],[10,11,12],[20,21,22]);
+
+That is certainly the most convenient (and probably the fastest) 
+way to stuff a bunch of values from Perl variables into a PDL.
+
+=head2 Assignment with C<.=>
+
+PDL distinguishes between two kinds of assignment: I<global assignment>
+(the usual C<=> operator) and I<threaded (computed) assignment> (the
+C<.=> operator).
+
+PDLs are best thought of as something like perl refs or C 
+pointers: the variable points to the location in memory where the 
+data reside. That makes array indexing and slicing 
+straightforward, since you can hold a slice of a larger array in 
+a related variable, without expensive memory copies. The global C<=>
+operator is used to set the value of the pointer. The threaded C<.=> 
+operator is used to set the value of the data that are contained 
+in the PDL. The two operators work quite differently. For 
+example:
+
+  $a = xvals(3);      # 3-PDL: values are (0,1,2)
+  $b = zeroes(3,4);   # 3x3 array of zeroes
+  $c = zeroes(3,4);   # 3x3 array of zeroes
+  $b = $a;            # $b becomes a clone of $a
+  $c .= $a;           # $c becomes 4 copies of $a
+
+
+puts two quite different values into C<$b> and C<$c>. At the end of the 
+code, C<$b> and C<$a> are linked (they point to the same area of 
+memory), so assigning to the elements of C<$b> changes C<$a> too. But 
+C<$c> remains a separate variable, whose elements happen to have 
+received values from the corresponding elements of C<$a>. 
+
+But that's not all! C<$b> and C<$c> end up with completely different 
+shapes. Because C<$c> started out as a 3x4-PDL, the threading engine 
+duplicates C<$a> (which is a 3-PDL) for each row of C<$c>. The C<.=> 
+operator is called threaded assignment, because it causes its 
+right-hand argument to be expanded and vectorized exactly as any 
+other operand would. Threading is explained in detail in Section
+[sec:Dimensionality-and-Threading]
+.
+
+=head2 Importing data directly from memory: C<get_dataref>
+
+PDL lets you access the memory of a PDL variable directly, using 
+a perl string variable. You normally won't have to use this 
+mechanism, but I include it here for completeness - if you are 
+just learning PDL, you can probably skip thsi subsection.
+
+The string variable mechanism gives you access to the low-level 
+representation of the data (which is the same as your C compiler 
+would use). The string access routines are C<get_dataref> and 
+C<upd_data>. C<get_dataref> takes a PDL argument and returns a perl 
+scalar ref that points to the PDL's data as a perl string. If you 
+change the string, Perl might move it in memory, so you must then 
+update the pointers in the PDL variable to match. That is what 
+C<upd_data> is for.
+
+Here's a brief example of how to import a large hunk of memory 
+into a PDL. In this case, the hunk is three 1000x1000 image 
+planes that you have somehow imported into a perl string, e.g. by 
+reading from a file or executing a PerlXS script. The three image 
+planes are to represent R, G, and B in a PDL with dimensions 
+(3x1000x1000). 
+
+  $pdl = PDL->new_from_specification(byte,1000,1000,3);
+  $dref = $pdl->get_dataref;  # $$dref is the PDL as a string.
+  $$dref = $data;   # Overwrite the string.
+  $pdl->upd_data(); # Make sure the PDL knows it changed.
+  $rgb = $pdl->mv(2,0,1); # 3x1000x1000.
+
+Here, C<$$dref> is a Perl string that occupies the same location in 
+RAM as the data in C<$pdl>. Unless you're using 2-byte Unicode 
+strings, the string has as many characters as there are bytes in 
+the machine representation of the PDL. This example has a 3MB 
+string - but a double-precision PDL with the same dimensions 
+would have a 24MB string. Remember, C<new_from_specification> 
+allocates the PDL but doesn't initialize its contents - so 
+initially the string is full of whatever garbage happened to be 
+in that chunk of memory. Overwriting the string with a simple 
+copy (or perl sysread operation) rapidly loads the binary data 
+directly into C<$pdl>, with no type conversion at all. (Warning -
+you can hose yourself if you shorten the string, which will 
+de-allocate the end of the PDL!) Afterward, you have to update 
+the internal data pointers in C<$pdl>, in case Perl moved the string 
+around. The final mv call makes sure that the dimensionality is 
+right, without shuffling the actual bytes around.
+
+If you use this low-level mechanism, you are responsible for 
+making sure that the data you put into the new PDL has the same 
+form as the PDL's formal data type! You are also responsible for 
+figuring out byteswapping for your machine - the bytes in the 
+string are in machine order, not network order.
+
+=head2 Conversion to Perl types: C<at> and C<list>
+
+You can get a PDL scalar out into the Perl world with C<at>, which 
+requires the index of the scalar to pull out:
+
+  pdl> $a = xvals(5)*2;  # $a is a PDL
+  pdl> $a4 = $a->at(4);  # $a4 is a perl scalar
+
+You can also export a whole PDL with C<list>:
+
+  pdl> @a = $a->list;
+  pdl> for($a->list) { print $_, - ; }
+  0 - 2 - 4 - 6 - 8 - 
+
+Be careful with C<at>, as you almost never want to use it - it is 
+tedious for anything nontrivial, and extremely slow! Particularly 
+if you find yourself placing an C<at> call inside a C<for> loop, you 
+should probably stop and think about how to use threading for 
+your problem - see below.
+
+=head1 Data Types and Contexts
+
+Because PDL is a hybrid language, it's important to understand 
+Perl's data structures as well as PDL's. Normal Perl variables 
+are represented in a way that makes sense for Perl's original 
+application - small to medium sized "glue" tasks - while PDL 
+variables and arrays ("PDLs") have a more traditional typing 
+scheme. 
+
+Unlike most other languages, ordinary Perl uses "polymorphous" 
+(or "behind-your-back") typing. While the traditional simple 
+types (boolean, string, short, long, float, double) are all 
+represented, the language doesn't distinguish between the 
+different types. The Perl engine keeps track of each variable's 
+representation, and delivers to you the most appropriate 
+representation depending on context. For example, + is an 
+arithmetic operator, so the expression C<"5" + 2> yields the number 
+C<7> even though one of its terms began life as a string. 
+
+PDL variables are implemented on top of Perl's normal variable system. A
+PDL is effectively a new type of perl scalar, that can contain a whole
+array of numeric values. PDLs are strongly typed, but are still slightly
+influenced by Perl's notion of context. In particular, PDLs behave
+slightly differently in numeric, boolean, and string context. In Perl
+numeric contexts, PDLs act normally.  In boolean/logical contexts, they
+act like boolean values in the C language - the only false value is
+C<0>, and any nonzero value is treated as true (note: Not all languages
+treat nonzero values as logical-true, which may come as a surprise to C
+or Perl programmers. For example, some FORTRANs and RSI's IDL language
+use the least-significant bit of integer variables as the boolean truth
+value of the integer). 
+
+In Perl string contexts, PDLs act like descriptive multiline strings (or
+the string C<"TOO LONG TO PRINT">). See the following subsections for
+details.
+
+=head2 Refresher on Perl Data Types & Contexts
+
+While the underlying representations of objects change, Perl 
+itself recognizes only a few distinct variable types. These are "
+scalar", "ref", "array" (also called "list"), and "hash". (PDLs 
+are implemented as special refs that are opaque to perl itself; 
+perl treats them as scalars). The ones relevant to PDLs are 
+scalars, lists, and hashes.
+
+=over
+
+=item *
+
+B<Scalar variables> or expressions hold a single value - a string,
+a number, the undefined value, or a reference ("ref") to one of the
+other basic types (see below). A scalar - even one that carries a
+numeric value - is slightly different than a PDL with one element.
+
+=item *
+
+B<List values> (often called "arrays" by the general Perl
+community) are collections of scalars that are indexed by number.
+Unlike normal arrays or PDLs, perl lists are expanded automatically as
+needed, so you can address any element whether it exists or no. List
+elements can contain any perl scalar value.
+
+=item *
+
+B<Hash values> are collections of scalars that are indexed by
+string. Hashes act like lookup tables or dynamic structures.  Instead
+of being numbered, each element is addressed by name. 
+
+=item *
+
+B<Refs> are special scalar values that hold pointers to other data
+types. They have a different name than pointers, to remind you that
+they are podiatrically friendly - it's much harder to shoot yourself
+in the foot with refs than it is with pointers.  Perl variables
+maintain a reference count (like UNIX files) and are automatically
+deallocated when the last reference disappears - so you don't have to
+keep track of whether a ref is valid or no. Refs come in four basic
+flavors: scalar refs, list refs, hash refs, and code refs. 
+
+Refs can be used to "roll up" large data structures (like lists) into
+a single scalar value; this is how Perl implements multi-dimensional
+lists and complex data structures. In addition, refs may be "blessed"
+into a particular object class; this is the mechanism that Perl uses
+for object oriented programming. Blessing merely associates the target
+of the ref with a particular kind of object. PDLs are implemented as
+blessed Perl refs, so that a PDL (which may hold a million values) may
+appear wherever you can put a Perl scalar.
+
+=back
+
+=head2 PDL Data Types
+
+
+PDLs are strongly typed: when you create a PDL, it gets a 
+particular representation and stays that way. The basic types are 
+familiar to C programmers: byte, short, unsigned short, long, 
+long long, float, and double. You can compile 64-bit support into 
+your copy of PDL, and have access to wide doubles and other such 
+exotica. Complex numbers are supported as a subclass of PDL; see 
+Chapter [cha:Subclass-Smorgasbord]. 
+
+PDL types are automatically converted as necessary within 
+arithmetic expressions, at some cost in speed. Numeric 
+expressions run faster between PDLs of the same type than between 
+PDLs of different types, but all numeric expressions work more or 
+less the way a C programmer would expect, with data types being 
+automagically promoted to the highest complexity type that is 
+used in each expression.
+
+=head2 PDLs and Perl Contexts
+
+
+While the representation of each PDL is fixed, the interpretation 
+is different in each of the three main Perl scalar contexts:
+
+B<Numeric context> is what you get if you use PDLs in the usual way 
+- adding, subtracting, and such. Normal numeric operations act 
+elementwise, and each array preserves its storage class 
+(char/byte, short-int, long-int, float, double, etc.). If you mix 
+a PDL with a Perl variable in numeric context (for example, 
+C<pdl(2,3,4)+5>), then the Perl variable is "promoted" to a PDL. 
+
+B<Boolean context> is what you get if you use a PDL in a branch 
+statement like C<if> or C<while> or even the C<&&> and C<||> operators. 
+Multi-element PDLs are not allowed in this context, to avoid the 
+confusion inherent in non-deterministic branching (C<&&> and C<||> are 
+short-circuit operators that don't evaluate the second term if 
+doing so would be redundant). Single-element PDLs are treated as 
+TRUE if they are nonzero and FALSE if they are zero. (Note that 
+the bitwise logical operators, such as C<&> apply numeric, rather 
+than boolean, context - so you can do elementwise Boolean 
+arithmetic with C<&>, C<|>, and C<^> - but not with C<&&>, C<||>, and
+C<^^>.
+
+String context is what you get if you use a PDL as a string. The PDL
+gets converted to a human-readable string suitable for printing. The
+string is generally not convertible back into a PDL without some
+effort. Because string conversion is intended for use with C<print>, PDLs
+that are moderately large (more than about 1,000 elements) don't get
+converted - the string that you get back is C<TOO LONG TO PRINT>. String
+context is easy to remember as "just" a way to give you direct access
+to the output of C<print>: use a PDL as if it were a string, and you get
+the string that would be printed.
+
+=head2 BAD Values
+
+
+PDL lets you propagate bad/missing values in your data. You can 
+set a particular numeric value that will be treated as BAD and 
+ignored by the underlying code. 
+
+You can mark values BAD with the C<setbadif> and C<setbadat> methods. 
+Bad values are treated as truly missing by statistical routines 
+and collapse operators (that summarize each row of a PDL)
+and as poisonous by arithmetic routines. For example, C<average> 
+and C<sumover> ignore bad values completely, multiplication will 
+mark appropriate output values as bad, and C<convolve> and 
+C<convolveND> will cause bad patches to spread throughout a block of 
+data.
+
+=head1 Dataflow
+
+"Dataflow" is the concept that multiple variables can remain 
+connected to one another (so that data flows between them). PDL 
+allows you to keep multiple variables that refer to the same 
+underlying data. For example, if you extract a subfield of a 
+large data array you can pass it to subroutines and other 
+expressions just like any other PDL, but changes will still 
+propagate back to the large array unless you indicate otherwise. 
+
+In general, PDL's element-selection operators (such as slicing 
+and indexing) maintain dataflow connections unless they are 
+explicitly severed. To support dataflow, PDL has two different 
+kinds of assignment: the global assignment operator = and the 
+computed assignment operator C<.=>.
+
+Global assignment is used to create new PDLs, and computed assignment
+is used to insert values into existing PDLs.  Many other languages,
+such as FORTRAN and IDL, don't maintain dataflow for slices of arrays
+except in the special case where the slice operation is on the
+left-hand side of an assignment; in that case, those languages assume
+computed assignment rather than global assignment. That nuance sweeps
+under the rug the differences between the two types of assignment. It
+also yields many special cases that do not work correctly in those
+languages - for example, array subroutine parameters in IDL are passed by
+reference and can hence be used to change the original array - but
+array slices are copied before being passed, so the original array
+does not change. C sidesteps the issue by not (directly) supporting
+array slices.  One result is that you can keep multiple
+representations of your data, and work on the representation that is
+most convenient. 
+
+
+For example:
+
+  pdl> $a = xvals(5);
+  pdl> $b = $a(2); # global
+  pdl> $b .= 100;  # computed - flows back to $a
+  pdl> print $a;
+  [0 1 100 3 4]
+
+Here, C<$a> and C<$b> remain connected by the slicing/indexing 
+operation, so the change in C<$b> flows back to C<$a>. Most indexing 
+operations maintain dataflow. 
+
+At times, you want to ensure that your variables remain separate 
+or to make a physical copy of your data. 
+
+The copy operator makes a physical copy of its argument and 
+returns it. In general, if you want a real copy of something, 
+just ask for it:
+
+  pdl> $a = xvals(5);
+  pdl> $b = $a(2)->copy;
+  pdl> $b .= 100;
+  pdl> print $a;
+  [0 1 2 3 4]
+
+
+or, even more straightforwardly,
+
+  pdl> $a = xvals(5);
+  pdl> $c = $a;       # $c and $a remain connected
+  pdl> $b = $a->copy; # $b is a (separate) copy of $a
+
+The C<sever> operator is slightly more subtle. It acts in place on 
+its argument, cutting most kinds of dataflow connection. It 
+cannot disconnect two variables that were cloned with Perl's =; 
+it can only sever the dataflow connection between related PDLs. 
+The wart is present in current versions that rely on the Perl 5 
+engine, because it is not possible to overload the built-in C<=> 
+operator in Perl 5.
+
+  pdl> $a = xvals(5);
+  pdl> $b = $a(2:3)->sever; # $b is a slice of $a: gets separated
+  pdl> $b += 100; print $a; # changing $b doesn't affect $a.
+  [0 1 2 3 4]
+  pdl> $c = $a->sever;      # $c is a clone of $a: still connected
+  pdl> $c += 100; print $a; # changing $b affects $a.
+  [100 101 102 103 104]
+
+
+=head1 Threading
+
+Array languages like PDL perform basic operations by looping over 
+an entire array, applying a simple operation to each element, 
+row, or column of the array. This process is called B<threading>. 
+Threading is accomplished by the threading engine, which matches 
+up the sizes of different variables and ensures that they "fit". 
+The threading engine is based on constructs from linear algebra 
+(but is slightly more forgiving than most math professors). 
+
+Most operations act on the first few dimensions of a PDL. These 
+first dimensions are active dimensions and any dimensions after 
+that are called thread dimensions. The active dimensions must 
+match any requirements of the operator, and the thread dimensions 
+are automatically looped over by the threading engine. The 
+operator sets the number of active and thread dimensions. A given 
+operator may have 0 active dimensions (e.g. addition, +), 1 
+active dimension (e.g. reduce operators like C<sumover> and vector 
+operators like C<cross>), 2 active dimensions (e.g. matrix 
+multiplication), or even more.
+
+You can rearrange the way that an operator acts on a PDL by 
+rearranging the dim list of that PDL, to bring dims down into the 
+active position(s) for an operation or to bring them up to be 
+threaded over. These rearrangements are a generalization of 
+I<matrix transposition>, though in general they are quite fast as 
+they don't actually transpose the data in memory - only 
+rearrange PDL's internal metadata that explain how the block of 
+memory is to be used. 
+
+=head2 Threading rules
+
+PDL operators that act on two or more operands require the thread 
+dimensions of each operand to match up. The threading engine 
+follows these rules for each dim (starting with the 0 dim and 
+iterating through to the highest dim in either operand):
+
+=over
+
+=item *
+
+If both operands have the dim and it has a size greater than 1 
+in each operand, then the size must be the same for both! 
+
+=over
+
+=item * 
+
+C<print pdl(1,2,3) * pdl(3,4)> doesn't work, because dim 0 of the left operand has size 3 and dim 0 of the right operand has size 2.
+
+=item * 
+
+C<print pdl(1,2,3)*pdl(4,5,6)> prints the string C<[4 10 18]>.
+
+=back
+
+=item *
+
+If both operands have the dim and it has size 1 in at least one 
+operand (it is a trivial dim), then the dim is "extended" as a 
+dummy dimension. This is a generalization of scalar 
+multiplication in linear algebra.
+
+=over
+
+=item *
+
+print pdl(1,2,3) * pdl(2) prints the string C<[2 4 6]>.
+
+=back
+
+=item *
+
+If a dimension exists in one operand and not in the other, it 
+is treated as a virtual trivial dim
+
+=over
+
+=item *
+
+C<print pdl([1,2],[3,4]) * pdl(3)> prints the string C<[ [3 6] [9 12] ]>.
+
+=back
+
+=item *
+
+If one operand is a PDL and the other is a Perl scalar, the scalar is PDL-ified before the operation
+
+=over
+
+=item *
+
+C<print pdl([1,2],[3,4]) * 3> prints the string C<[ [3 6] [9 12] ]>.
+
+=back
+
+=back
+
+=head2 Conrolling threading and dimension order: xchg, mv, reorder, flat, clump, and reshape
+
+Because rearranging the dim list of a PDL (ie transposing it) is 
+the way to control the threading engine, PDL has many operators 
+that are devoted to rearranging dim lists. Here are six of them:
+
+B<transpose - matrix transposition>
+
+C<< $at=$a->transpose >> will yield the transpose of a matrix C<$a> (that 
+is, with the 0 and 1 dims exchanged); you can use 
+C<< $a->inplace->transpose >> to change the variable itself. Of course, 
+if C<$a> has more than two dims, it is treated as a collection of 
+matrices (the other dims are threaded over).
+
+B<xchg - generalized transposition>
+
+You can generalize transpose to any two dims with xchg - just 
+give the index numbers and those two indices get exchanged 
+(transposed): C<< $at = $a->xchg(0,1) >> is the same as using transpose, 
+but you can also say (for example) C<< $ax = $a->xchg(0,3) >>. 
+
+B<mv - dim reshuffling>
+
+Using mv shifts a dim from its original location to a new 
+location; all the other dims stay in the same relative order but 
+get shifted to make room and/or fill up the old slot. You can 
+say, for example,C<< $b = $a->mv(3,0) >> to move dimension 3 to the 0 
+slot. Afterward, C<$b> will have the dimensions of C<$a> in the order 
+(3,0,1,2).
+
+B<reorder - arbitrary redimensioning>
+
+This is useful for carrying out many transpositions at once. You 
+specify the order in which the old dimensions should appear in 
+the new PDL: C<< $b=$a->reorder(3,0,1,2) >> is the same as 
+C<< $b=$a->mv(3,0) >>, and C<< $at=$a->reorder(1,0) >> does the same thing as 
+C<< $at=$a->transpose >>. You can reorder all the dimensions of your PDL 
+or just the first few - if you ignore later dimensions they 
+carried along "for the ride", keeping the same order in which 
+they came.
+
+B<flat - flatten a PDL>
+
+Flat reduces a PDL of arbitrary dimension to one with a single 
+long dimension. The 0 dimension runs fastest in the resulting 1-D 
+PDL, and the last dimension runs slowest. For example, if C<$a> is a 
+120x120 image then C<< $a->flat >> is a 1-D array of 14400 values. That 
+is useful, for example, for making a reduce operator (see Section 
+[sub:Collapse-Operators]) work on a whole PDL at once. In the 
+above example, C<< $a->average >> would return a 120-array of row 
+average brightnesses, but C<< $a->flat->average >> would return the 
+average brightness of the whole image (or, if C<$a> had more 
+dimensions) the average brightness of the whole collection.
+
+B<clump - flatten specific dims>
+
+Clump is useful for making an operation that normally works on 
+one dimension work on more at once. For example, C<< $im->average >> 
+reduces an NxMx3 RGB image into a Mx3 array of row-average 
+brightnesses. If you want the average brightness of each color 
+throughout the whole image, you can say either 
+C<< $im->average->average >> or C<< $im->clump(2)->average >>, to get a 3-array 
+of average brightnesses for R, G, and B.
+
+
+B<reshape - allocate dims yourself>
+
+With reshape you can reassign the block of memory that makes up a 
+PDL, cutting it up however you please. For example, if C<$a> is a 
+60x60 image, you can say C<< $b=$a->reshape(100,36) >> to create instead 
+a 100x36 image. The product of the new dimensions should be less 
+than or equal to the product of the old dimensions, or strange 
+things may happen!
+
+=head2 Dummy Dimensions
+
+Dummy dimensions are bookkeeping dimensions that act to the 
+threading engine like complete dimensions but in fact repeat the 
+same data in each position in the new dimension. A dummy 
+dimension is simply a convenient bookkeeping convention; no extra 
+memory is allocated for it. You create dummy dimensions with the 
+dummy operator or via the slicing syntax explained elsewhere.
+
+The dummy operator takes two parameters: a position at which the 
+dummy dimension is to be inserted into the dim list, and a size. 
+For example, if C<$a> is a 100-array, then C<< $b=$a->dummy(0,50) >> makes 
+$b a 50x100 image - except that each column of $b points to the 
+same piece of memory, so that assigning to any element of $b 
+changes a whole row.
+
+You can "physicalize" a dummy dimension by making an explicit 
+copy. For example, C<< $b=$a->dummy(0,50)->copy >> makes C<$b> a 50x100 
+image, each column of which happens to contain the same data, but 
+in this case every pixel of $b is allocated separately from 
+memory, so that assigning to $b works in the normal way.
+
+=head2 Collapse/Reduce Operators and Reduction
+
+PDL contains many "collapse operators": enough of them that they 
+deserve special attention as a group. A collapse operator has a 
+single active dim. It summarizes elements along each row (the 0 
+dim) of a PDL, returning the summary of that row as a single 
+number. Thus, a collapse operator will reduce a D-dimensional PDL 
+to D-1 dimensions. The average, sumover, and andover operators 
+are examples of collapse operators: each one has a single active 
+dim and produces the average, sum, or logical AND (respectively) 
+of everything along that dim of the argument PDL. To average over 
+a dim other than the 0 dim, you must move that dim to the 0 
+position. For example, to convert a color image that is (NxMx3) 
+to a black-and-white image that is (NxM) you can say 
+$bw=$rgb->mv(2,0)->average. For historical reasons, some 
+documentation refers to them as "reduce operators", because they 
+reduce the dimensionality of their operands.
+
+=head2 PDL Headers
+
+Every PDL can contain a "header" - a perl hash ref (that is, a 
+collection of keyword/value pairs) that stores metadata about the 
+PDL itself. Some of the built-in routines are aware of the FITS 
+WCS format for metadata about scientific images, and use the 
+header slot to store a WCS coordinate system about the PDL; but 
+most operations do not use or affect the header at all. You are 
+free to store whatever data you like in it. 
+
+An internal flag associated with each PDL controls whether the 
+header is propagated to derived PDLs. Copying the header can be a 
+time-consuming operation, many times slower than arithmetic on 
+small PDLs - but it can be quite convenient as well. PDL keeps 
+the copying flag false by default on most new PDLs, but if you 
+set it to true (using the hdrcpy method, see below), then the 
+both the header and the copy flag will be copied to derived PDLs.
+
+Convenient interfaces exist to use an L<Astro::FITS::Header> tied 
+hash instead of a normal Perl hash ref. L<Astro::FITS::Header> tied 
+hashes act like normal Perl hashes but force case-insensitivity 
+and provide some control over the card structure of the 
+underlying FITS header.
+
+B<hdr & fhdr - access PDL header elements>
+
+You can access elements the header of a PDL by inlining the hdr 
+or fhdr method into a hash dereference: C<< $a->hdr->{keyword}=$value;
+>>, or C<< $val=$a->hdr->{keyword} >>. If the 
+header doesn't exist, then it is autogenerated. The only 
+difference between hdr and fhdr is that, if no header exists, 
+fhdr autogenerates tied FITS header objects while hdr 
+autogenerates normal Perl hashes. 
+
+B<gethdr & sethdr - manipulate a complete PDL header>
+
+You can get or store the current header of a PDL with the C<gethdr> 
+and C<sethdr> methods. C<< $a->gethdr >> returns either a hash ref (which 
+could be a tied object such as a FITS header object) or the 
+undefined value. C<< $a->sethdr($hdr) >> accepts either a hash ref or 
+the undefined value, and assigns it to the pdl's header.
+
+B<hdr_copy - return a deep copy of a PDL's header>
+
+The gethdr method makes a shallow copy of the PDL's header - it 
+returns a ref that points to the original header data. If instead 
+you want a complete, deep copy (that you can modify without 
+affecting the original PDL) you want C<hdr_copy> instead.
+
+B<hdrcpy - control header copying>
+
+If you apply an operator to a PDL with a header set, you can 
+arrange to have the header copied to the result PDL. The 
+underlying hash or object is deep-copied, which is somewhat 
+expensive; so you must set a flag on the source PDL to make it 
+happen. C<< $a->hdrcpy() >> returns the state of the copying flag; 
+C<< $a->hdrcpy($flag) >> sets it. False values (the default) turn the 
+feature off, true values turn it on.
+
