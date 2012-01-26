@@ -18,7 +18,7 @@ repository at:
 
 To get a local copy on your computer, use:
 
-    git clone ssh://pdl.git.sourceforge.net/gitroot/pdl/pdl-book
+    git clone git://pdl.git.sourceforge.net/gitroot/pdl/pdl-book
 
 =head2 Making a PDF from the POD - Installing C<pod2pdf>
 
