@@ -277,5 +277,3 @@ a well supported set of modules, so if you are into Python, go on and
 use them!
 
 =back
-
-=ff

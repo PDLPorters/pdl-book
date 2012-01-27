@@ -50,4 +50,3 @@ Perl lists do not support the range of datatypes that piddles do (byte arrays, i
 
 That is why PDL does not use Perl lists. Just to be clear from now on we'll always refer to PDL numeric data arrays as `piddles' and Perl-style number/text arrays as `lists'. 
 
-=ff

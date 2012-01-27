@@ -1796,5 +1796,3 @@ unpack the module source then build:
 	make
 	make install # as root
 
-
-=ff

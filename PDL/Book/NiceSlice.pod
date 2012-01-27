@@ -1258,5 +1258,3 @@ any more; you will rather develop a much better "feeling" how to write
 down the right combination of dimension manipulations to achieve the
 desired result in a thread loop.
 
-=ff
-

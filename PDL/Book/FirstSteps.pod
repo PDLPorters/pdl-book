@@ -610,6 +610,3 @@ arithmetical operations and a scattering of useful functions - and learned how
 to find more.  You certainly ought now to have a good feel of what PDL is all
 about.  In the next chapter we'll take a more comprehensive look at the basic
 parts of PDL that all keen PDL users should know.
-
-=ff
-

@@ -1746,5 +1746,3 @@ might end up in a situation where you need the finer control offered by
 the C<PGPLOT> package, but for day-to-day use it is hoped that
 PDL::Graphics::PGPLOT will address most people's needs. And if doesn't
 then let us know!
-
-=ff
