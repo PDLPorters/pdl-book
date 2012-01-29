@@ -27,26 +27,22 @@ After reading this introduction, you should have a firm grasp on the
 basics of using PDL::PP and the full documentation in the L<PDL::PP man
 page|PDL::PP> should be fairly easy to follow.
 
-=head1 Basics
+=head1 Getting Started 
 
 In this section I discuss the basics of writing PP code using C<pp_def>.
 I will use L<Inline::Pdlpp> for all of my examples, including this first
 one. If you need help getting L<Inline::Pdlpp> to work, see Appendix A.
 
-PP code generally consists of a collection of function declarations
-that produce new Perl functions in the "PDL" package.  Each declaration is
-implemented by a (Perl language) call to a PDL::PP method such as C<pp_def>,
-that sets up data structures within the PDL::PP module.  The makefile 
-ultimately causes these data structures to be emitted as both Perl code and as
-C/PerlXS code, then to be compiled and linked to create the operator in the
-PDL package.
+The contents of the L<Inline::Pdlpp> is no more than a Perl script that
+calls special functions defined in the L<PDL::PP> module. The final
+result of this Perl script are a Perl module (.pm file) and a Perl
+extension (.xs file). The latter gets expanded to C code and compiled
+to produce XSUBs that ultimately end up as methods in the PDL package.
 
 C<pp_def> accepts a collection of parameters that describe both the 
-way the new operator should interact with the threading engine (e.g.
+way the new method should interact with the threading engine (e.g.
 its dimensional signature and which data types it should support natively),
-and also the code for the core of the 
-
-=head1 Getting Started 
+and also the code for the core of the method.
 
 =head2 First Example
 
@@ -403,6 +399,12 @@ capability, can you guess why PDL lets you do this?
 
 =back
 
+=head1 Higher Dimensional Functions
+
+So far I have shown how to write rudimentary functions that accept
+zero-dimensional piddles. In this section, I will explain how to write
+functions that accept higher-dimensional data.
+
 =head2 Specifying Dimensions and Using Explicit Looping
 
 Exercises 1.2 and 1.3 demonstrate that PDL::PP automatically loops over the
@@ -554,6 +556,8 @@ one-dimensional piddle, it returns a single result with the sum of all the
 elements. The calculation on C<$b> treats each row as a vector and performs
 the calculation on each row.
 
+=head2 Matrix-Matrix Multiplication
+
 Let's look at another example, matrix-matrix multiplication. (You remember
 how to do matrix-matrix multiplication, right? No? Brush-up on
 L<Wikipedia|http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
@@ -627,6 +631,8 @@ and that gives this output:
 Oops! You can see that PDL considers the first argument to the number of
 columns, not the number of rows! I'll let you fix that in an exercise.
 
+=head2 Threadloops
+
 PDL::PP also has the C<threadloop> construct, which lets you declare the
 code over which PDL should thread, and the code that should come before
 and after the thread loop. Here's a simple example demonstrating the
@@ -693,6 +699,8 @@ de-allocate it after leaving:
          %}
          /* Free system resource */
      },
+
+=head2 A Complex Example
 
 To put this all together, I am going to consider writing a PDL::PP function
 that computes the first numerical derivative of a time series. You can read
