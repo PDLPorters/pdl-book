@@ -378,7 +378,7 @@ C<printout_sum>? What about C<my_sum_and_diff>?
 =item 4. Varying Input Order
 
 The PP code that I present puts all the output piddles at the end of the
-C<Pars> section. What happens if you move them to the biggining of the
+C<Pars> section. What happens if you move them to the beginning of the
 section instead of the end?
 
 =item 5. Supplyling Outputs in the Function Call
@@ -393,7 +393,7 @@ you can call it like this:
 
  # All in function call, both outputs null
  my ($sum, $diff) = (PDL::null, PDL::null);
- $sum->my_sum_and_diff($left, $diff, $right);
+ $left->my_sum_and_diff($right, $sum, $diff);
 
 What is the return value of this sort of invocation? How does the function
 call change if you alter the C<Pars> order? There's a good reason for this
@@ -698,7 +698,7 @@ about finite difference formulas here:
 L<http://en.wikipedia.org/wiki/Numerical_differentiation>. Normally, finite
 difference formulas result in a numerical derivative with one less point
 than the original time series. Since I have not discussed how to
-set a return dimension with a calculated size, I'm going to use a slighly
+set a return dimension with a calculated size, I'm going to use a slightly
 modified numerical derivative. The derivatives associated with the first
 and last points will be calculated using the right and left finite
 differences, respectively, whereas the points in the middle will be calculated
