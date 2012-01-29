@@ -3,7 +3,7 @@
 The PDL PreProcessor, or PDL::PP, is PDL's secret weapon. With
 PDL::PP, you can quickly and easily implement new "primitive" compiled
 C-language PDL functions that follow the PDL threading rules, without
-having to write tedious loops. or glue code.  You can write simple
+having to write tedious loops or glue code.  You can write simple
 computations with zero or more active dimensions (see
 L<PDL::Book::Threading>), write functions that contain a mix of Perl
 and compiled code, and/or generate output PDLs that remain linked to
@@ -11,19 +11,21 @@ the source PDL in trivial or nontrivial ways.
 
 The PDL::PP module is a preprocessor that accepts a metalanguage
 ("PP") and emits both Perl and XS code.  PDL::PP is not generally
-invoked directly by you, the coder, at run time -- it is invoked by
-make(1) as part of module compilation under the control of MakeMaker,
-or by Inline::PP as part of inline compilation of snippets of PP.
-
-After reading this introduction, you should have a firm grasp on the
-basics of using PDL::PP and the full documentation in the PDL::PP man
-page should be fairly easy to follow.
+invoked directly by you, the coder, at run time -- it is invoked as
+part of your module's build process (via L<ExtUtils::MakeMaker> or 
+L<Module::Build>) or by Inline::Pdlpp as part of inline compilation 
+of snippets of PP. I will use the latter case throughout this documentation
+as it allows me to give full copy-and-paste examples.
 
 Note that the vast majority of these examples are tested and should work by
 simply pasting them directly into a text editor. The only correction you
 will need to make is to ensure that the C<__END__> and C<__Pdlpp__> markers
 are flush against the left edge, i.e. there are no spaces before the
 underscores.
+
+After reading this introduction, you should have a firm grasp on the
+basics of using PDL::PP and the full documentation in the L<PDL::PP man
+page|PDL::PP> should be fairly easy to follow.
 
 =head1 Basics
 
@@ -197,7 +199,7 @@ typo at compile time if you use C<q{ }>:
 Also note that I do not recommend using the C<qq> quoting operator. Almost
 all the PDL::PP code strings delimit piddles using dollar-signs (like C<$a()>
 above) and you must escape each one of these unless you want Perl to
-interpolate a varible for you. Obviously C<qq> has its uses occationally,
+interpolate a variable for you. Obviously C<qq> has its uses occasionally,
 but in general I recommend sticking almost exclusively with C<q>.
 
 =back
@@ -1021,11 +1023,23 @@ C<pp_line_numbers> call.
 
 =item Wart: /* */ doesn't always work; use #if 0
 
-For better or for worse, some of PDL::PP's replacements include comments
-indicating what they do. This is useful when you find yourself digging into
-the generated XS code as it helps you get your bearings. If you are like me,
-when there is a bug in your code, it is often helpful to comment-out
-a section of code to see if it caused the problem:
+For better or for worse, some of XS code that PDL::PP generates includes
+C-style comments indicating what they do. This is useful when you find
+yourself digging into the generated XS code as it helps you get your
+bearings. However, it can also break a relatively common use of comments.
+
+When there is a logic bug in my code I find it helpful to reduce the
+complexity of the code and comment-out sections at a time until I get an
+output that makes sense.
+
+Here's an example. I am trying to print out the values in a piddle, but I
+have mistakenly used C<\r> instead of C<\n> in my C<printf> statement. 
+On some systems, nothing will get sent to F<STDOUT> because IO operations
+are buffered, and I am left with a function that appears to print nothing
+when it gets called. (The last value may get printed when the buffer fills,
+or when the program terminates. Either way, it's very confusing.) So, I
+tried to comment out the confusing print behavior and replace with something
+foolproof:
 
 =for listing bad-use-of-slash-star
 
@@ -1054,12 +1068,7 @@ a section of code to see if it caused the problem:
      }),
  );
 
-The problem, by the way, is that I used a C<\r> instead of a C<\n> in
-the C<printf> statement, and if I try printing a sufficiently small piddle
-on a sufficiently fast machine, I will not see any values printed to the
-screen before they are covered up by whatever text comes next in my code. So
-I try blocking out the C<printf> statement and replacing it with a dummy
-statement that I believe will work withou a hitch. Unfortunately, this gives
+This I<should> work withou a hitch. Unfortunately, this gives
 me these errors:
 
  my-printout-pdlpp: In function ‘pdl_my_printout_readdata’:
@@ -1083,12 +1092,15 @@ Lines seven and eight are these:
              printf("  %f\r", $in());
              */
 
-Perplexed? You bet. I just C<commented out some code>, how could I possibly
-have introduced a compile error? Using C<pp_line_numbers>, I
-understand where the error came from, but I'm even more confused as to why
-it arose in the first place.
+Perplexed? You bet. I just I<commented out some code>, how could I possibly
+have introduced a compile error? Using C<pp_line_numbers>, I know which
+lines in my code caused the C compiler to choke, but I'm even more confused
+as to why it choked there.
 
-The fix to this problem is to use C<#if 0>, a common technique among C
+The problem is that the memory access, C<$in()>, gets replaced with a
+chunk of C code that includes the comment C</* ACCESS() */>. As C comments
+do not nest, this leads to some I<very> wrong code. A different approach
+that achieves the same end is to use C<#if 0>, a common technique among C
 programmers for cutting out blocks of code:
 
 =for listing good-use-of-if-0
