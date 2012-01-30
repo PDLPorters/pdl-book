@@ -4,7 +4,7 @@ use warnings;
 
 =pod
 
-=head1 make_book.pl
+=head1 make_chapters.pl
 
 Reads a user defined list of POD chapters and produces a PDF file in the
 root directory.
@@ -22,7 +22,7 @@ program.
 
 =head2 AUTHOR
 
-Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2011 Dec 30
+Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2012 Jan 30
 
 =cut
 
@@ -30,9 +30,7 @@ Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2011 Dec 30
 # USER SELECTABLE OPTIONS
 
 my $book_dir        = "PDL/Book/"; # relative path to the PDL Book files
-my $book_chapters   = "FirstSteps Creating NiceSlice Functions Threading PGPLOT PLplot graphics_3d Transform Complex Pthreads PP Genesis Credits"; # an ordered list of POD files to process
-
-my $book_pdf        = "book.pdf"; # output name of PDF book
+my $book_chapters   = "FirstSteps Creating NiceSlice Functions Threading PGPLOT PLplot graphics_3d Transform Complex Pthreads PP Credits"; # an ordered list of POD files to process
 
 my $tmp = "book_pdf.pod.tmp"; # temporary filename for POD processing
 
@@ -40,6 +38,9 @@ my $tmp = "book_pdf.pod.tmp"; # temporary filename for POD processing
 # END OF USER SELECTABLE OPTIONS
 
 
+my $exec_intro = "pod2pdf PDL/Book/Genesis.pod --icon-scale 0.25 --title 'Introduction' --icon ".$book_dir."logo2.png --output-file Chapter00.pdf";
+print "Generating the Foreword for the Book from Genesis.pod, writing it to Chapter 00.pdf\n";
+`$exec_intro`;
 
 # loop through all the book chapters in their order
 
