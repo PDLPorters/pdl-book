@@ -949,7 +949,10 @@ working on a much larger set of PP code, having the line number of the error
 would be B<much> more useful. You accomplish that by using the
 C<pp_line_numbers> function, which adds C<#line> directives into your code
 so that errors get reported on the correct lines. Here is a slightly
-doctored version to illustrate the issue:
+doctored version to illustrate the issue. (Note that the text
+C<#line 1 ...> must be flush against the left margin, just like the C<__END__>
+and C<__Pdlpp__> markers, or Perl won't realize that you are trying to tell
+it about line numbers and things will be mis-reported.)
 
 =for listing better-error-reporting
 
@@ -1087,7 +1090,8 @@ me these errors:
  my-printout-pdlpp:7: error: expected statement before ‘)’ token
  my-printout-pdlpp:8: error: expected expression before ‘/’ token
 
-Lines seven and eight are these:
+(Got different line numbers? Be sure to put remove all spaces before
+C<#line 1 "my-printout-pdlpp">.) Lines seven and eight are these:
 
              printf("  %f\r", $in());
              */
