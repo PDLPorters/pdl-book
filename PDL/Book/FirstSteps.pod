@@ -8,7 +8,7 @@ pod2pdf chap1.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output
 =for comment
 Converted from Latex to POD by Karl Glazebrook 5/Jan/2012, grep for 'XXX' for conversion comments.
 
-=head1 First Steps with  PDL
+=head1 First Steps with PDL
 
 I<"Maybe there are a few civilizations out there that have decided to stay
 home, piddle around and send out some radio waves once in a while.">
@@ -30,7 +30,7 @@ using the language and a useful reference for getting started doing real
 work. Later sections will focus on looking at the features introduced
 here, in more depth.
 
-=head2 Alright let's I<do> something.
+=head2 Alright, let's I<do> something
 
 We'll assume PDL is correctly installed and set up on your computer
 system (see L<http://pdl.perl.org/> for details of obtaining and installing PDL).
@@ -328,7 +328,7 @@ Of course PDL being so powerful, we could have figured this out in one line:
   pdl> print avg($gal->where(rvals($gal)<50)) / avg($gal->where(rvals($gal)>=50))
   6.56590509414673
 
-=head2 Twinkle, twinkle, little star.
+=head2 Twinkle, twinkle, little star
 
 Let's look at something else, we'll zoom in on a small piece of the image:
 

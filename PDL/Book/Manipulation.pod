@@ -142,7 +142,7 @@ threshold and is also a local maximum. Finally, the C<indexND>
 operator returns a C<2xn> array containing the locations of all the 
 true pixels in C<$redmax>.
 
-=head1 Selection Operators
+=head2 Selection Operators
 
 PDL is extremely flexible in its ability to reshape, cut up, 
 reconstruct, and represent data in multiple ways. Most vectorized 
@@ -161,7 +161,7 @@ dicing (selection of particular rows/columns), indexing
 (selection of particular elements), and ranging (selection of an 
 arbitrary collection of slices) are all supported.
 
-=head2 NiceSlice - array subfield syntax
+=head3 NiceSlice - array subfield syntax
 
 
 Subfields of a PDL are selected with the C<NiceSlice> operator, 
@@ -225,7 +225,7 @@ B< C<*n> > - inserts a dummy dimension of the given size.
 
 =back
 
-=head2 NiceSlice Examples
+=head3 NiceSlice Examples
 
 
 Here are some interactive examples of how to use NiceSlice, in 
@@ -275,7 +275,7 @@ C<printf "myval is %s (%s)",$val,$units;> should work fine. You can also
 shut off nice slicing with C<no PDL::NiceSLice;>, and resume by 
 using it again just after your quote.
 
-=head2 Slice - string-conrolled subfields of a PDL
+=head3 Slice - string-conrolled subfields of a PDL
 
 The C<slice> method works almost exactly like C<NiceSlice>, except that 
 it accepts a single string that contains the arguments. The 
@@ -285,7 +285,7 @@ values and ranges are accepted. C<slice> was once the main way to
 create subarrays of PDLs, but once C<NiceSlice> became available it 
 is mainly kept around for legacy reasons. 
 
-=head2 Dice - pull arbitrary rows from a PDL
+=head3 Dice - pull arbitrary rows from a PDL
 
 The C<dice> method performs the function of PDL indexing with 
 C<NiceSlice>: it allows you to pull arbitrary collections of 
@@ -293,7 +293,7 @@ generalized rows from a source PDL. Dicing with C<dice> is
 deprecated, because the C<NiceSlice> syntax (or even C<slice>) is 
 preferred.
 
-=head2 Index - select elements from a 1-D PDL
+=head3 Index - select elements from a 1-D PDL
 
 This is used for extracting arbitrary elements from a 1-D PDL. 
 For example:
@@ -304,7 +304,7 @@ For example:
 The counterpart of C<index> is which, which extracts indices from a 
 1-D PDL wherever a particular condition is met (see [sub:which]).
 
-=head2 IndexND - select elements from an N-D PDL
+=head3 IndexND - select elements from an N-D PDL
 
 You can extract and manipulate an arbitrary collection of 
 elements from an C<N>-dimensional PDL with C<indexND>. C<IndexND> is a 
@@ -360,7 +360,7 @@ below, for more information on the limits of C<indexND>. If you want
 to interpolate values from arbitrary locations, you should look 
 for C<interpND>, which is discussed in Chapter [cha:Basic-mathematics].
 
-=head2 Range - select subfields from an N-D PDL
+=head3 Range - select subfields from an N-D PDL
 
 The most general selection operator in PDL is C<range>, which 
 selects an arbitrary collection of subfields from the original 
@@ -541,7 +541,7 @@ shows how to mark loci in the original matrix (using dataflow).
    ] 
   ] 
 
-=head1 Location Operators
+=head2 Location Operators
 
 
 Location operators are the opposite of indexing operators: they 
@@ -566,7 +566,7 @@ correctly represented -- if the filtering condition is false
 everywhere, C<where>, C<which>, and C<whichND> will each return the 
 special I<empty> PDL, which has 0 elements.
 
-=head2 The C<where> operator
+=head3 The C<where> operator
 
 The C<where> operator rolls up the operations of location and 
 selection in a single routine. You can say:
@@ -602,7 +602,7 @@ origin. (Notice that the example uses the bitwise-and operator C<&>,
 not the more familiar logical-and operator C<&&> - to find out why, 
 check out [sec:PDLs-as-logical], below).
 
-=head2 The C<which> operator
+=head3 The C<which> operator
 
 The simplest indexing function is C<which>. It accepts a PDL 
 expression and returns a list of all the offset locations where 
@@ -618,7 +618,7 @@ expression, to get access to the elements. For exmple:
   $fives = $source->($dex); # niceslice
   $fives = $source->index($dex); # index
 
-=head2 The C<whichND> operator
+=head3 The C<whichND> operator
 
 For any kind of indexing that is more sophisticated than C<which>, 
 you probably want C<whichND>, which returns a collection of vectors 

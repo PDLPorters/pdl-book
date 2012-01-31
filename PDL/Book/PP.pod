@@ -27,7 +27,7 @@ After reading this introduction, you should have a firm grasp on the
 basics of using PDL::PP and the full documentation in the L<PDL::PP man
 page|PDL::PP> should be fairly easy to follow.
 
-=head1 Basics
+=head2 Basics
 
 In this section I discuss the basics of writing PP code using C<pp_def>.
 I will use L<Inline::Pdlpp> for all of my examples, including this first
@@ -46,9 +46,7 @@ way the new operator should interact with the threading engine (e.g.
 its dimensional signature and which data types it should support natively),
 and also the code for the core of the 
 
-=head1 Getting Started 
-
-=head2 First Example
+=head2 Getting Started 
 
 Let's begin with a variation on the canonical Hello World.
 
@@ -350,7 +348,7 @@ The functions defined using C<pp_def> actually allow for you to pass in
 the output piddles as arguments, but I'll explore that in one of the
 exercises rather than boring you with more details.
 
-=head2 Exercise Set 1
+=head3 Exercise Set 1
 
 So far I have shown you how to write basic PP code that prints values to the
 screen or returns values. The great thing about PDL::PP is that this code
@@ -403,7 +401,7 @@ capability, can you guess why PDL lets you do this?
 
 =back
 
-=head2 Specifying Dimensions and Using Explicit Looping
+=head3 Specifying Dimensions and Using Explicit Looping
 
 Exercises 1.2 and 1.3 demonstrate that PDL::PP automatically loops over the
 values in a piddle for you. What if you want to do some sort of aggregate
@@ -831,7 +829,7 @@ to control how PDL::PP presents data to your code, and to control which
 sections of code PDL::PP threads over. I have also shown you how to access
 specific memory locations when you have vector representations of your data.
 
-=head2 Exercise Set 2
+=head3 Exercise Set 2
 
 =over
 
@@ -865,7 +863,7 @@ Your resulting code should not have any C<loop> constructs.
 
 =back
 
-=head2 Tips
+=head3 Tips
 
 These are a couple of things I have learned which help me make effective use
 of PDL::PP, but which did not sensibly fit elsewhere.
@@ -1153,7 +1151,7 @@ Hopefully this gives me enough to find that errant C<\r>.
 
 =back
 
-=head1 Recap
+=head2 Recap
 
 In this chapter, I've covered the very basics of using PDL::PP to write
 fast, versatile code. I have covered much less material than I had hoped,
@@ -1163,7 +1161,7 @@ I expect it will give you enough to dig into the PDL::PP documentation.
 
 Good luck, and happy piddling!
 
-=head1 Appendix A: Installing Inline::Pdlpp
+=head2 Appendix A: Installing Inline::Pdlpp
 
 The PDL installation always installs L<Inline::Pdlpp>, but that does not
 mean it works for you because L<Inline> is not actually a prerequisite for
@@ -1190,9 +1188,9 @@ walk away to get a cup of coffee and expect it to be done.
 
 Once that's installed, you should be ready to work with the examples.
 
-=head1 Appendix B: Solutions to Exercises
+=head2 Appendix B: Solutions to Exercises
 
-=head2 Excercise Set 1
+=head3 Excercise Set 1
 
 =over
 
@@ -1326,7 +1324,7 @@ regularly call functions
 
 =back
 
-=head2 Exercise Set 2
+=head3 Exercise Set 2
 
 =over
 

@@ -109,22 +109,6 @@ used functions. The directory path is specified to your PDL library
 directory. The C<+> sign at the end of the path tells PDL to also look
 in all the subdirectories below the PDLLIB directory.
 
-=head2 Passing Options to your function with Hashes
-
-Sometimes you need to pass in one or more options into your PDL
-function, and these are typically passed into a PDL routine using an
-anonymous hash. As an example of this, we'll modify the routine above to
-optionally print the result of the function:
-
-
-    sub my_sums {
-        ($a1, $a2) = @_;
-        my $c = $a1 + $a2;
-        my $difference = $a1 - $a2;
-        return($c, $difference);
-    }
-    1;
-
 =head2 Documenting your Functions
 
 Just like any other Perl script, you can add Plain Old Documentation
