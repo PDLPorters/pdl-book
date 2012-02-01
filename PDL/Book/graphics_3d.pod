@@ -80,7 +80,9 @@ press C<q> in that window once you're done.
 
 If the above commands produce an error instead of a new window, 
 it might be that your PDL wasn't compiled with the option to 
-include the 3D graphics library.  (See the appendix on installing
+include the 3D graphics library.  (See the Perl Data Language
+web site at L<http://pdl.perl.org> for information on installing
+and using PDL.)
 PDL---TBD!).
 
 That above expression is a bit more difficult than the gnuplot 
@@ -198,10 +200,14 @@ Now, there is more than one way to do it. If your data is not by
 default in the three-vector format (as ours wasn't above), it is 
 probably easier to do
 
-   imag3d [$x, $y, $z], [$r, $g, $b];
+   imag3d_ns [$x, $y, $z], [$r, $g, $b];
 
 which will produce the same results. Also, we could concatenate 
-the RGB piddles to form TBD.
+the RGB piddles to form a single [3,60,20] piddle that could be
+used without square brackets:
+
+   $rgb = cat($r,$g,$b)->mv(-1,0);  # $rgb is [3,60,20]
+   imag3d_ns $torus, $rgb;
 
 Now, since PDL does its best to make dimensions usable anywhere, 
 we can easily plot several parametrics of the same parameters at 
@@ -237,8 +243,8 @@ coordinates, the explicit X, Y and Z given in this section but in
 the preceding sections, only Z has been given and X and Y have 
 been assumed by the system from the context.
 
-Of course, since PDL tries to follow “simple things simple, 
-complicated things possible”, it is possible to override the 
+Of course, since PDL tries to follow "simple things simple, 
+complicated things possible", it is possible to override the 
 default context.
 
 =head2 Types of 3D Graphical Objects
@@ -427,8 +433,6 @@ kernels like ours). We use a 5x5 kernel to smooth our data at
 each step by convolution. That's the numerical part, now for the 
 graphics part.
 
-=head2 Animation
-
 
 =head2 Putting it all together---cool hacks
 
@@ -527,5 +531,3 @@ different-color pixels but that would require alpha blending to
 the OpenGL parameters and this would get into complications we 
 don't necessarily want here. So now we're going to KISS[footnote:
 Keep It Simple, Stupid] this topic away and move to the next one.
-
-=head2 The VRML backend
