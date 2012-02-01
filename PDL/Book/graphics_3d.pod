@@ -474,8 +474,8 @@ Now that we have the sign, why don't we simply find the set of
 points where the sign has changed. It is simplest to do this over 
 just one dimension:
 
-   $df = ($sign(0:-2) != $sign(1:-1))
-   points3d [whichND($df)]
+   $df = ($sign(0:-2) != $sign(1:-1));
+   points3d whichND($df);  # for PDL-2.4.10
 
 And indeed, we get a rotatable set of points in 3-space that are 
 in the shape of a sphere with an ellipsoid inside, slightly 
@@ -483,6 +483,11 @@ distorted, just as ordered. This is not yet a good picture: there
 is a hole in the point set where the surface is parallel to the X 
 axis, naturally, since there there is no difference between the 
 sigh between the points next to each other on X axis.
+
+B<NOTE>:  For PDL-2.4.9 and earlier, you'll need to use
+C<points3d [ whichND($df) ];> since previous to PDL-2.4.10
+C<whichND> returned a list of piddles in list context.  
+That behavior is now deprecated.
 
 To do a more complete job, we need to compare the signs not only 
 along X but other dimensions as well. This is possible due to the 
