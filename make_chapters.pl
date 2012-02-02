@@ -38,7 +38,7 @@ my $tmp = "book_pdf.pod.tmp"; # temporary filename for POD processing
 # END OF USER SELECTABLE OPTIONS
 
 
-my $exec_intro = "pod2pdf PDL/Book/Genesis.pod --icon-scale 0.25 --title 'Introduction' --icon ".$book_dir."logo2.png --output-file Chapter00.pdf";
+my $exec_intro = "pod2pdf PDL/Book/Genesis.pod --icon-scale 0.25 --title 'Forward' --icon ".$book_dir."logo2.png --output-file Chapter00.pdf";
 print "Generating the Foreword for the Book from Genesis.pod, writing it to Chapter 00.pdf\n";
 `$exec_intro`;
 
