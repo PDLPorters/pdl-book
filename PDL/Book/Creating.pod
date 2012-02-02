@@ -142,7 +142,7 @@ size list), but doesn't bother with any initialization of the
 newly allocated RAM. This is especially useful if you're just 
 going to stuff your own values into the new PDL anyway. 
 
-=head1 Getting values into and out of PDLs
+=head2 Getting values into and out of PDLs
 
 Unless you can get data in and out of your PDLs they won't do you 
 much good. Most large blocks of data are handled by direct file 
@@ -153,7 +153,7 @@ chunks of memory), and back out again (into perl, into random
 chunks of memory, or into ASCII). For displaying your data you 
 will want to look at Chapter [cha:Graphics].
 
-=head2 Construction: slurping Perl arrays
+=head3 Construction: slurping Perl arrays
 
 The simplest way to turn a bunch of Perl data into a PDL is by 
 calling C<pdl()>, the PDL constructor. The constructor pokes and 
@@ -167,7 +167,7 @@ up with. For example,
 That is certainly the most convenient (and probably the fastest) 
 way to stuff a bunch of values from Perl variables into a PDL.
 
-=head2 Assignment with C<.=>
+=head3 Assignment with C<.=>
 
 PDL distinguishes between two kinds of assignment: I<global assignment>
 (the usual C<=> operator) and I<threaded (computed) assignment> (the
@@ -205,7 +205,7 @@ other operand would. Threading is explained in detail in Section
 [sec:Dimensionality-and-Threading]
 .
 
-=head2 Importing data directly from memory: C<get_dataref>
+=head3 Importing data directly from memory: C<get_dataref>
 
 PDL lets you access the memory of a PDL variable directly, using 
 a perl string variable. You normally won't have to use this 
@@ -257,7 +257,7 @@ form as the PDL's formal data type! You are also responsible for
 figuring out byteswapping for your machine - the bytes in the 
 string are in machine order, not network order.
 
-=head2 Conversion to Perl types: C<at> and C<list>
+=head3 Conversion to Perl types: C<at> and C<list>
 
 You can get a PDL scalar out into the Perl world with C<at>, which 
 requires the index of the scalar to pull out:
@@ -277,7 +277,7 @@ if you find yourself placing an C<at> call inside a C<for> loop, you
 should probably stop and think about how to use threading for 
 your problem - see below.
 
-=head1 Data Types and Contexts
+=head2 Data Types and Contexts
 
 Because PDL is a hybrid language, it's important to understand 
 Perl's data structures as well as PDL's. Normal Perl variables 
@@ -313,7 +313,7 @@ In Perl string contexts, PDLs act like descriptive multiline strings (or
 the string C<"TOO LONG TO PRINT">). See the following subsections for
 details.
 
-=head2 Refresher on Perl Data Types & Contexts
+=head3 Refresher on Perl Data Types & Contexts
 
 While the underlying representations of objects change, Perl 
 itself recognizes only a few distinct variable types. These are "
@@ -367,7 +367,7 @@ appear wherever you can put a Perl scalar.
 
 =back
 
-=head2 PDL Data Types
+=head3 PDL Data Types
 
 
 PDLs are strongly typed: when you create a PDL, it gets a 
@@ -386,7 +386,7 @@ less the way a C programmer would expect, with data types being
 automagically promoted to the highest complexity type that is 
 used in each expression.
 
-=head2 PDLs and Perl Contexts
+=head3 PDLs and Perl Contexts
 
 
 While the representation of each PDL is fixed, the interpretation 
@@ -421,7 +421,7 @@ context is easy to remember as "just" a way to give you direct access
 to the output of C<print>: use a PDL as if it were a string, and you get
 the string that would be printed.
 
-=head2 BAD Values
+=head3 BAD Values
 
 
 PDL lets you propagate bad/missing values in your data. You can 
@@ -437,7 +437,7 @@ mark appropriate output values as bad, and C<convolve> and
 C<convolveND> will cause bad patches to spread throughout a block of 
 data.
 
-=head1 Dataflow
+=head2 Dataflow
 
 "Dataflow" is the concept that multiple variables can remain 
 connected to one another (so that data flows between them). PDL 
@@ -519,7 +519,7 @@ operator in Perl 5.
   [100 101 102 103 104]
 
 
-=head1 Threading
+=head2 Threading
 
 Array languages like PDL perform basic operations by looping over 
 an entire array, applying a simple operation to each element, 
@@ -549,7 +549,7 @@ they don't actually transpose the data in memory - only
 rearrange PDL's internal metadata that explain how the block of 
 memory is to be used. 
 
-=head2 Threading rules
+=head3 Threading rules
 
 PDL operators that act on two or more operands require the thread 
 dimensions of each operand to match up. The threading engine 
@@ -617,7 +617,7 @@ C<print pdl([1,2],[3,4]) * 3> prints the string C<[ [3 6] [9 12] ]>.
 
 =back
 
-=head2 Conrolling threading and dimension order: xchg, mv, reorder, flat, clump, and reshape
+=head3 Conrolling threading and dimension order: xchg, mv, reorder, flat, clump, and reshape
 
 Because rearranging the dim list of a PDL (ie transposing it) is 
 the way to control the threading engine, PDL has many operators 
@@ -691,7 +691,7 @@ a 100x36 image. The product of the new dimensions should be less
 than or equal to the product of the old dimensions, or strange 
 things may happen!
 
-=head2 Dummy Dimensions
+=head3 Dummy Dimensions
 
 Dummy dimensions are bookkeeping dimensions that act to the 
 threading engine like complete dimensions but in fact repeat the 
@@ -713,7 +713,7 @@ image, each column of which happens to contain the same data, but
 in this case every pixel of $b is allocated separately from 
 memory, so that assigning to $b works in the normal way.
 
-=head2 Collapse/Reduce Operators and Reduction
+=head3 Collapse/Reduce Operators and Reduction
 
 PDL contains many "collapse operators": enough of them that they 
 deserve special attention as a group. A collapse operator has a 
@@ -731,7 +731,7 @@ $bw=$rgb->mv(2,0)->average. For historical reasons, some
 documentation refers to them as "reduce operators", because they 
 reduce the dimensionality of their operands.
 
-=head2 PDL Headers
+=head3 PDL Headers
 
 Every PDL can contain a "header" - a perl hash ref (that is, a 
 collection of keyword/value pairs) that stores metadata about the 

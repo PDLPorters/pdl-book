@@ -8,6 +8,13 @@
 # For full license details, please read the file 'artistic-2_0.txt' 
 # included with this distribution, or see
 # http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
+#
+# modified by Matthew Kenworthy to allow custom page_number
+# specification and to write out TOC metadata (=head[1234] title and
+# page number) to toc.txt
+# 2012 Feb 02
+#
+# grep MAK for the additions
 
 package App::pod2pdf;
 
@@ -87,6 +94,15 @@ sub command {
       $self->print_text_with_style($expansion,$command);
       $self->spacer;
       $self->indent(48);
+      # MAK addition
+      # MAK addition
+      # MAK addition
+      open(TOCF,">>toc.txt") or die "Cannot open toc.txt for writing\n";
+      print TOCF "#TOC Page ".$self->{page_number}." ".$command."  ".$expansion;
+      close(TOCF);
+      # END addition
+      # END addition
+      # END addition
     }
     if ($command eq 'over') {
       my $indentlevel = $expansion || 4;
@@ -434,7 +450,7 @@ sub create_pdf {
   $self->{stylist} = {
     'header'      => {font=>'Helvetica-Bold',        size=>10       },
     'footer'      => {font=>'Helvetica-Bold',        size=>10       },
-    'head1'       => {font=>'Helvetica-Bold',        size=>20       },
+    'head1'       => {font=>'Helvetica-Bold',        size=>18       },
     'head2'       => {font=>'Helvetica-Bold',        size=>11       },
     'head3'       => {font=>'Helvetica-Bold',        size=>10       },
     'head4'       => {font=>'Helvetica',             size=>10       },
@@ -490,7 +506,6 @@ sub create_pdf {
   $self->{y_position}    = $self->{page_height} - $self->{top_margin};
   $self->{indent}        = 0;
   $self->{pdf}           = PDF::API2->new;
-  $self->{pdf}->pageLabel(1, {-start=>1, -style => 'roman', -prefix=>"B-"});
   $self->{pdf}->info('Producer'=>"$class version $version");
   $self->{pdf}->mediabox($self->{page_width},$self->{page_height});
   
@@ -907,7 +922,7 @@ sub generate_footer {
   $self->set_style('footer');
 
   # Add page footer
-  my $t = 'Page '.$self->{pretext}.$self->{page_number};
+  my $t = 'Page '.$self->{page_number};
   my $x = $self->{page_width} - $self->{right_margin} - $self->{text}->advancewidth($t);
   my $y = $self->{bottom_margin};
   $self->{text}->textlabel($x,$y,$self->{fontcache}->{$self->{font}},$self->{text_size},$t);
