@@ -21,12 +21,14 @@ list, a nested perl list, another PDL, or even a perl list of PDLs. It
 will return an appropriately-dimensioned PDL containing those values.
 Here are some examples:
 
-  $a = pdl(5);                 # double-precision scalar
-  $a = pdl(short,5);           # short-integer scalar
-  $a = pdl(1,2,3);             # 3-PDL (one dim)
-  $a = pdl([1,2,3]);           # 3-PDL, another way (just one dim)
-  $a = pdl([[1,2,3]]);         # 3x1-PDL (two dims)
-  $a = pdl([[1,2,3],[4,5,6]]); # 3x2-PDL (two dims)
+  $a = pdl( 5 );                 # double-precision scalar
+  $a = pdl( short,5 );           # short-integer scalar
+  $a = pdl( 1,2,3 );             # 3-PDL (one dim)
+  $a = pdl( [1,2,3] );           # 3-PDL, another way (just one dim)
+  $a = pdl( [[1,2,3]] );         # 3x1-PDL (two dims)
+  $a = pdl( [[1,2,3],[4,5,6]] ); # 3x2-PDL (two dims)
+  $a = pdl "[[1,2,3],[4,5,6]]";  # Even strings from print output!
+
 
 In the last couple of examples, notice that the innermost nested 
 lists form the 0th dimension of the PDL.
@@ -183,12 +185,11 @@ operator is used to set the value of the data that are contained
 in the PDL. The two operators work quite differently. For 
 example:
 
-  $a = xvals(3);      # 3-PDL: values are (0,1,2)
-  $b = zeroes(3,4);   # 3x3 array of zeroes
-  $c = zeroes(3,4);   # 3x3 array of zeroes
+  $a = xvals(3);      # 1D-PDL: values are (0,1,2)
+  $b = zeroes(3,4);   # 3x4 array of zeroes
+  $c = zeroes(3,4);   # 3x4 array of zeroes
   $b = $a;            # $b becomes a clone of $a
   $c .= $a;           # $c becomes 4 copies of $a
-
 
 puts two quite different values into C<$b> and C<$c>. At the end of the 
 code, C<$b> and C<$a> are linked (they point to the same area of 
@@ -229,10 +230,10 @@ planes are to represent R, G, and B in a PDL with dimensions
 (3x1000x1000). 
 
   $pdl = PDL->new_from_specification(byte,1000,1000,3);
-  $dref = $pdl->get_dataref;  # $$dref is the PDL as a string.
+  $dref = $pdl->get_dataref;  # $$dref is the PDL data as a string.
   $$dref = $data;   # Overwrite the string.
   $pdl->upd_data(); # Make sure the PDL knows it changed.
-  $rgb = $pdl->mv(2,0,1); # 3x1000x1000.
+  $rgb = $pdl->mv(2,0); # 3x1000x1000.
 
 Here, C<$$dref> is a Perl string that occupies the same location in 
 RAM as the data in C<$pdl>. Unless you're using 2-byte Unicode 
@@ -413,8 +414,11 @@ C<^^>.
 
 String context is what you get if you use a PDL as a string. The PDL
 gets converted to a human-readable string suitable for printing. The
-string is generally not convertible back into a PDL without some
-effort. Because string conversion is intended for use with C<print>, PDLs
+new C<pdl()> string input capability allows one to convert printed
+piddles back into the original object.  The feature includes support
+for MATLAB-style C<[ ; ]> syntax as well.
+
+Because string conversion is intended for use with C<print>, PDLs
 that are moderately large (more than about 1,000 elements) don't get
 converted - the string that you get back is C<TOO LONG TO PRINT>. String
 context is easy to remember as "just" a way to give you direct access
