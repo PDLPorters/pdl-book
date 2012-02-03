@@ -4,7 +4,7 @@
 # no generated html or pdf files
 *.html
 *.pdf
-^toc.pod$
+*toc.pod
 # no temp files from pod2html
 *.tmp
 # tmp mac finder dirs
