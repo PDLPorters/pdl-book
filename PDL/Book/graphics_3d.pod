@@ -4,7 +4,7 @@
 
 =head2 Introduction
 
-=for html <img WIDTH=400 src="graphics_3d/gnuplot-eg.png">
+=for html <img WIDTH=300 src="graphics_3d/gnuplot-eg.png">
 
 =for man
   +-----------------------------+
@@ -83,7 +83,6 @@ it might be that your PDL wasn't compiled with the option to
 include the 3D graphics library.  (See the Perl Data Language
 web site at L<http://pdl.perl.org> for information on installing
 and using PDL.)
-PDL---TBD!).
 
 That above expression is a bit more difficult than the gnuplot 
 version, and there's a simple reason for that: gnuplot is 
@@ -191,7 +190,11 @@ parametric coordinates can be easily derived.
    $z .=         $r_i * cos($u);
    imag3d_ns $torus, [$r, $g, $b];
 
-And there's our colorful torus! It looks a bit more like a barrel 
+And here's our colorful torus!
+
+=for html <img WIDTH=300 src="graphics_3d/color-torus.png">
+
+It looks a bit more like a barrel 
 because TriD automatically scales the axes but there it is. Note 
 how we use C<imag3d_ns> to get the colors instead of the shaded 
 version.
@@ -203,7 +206,7 @@ probably easier to do
    imag3d_ns [$x, $y, $z], [$r, $g, $b];
 
 which will produce the same results. Also, we could concatenate 
-the RGB piddles to form a single [3,60,20] piddle that could be
+the RGB piddles to form a single C<[3,60,20]> piddle that could be
 used without square brackets:
 
    $rgb = cat($r,$g,$b)->mv(-1,0);  # $rgb is [3,60,20]
@@ -224,11 +227,17 @@ an extra dimension into C<$torus>:
    $cone(2) += 4 * $fac;
    imag3d $cone;
 
+
+=for html <img WIDTH=300 src="graphics_3d/torus-stack.png">
+
 And further, if we want to distort them, it's perfectly possible:
 
    $x = $cone(0);
    $cone(2) += 0.1 * $x ** 2;
    imag3d $cone;
+
+
+=for html <img WIDTH=300 src="graphics_3d/torus-stack-warp.png">
 
 Any other kind of mutilation is also possible but we leave you to 
 discovering the interesting things that are possible by yourself, 
@@ -263,6 +272,10 @@ with different colors:
    $z = grandom($i) * (2   - $which);
    $x += $which * $y; $y += $which * $z; # Make it oblique
    points3d [$x, $y, $z], [$which, 0.5*(1-$which), 1-$which];
+
+And the result:
+
+=for html <img WIDTH=300 src="graphics_3d/two-prob-distributions.png">
 
 A lot of fun things can be done with points but we'll go into 
 that later.
@@ -328,6 +341,22 @@ to each other.
    $tim = xvals($n) / ($n-1);
    line3d [$xs, $ys, $zs], [$col, $tim , 1-$col];
 
+=cut
+
+=pod
+
+=for html <img WIDTH=300 src="graphics_3d/busy-lorenz-attr.png">
+
+=cut
+
+=pod
+
+
+
+
+  Figure: Busy Lorenz Attractor
+
+
 Unfortunately, this plot has too much stuff going on so it's 
 difficult to see where the functions diverge even though they 
 have different colors at different times. This is an excellent 
@@ -337,17 +366,24 @@ step instead:
    line3d [$tim, $ys, $zs], [$col, $tim , 1-$col];
 
 This yields a much clearer plot of the chaotic behaviour when the 
-lines diverge with time (Fig. XXX). In the latest versions of PDL 
+lines diverge with time.
+
+=for html <img WIDTH=300 src="graphics_3d/timeseries-lorenz.png">
+
+In the latest versions of PDL 
 it is possible to adjust the line width as well: 
 
    line3d [$tim, $ys, $zs], [$col, $tim , 1-$col], {LineWidth => 10}
 
-gives the same plot but with much thicker lines. The basic 
-rectangular surface you already saw in the preceding sections. It 
-also has an option to turn off the lines. (XXX?) There is also a 
-command mesh3d similar to the surface which just draws the 
-surface as a wire mesh instead of a solid surface. On slow 
-machines this can be of great help.
+gives the same plot but with much thicker lines.
+
+=for html <img WIDTH=300 src="graphics_3d/timeseries-lorenz-thick.png">
+
+The basic rectangular surface you already saw in the preceding
+sections. It also has an option to turn off the lines.  There
+is also a command C<mesh3d> similar to the C<imag3d> surface
+which just draws the surface as a wire mesh instead of a
+solid surface. On slow machines this can be of great help.
 
 Finally, there are two commands for quickly painting strictly 
 rectangular truecolor images: C<imagrgb> and C<imagrgb3d>. This can be 
@@ -430,8 +466,10 @@ the random function (the magnitude of the noise is diminished
 each time). Finally, we pull in PDL::Image2D for the C<conv2d> 
 routine that does 2-dimensional convolutions (optimized for small 
 kernels like ours). We use a 5x5 kernel to smooth our data at 
-each step by convolution. That's the numerical part, now for the 
-graphics part.
+each step by convolution. That's the numerical part, now here is
+the sequence of images created:
+
+=for html <img WIDTH=400 src="graphics_3d/fractal-mountain-sequence.png">
 
 
 =head2 Putting it all together---cool hacks
@@ -479,7 +517,11 @@ just one dimension:
 
 And indeed, we get a rotatable set of points in 3-space that are 
 in the shape of a sphere with an ellipsoid inside, slightly 
-distorted, just as ordered. This is not yet a good picture: there 
+distorted, just as ordered.
+
+=for html <img WIDTH=400 src="graphics_3d/nest-sphere-01.png">
+
+This is not yet a good picture: there 
 is a hole in the point set where the surface is parallel to the X 
 axis, naturally, since there there is no difference between the 
 sigh between the points next to each other on X axis.
@@ -523,16 +565,21 @@ find whether the function crosses zero at that cube, we simply
 check whether all the bits are equal, i.e. whether the number is 
 255 or 0 and if it isn't we know the function changes sign.
 
+=for html <img WIDTH=400 src="graphics_3d/nest-sphere-02.png">
+
 The image quality can be slightly improved by removing the Moire 
 effect through randomization:
 
-   points3d [map {$_+$_->float->random} whichND(($a != 0) & ($a != 255))]
+   points3d (map {$_+$_->float->random} whichND(($a != 0) & ($a != 255)))
 
-note how the map is necessary: the whole point is that C<whichND>
-returns a list of piddles (NOT ANY MORE).
+
+
+=for html <img WIDTH=400 src="graphics_3d/nest-sphere-moire.png">
 
 Now, to further improve image quality we could add 
 different-color pixels but that would require alpha blending to 
 the OpenGL parameters and this would get into complications we 
-don't necessarily want here. So now we're going to KISS[footnote:
-Keep It Simple, Stupid] this topic away and move to the next one.
+don't necessarily want here. So now we're going to KISS*
+this topic away and move to the next one.
+
+   * Keep It Simple, Stupid
