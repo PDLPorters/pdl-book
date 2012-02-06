@@ -40,12 +40,21 @@ my $tmp = "book_pdf.pod.tmp"; # temporary filename for POD processing
 ##################################################
 # END OF USER SELECTABLE OPTIONS
 
+##################
+# old TOC file removal
+#
+# toc.txt is generated from =head directives in pod2pdf
+# so remove any old toc.txt files first
+#
+
+if (-e "toc.txt") {unlink "toc.txt"; print "Deleted old toc.txt\n"};
 
 my %config = (
     page_number => 0,
     icon_scale => 0.25,
     title => "Foreward",
     icon => $book_dir."logo2.png",
+    toc => 1
 );
 
 sub make_pdf_wrapper {
@@ -145,7 +154,6 @@ foreach (split " ",$book_chapters) {
     # FOUT now has the text ready for PDF
     my $chapter_file = sprintf("Chapter%02d.pdf", $chap_num);
     print "Writing out $header to $chapter_file\n";
-
 
     $config{title} = $header;
     $config{page_number} = $last_page_number;

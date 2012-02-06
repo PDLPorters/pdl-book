@@ -83,6 +83,7 @@ sub command {
       my $default_space = $self->{line_spacing};
       $self->set_style($command);
       my $heading_space = $self->{line_spacing};
+      if ($command =~ /^head1$/) {$heading_space *= 2;} # MAK addition
       # Checks to see if there is space for a content line after
       # the heading - if not then starts a new page
       if ( ($self->{y_position} - $heading_space - $default_space - $self->{spacer}) < 
@@ -97,9 +98,11 @@ sub command {
       # MAK addition
       # MAK addition
       # MAK addition
-      open(TOCF,">>toc.txt") or die "Cannot open toc.txt for writing\n";
-      print TOCF "#TOC Page ".$self->{page_number}." ".$command."  ".$expansion;
-      close(TOCF);
+      if ($self->{toc}) {
+        open(TOCF,">>toc.txt") or die "Cannot open toc.txt for writing\n";
+        print TOCF "#TOC Page ".$self->{page_number}." ".$command."  ".$expansion;
+        close(TOCF);
+      }
       # END addition
       # END addition
       # END addition
@@ -450,7 +453,7 @@ sub create_pdf {
   $self->{stylist} = {
     'header'      => {font=>'Helvetica-Bold',        size=>10       },
     'footer'      => {font=>'Helvetica-Bold',        size=>10       },
-    'head1'       => {font=>'Helvetica-Bold',        size=>18       },
+    'head1'       => {font=>'Helvetica-Bold',        size=>20       },
     'head2'       => {font=>'Helvetica-Bold',        size=>11       },
     'head3'       => {font=>'Helvetica-Bold',        size=>10       },
     'head4'       => {font=>'Helvetica',             size=>10       },

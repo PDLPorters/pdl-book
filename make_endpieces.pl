@@ -12,6 +12,8 @@ use lib ( qw(inc) );
 use pod2pdf;
 use POSIX qw(locale_h);
 
+
+print "Making FrontPage.pdf...";
 # Create a blank PDF file
 my $pdf = PDF::API2->new();
 # Add a blank page
@@ -40,12 +42,17 @@ $text->text('for PDL v2.4.10');
 # Save the PDF
 $pdf->saveas('FrontPage.pdf');
 
+print "done\n";
+
 ##############################
 # TOC
 #############################
 
 
-open (FIN, "toc.txt") or die "cannot open toc.txt";
+open (FIN, "<toc.txt") or die "cannot open toc.txt";
+
+if (-e "toc.pod") {unlink "toc.pod"; print "Deleted old toc.pod\n"};
+
 open (FOUT, ">toc.pod") or die "cannot open toc.pod";
 
 my $h1 = 0;
