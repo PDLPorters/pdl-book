@@ -554,7 +554,7 @@ the calculation on each row.
 
 Let's look at another example, matrix-matrix multiplication. (You remember
 how to do matrix-matrix multiplication, right? No? Brush-up on
-L<Wikipedia|http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
+L<http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
 would we write such an algorithm using PDL::PP? First, the C<Pars> section
 needs to indicate what sort of input and output
 piddles we want to handle. The length of the row of the first matrix has to
@@ -679,8 +679,59 @@ A snippet of that output looks like this:
    Row  19: 57.000000, 58.000000, 59.000000, 
  All done!
 
-This is particularly useful if you are writing a function that needs access
-to a system resource that is costly to allocate with each iteration. For
+There are two important aspects to remember about threadloops. First, you
+must not put anything between the C<threadloop> and the C<%{> except
+whitespace. For example:
+
+ /* ok */
+ threadloop %{
+ 
+ /* ok */
+ threadloop
+     %{
+ 
+ /* BAD */
+ threadloop /* outer loop */ %{
+
+As you can see, the parser for the PDL PreProcessor is not terribly
+sophisticated. It's mostly a pile of regexes, and 99% of the time, it
+does exactly what you need.
+
+Another potential area of confusion can arise if you have something that
+looks like a threadloop in your code, but you've commented it out:
+
+ ...
+ #if 0  /* skip this for now */
+ 
+ threadloop %{
+	 printf("  Row %3d: ", row_counter);
+	 loop(n) %{
+		 printf("%f, ", $in());
+	 %}
+	 printf("\n");
+	 row_counter++;
+ %}
+ 
+ #endif /* skipped block of code */
+ ...
+
+The problem is that if you do not indicate where the threadloop is supposed to
+go, PDL wraps all your code in the threadloop logic. However, if PDL sees what
+looks like a threadloop block, it assumes that you want to be more precise about
+where the threadloop logic goes. In fact, it even inserts the threadloop logic
+where you indicated it was to go, but this will eventually get discarded by the
+C preprocessor thanks to the C<#if 0> block. This means that the code that
+contains the C<loop(n)> block, below the C<#endif>, does not have the threadloop
+logic that it needs to do its job, and you will get erroneous results.
+
+The easiest fix for this? In addition to commenting out the blocks, put
+something (anything) between the text C<threadloop> and the percenty block
+C<%{>. As already discussed, this will always prevent PDL from identifying
+the threadloop, which is what you need it to temporarily do in this case.
+
+It may seem that threadloops are bad things to be avoided, but threadloops
+are particularly useful if you are writing a function that needs
+access to a system resource that is costly to allocate with each iteration. For
 that sort of operation, you allocate it before entering the threadloop and
 de-allocate it after leaving:
 
@@ -691,6 +742,9 @@ de-allocate it after leaving:
          %}
          /* Free system resource */
      },
+
+They are also handy if you need to perform a particularly expensive calculation
+once each time the function is invoked.
 
 To put this all together, I am going to consider writing a PDL::PP function
 that computes the first numerical derivative of a time series. You can read
@@ -1026,10 +1080,16 @@ C<pp_line_numbers> call.
 
 =item Wart: /* */ doesn't always work; use #if 0
 
-For better or for worse, some of XS code that PDL::PP generates includes
+Note: This issue has been addressed in the git copy of PDL as of April 23, 2012.
+It will make its way onto CPAN with the release of PDL v2.4.11, slated for
+spring or summer of 2012.
+
+Until the latest fixes, some of XS code that PDL::PP generates includes
 C-style comments indicating what they do. This is useful when you find
 yourself digging into the generated XS code as it helps you get your
 bearings. However, it can also break a relatively common use of comments.
+(With the latest work, the commentary is still present, but they use a
+preprocessor trick so that they don't break C-style comments anymore.)
 
 When there is a logic bug in my code I find it helpful to reduce the
 complexity of the code and comment-out sections at a time until I get an
