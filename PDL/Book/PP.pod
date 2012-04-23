@@ -814,6 +814,7 @@ PDL::PP parses this as
                           <dimension-name> => <value>,
                           ...
                         )
+
 and replaces it with a direct array access statement. In this statement,
 the C<n> on the left side of the fat comma (the C<< => >>) is the name of
 the dimension. The C<n> on the right side of the fat comma is part of a C
@@ -919,24 +920,24 @@ Notice what's missing? The semicolon at the end of the C<printf> is missing.
 Unfortunately, the error output of this example (contained in
 F<_Inline/build/bad_error_reporting_pl_8328/out.make>) borders on useless:
 
- bad_error_reporting_pl_4420.xs: In function 'pdl_my_print_rows_readdata’:
- bad_error_reporting_pl_4420.xs:177: warning: format '%f’ expects type 'double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:177: warning: format '%f’ expects type 'double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:178: error: expected ';’ before '}’ token
- bad_error_reporting_pl_4420.xs:222: warning: format '%f’ expects type 'double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:222: warning: format '%f’ expects type 'double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:223: error: expected ';’ before '}’ token
- bad_error_reporting_pl_4420.xs:267: warning: format '%f’ expects type 'double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:267: warning: format '%f’ expects type 'double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:268: error: expected ';’ before '}’ token
- bad_error_reporting_pl_4420.xs:312: warning: format '%f’ expects type 'double’, but argument 2 has type ‘PDL_Long’
- bad_error_reporting_pl_4420.xs:312: warning: format '%f’ expects type 'double’, but argument 2 has type ‘PDL_Long’
- bad_error_reporting_pl_4420.xs:313: error: expected ';’ before '}’ token
- bad_error_reporting_pl_4420.xs:357: warning: format '%f’ expects type 'double’, but argument 2 has type ‘PDL_LongLong’
- bad_error_reporting_pl_4420.xs:357: warning: format '%f’ expects type 'double’, but argument 2 has type ‘PDL_LongLong’
- bad_error_reporting_pl_4420.xs:358: error: expected ';’ before '}’ token
- bad_error_reporting_pl_4420.xs:403: error: expected ';’ before '}’ token
- bad_error_reporting_pl_4420.xs:448: error: expected ';’ before '}’ token
+ bad_error_reporting_pl_4420.xs: In function 'pdl_my_print_rows_readdata':
+ bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:178: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:223: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:268: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_Long'
+ bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_Long'
+ bad_error_reporting_pl_4420.xs:313: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_LongLong'
+ bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_LongLong'
+ bad_error_reporting_pl_4420.xs:358: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:403: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:448: error: expected ';' before '}' token
 
 If you're a seasoned C programmer, you'll recognize the warning: it arises
 because PDL::PP creates a branches of code for each data type that PDL
@@ -995,24 +996,24 @@ C<pp_line_numbers>. (The C<#line> directive is only necessary when using
 L<Inline::Pdlpp>, and is not necessary in a .pd file.) Now the error output
 gives the line of the closing bracket that reports the missing semicolon:
 
- my-inline-work: In function 'pdl_my_print_rows_readdata’:
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'int’
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'int’
- my-inline-work:13: error: expected ';’ before '}’ token
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'int’
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'int’
- my-inline-work:13: error: expected ';’ before '}’ token
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'int’
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'int’
- my-inline-work:13: error: expected ';’ before '}’ token
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'PDL_Long’
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'PDL_Long’
- my-inline-work:13: error: expected ';’ before '}’ token
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'PDL_LongLong’
- my-inline-work:12: warning: format '%f’ expects type 'double’, but argument 2 has type 'PDL_LongLong’
- my-inline-work:13: error: expected ';’ before '}’ token
- my-inline-work:13: error: expected ';’ before '}’ token
- my-inline-work:13: error: expected ';’ before '}’ token
+ my-inline-work: In function 'pdl_my_print_rows_readdata':
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_Long'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_Long'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_LongLong'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_LongLong'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:13: error: expected ';' before '}' token
 
 All the errors are reported as occurring on line 13, immediately directing
 your eye to where the problem lies. This lets you fix your problem and get
@@ -1073,21 +1074,21 @@ foolproof:
 This I<should> work withou a hitch. Unfortunately, this gives
 me these errors:
 
- my-printout-pdlpp: In function 'pdl_my_printout_readdata’:
- my-printout-pdlpp:7: error: expected statement before ')’ token
- my-printout-pdlpp:8: error: expected expression before '/’ token
- my-printout-pdlpp:7: error: expected statement before ')’ token
- my-printout-pdlpp:8: error: expected expression before '/’ token
- my-printout-pdlpp:7: error: expected statement before ')’ token
- my-printout-pdlpp:8: error: expected expression before '/’ token
- my-printout-pdlpp:7: error: expected statement before ')’ token
- my-printout-pdlpp:8: error: expected expression before '/’ token
- my-printout-pdlpp:7: error: expected statement before ')’ token
- my-printout-pdlpp:8: error: expected expression before '/’ token
- my-printout-pdlpp:7: error: expected statement before ')’ token
- my-printout-pdlpp:8: error: expected expression before '/’ token
- my-printout-pdlpp:7: error: expected statement before ')’ token
- my-printout-pdlpp:8: error: expected expression before '/’ token
+ my-printout-pdlpp: In function 'pdl_my_printout_readdata':
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
 
 (Got different line numbers? Be sure to put remove all spaces before
 C<#line 1 "my-printout-pdlpp">.) Lines seven and eight are these:
