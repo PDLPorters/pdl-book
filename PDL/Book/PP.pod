@@ -27,7 +27,7 @@ After reading this introduction, you should have a firm grasp on the
 basics of using PDL::PP and the full documentation in the L<PDL::PP man
 page|PDL::PP> should be fairly easy to follow.
 
-=head1 Getting Started 
+=head2 Basics
 
 In this section I discuss the basics of writing PP code using C<pp_def>.
 I will use L<Inline::Pdlpp> for all of my examples, including this first
@@ -44,7 +44,7 @@ way the new method should interact with the threading engine (e.g.
 its dimensional signature and which data types it should support natively),
 and also the code for the core of the method.
 
-=head2 First Example
+=head3 First Example
 
 Let's begin with a variation on the canonical Hello World.
 
@@ -263,7 +263,7 @@ the two and their sum. Notice that I access the value in C<a> with the
 expression C<$a()>, and the value in C<b> with C<$b()>. Also notice that I
 can use those values in an arithmetic expression.
 
-=head2 Returning Values
+=head3 Returning Values
 
 The examples I have used have all demonstrated their behavior by printing
 out their results to STDOUT. If you are like me, you will be glad to know
@@ -346,7 +346,7 @@ The functions defined using C<pp_def> actually allow for you to pass in
 the output piddles as arguments, but I'll explore that in one of the
 exercises rather than boring you with more details.
 
-=head2 Exercise Set 1
+=head3 Exercise Set 1
 
 So far I have shown you how to write basic PP code that prints values to the
 screen or returns values. The great thing about PDL::PP is that this code
@@ -399,13 +399,13 @@ capability, can you guess why PDL lets you do this?
 
 =back
 
-=head1 Higher Dimensional Functions
+=head2 Higher Dimensional Functions
 
 So far I have shown how to write rudimentary functions that accept
 zero-dimensional piddles. In this section, I will explain how to write
 functions that accept higher-dimensional data.
 
-=head2 Specifying Dimensions and Using Explicit Looping
+=head3 Specifying Dimensions and Using Explicit Looping
 
 Exercises 1.2 and 1.3 demonstrate that PDL::PP automatically loops over the
 values in a piddle for you. What if you want to do some sort of aggregate
@@ -556,11 +556,11 @@ one-dimensional piddle, it returns a single result with the sum of all the
 elements. The calculation on C<$b> treats each row as a vector and performs
 the calculation on each row.
 
-=head2 Matrix-Matrix Multiplication
+=head3 Matrix-Matrix Multiplication
 
 Let's look at another example, matrix-matrix multiplication. (You remember
 how to do matrix-matrix multiplication, right? No? Brush-up on
-L<Wikipedia|http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
+L<http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
 would we write such an algorithm using PDL::PP? First, the C<Pars> section
 needs to indicate what sort of input and output
 piddles we want to handle. The length of the row of the first matrix has to
@@ -631,7 +631,7 @@ and that gives this output:
 Oops! You can see that PDL considers the first argument to the number of
 columns, not the number of rows! I'll let you fix that in an exercise.
 
-=head2 Threadloops
+=head3 Threadloops
 
 PDL::PP also has the C<threadloop> construct, which lets you declare the
 code over which PDL should thread, and the code that should come before
@@ -687,8 +687,59 @@ A snippet of that output looks like this:
    Row  19: 57.000000, 58.000000, 59.000000, 
  All done!
 
-This is particularly useful if you are writing a function that needs access
-to a system resource that is costly to allocate with each iteration. For
+There are two important aspects to remember about threadloops. First, you
+must not put anything between the C<threadloop> and the C<%{> except
+whitespace. For example:
+
+ /* ok */
+ threadloop %{
+ 
+ /* ok */
+ threadloop
+     %{
+ 
+ /* BAD */
+ threadloop /* outer loop */ %{
+
+As you can see, the parser for the PDL PreProcessor is not terribly
+sophisticated. It's mostly a pile of regexes, and 99% of the time, it
+does exactly what you need.
+
+Another potential area of confusion can arise if you have something that
+looks like a threadloop in your code, but you've commented it out:
+
+ ...
+ #if 0  /* skip this for now */
+ 
+ threadloop %{
+	 printf("  Row %3d: ", row_counter);
+	 loop(n) %{
+		 printf("%f, ", $in());
+	 %}
+	 printf("\n");
+	 row_counter++;
+ %}
+ 
+ #endif /* skipped block of code */
+ ...
+
+The problem is that if you do not indicate where the threadloop is supposed to
+go, PDL wraps all your code in the threadloop logic. However, if PDL sees what
+looks like a threadloop block, it assumes that you want to be more precise about
+where the threadloop logic goes. In fact, it even inserts the threadloop logic
+where you indicated it was to go, but this will eventually get discarded by the
+C preprocessor thanks to the C<#if 0> block. This means that the code that
+contains the C<loop(n)> block, below the C<#endif>, does not have the threadloop
+logic that it needs to do its job, and you will get erroneous results.
+
+The easiest fix for this? In addition to commenting out the blocks, put
+something (anything) between the text C<threadloop> and the percenty block
+C<%{>. As already discussed, this will always prevent PDL from identifying
+the threadloop, which is what you need it to temporarily do in this case.
+
+It may seem that threadloops are bad things to be avoided, but threadloops
+are particularly useful if you are writing a function that needs
+access to a system resource that is costly to allocate with each iteration. For
 that sort of operation, you allocate it before entering the threadloop and
 de-allocate it after leaving:
 
@@ -700,7 +751,10 @@ de-allocate it after leaving:
          /* Free system resource */
      },
 
-=head2 A Complex Example
+They are also handy if you need to perform a particularly expensive calculation
+once each time the function is invoked.
+
+=head3 A Complex Example
 
 To put this all together, I am going to consider writing a PDL::PP function
 that computes the first numerical derivative of a time series. You can read
@@ -771,8 +825,9 @@ the discussion that follows.
 The output on my machine looks like this:
 
 The difference between the computed and actual derivative:
-[-0.014932644 -0.0142657 -0.012324443 -0.0092822807 -0.0054109595
-  -0.0010562935 0.0033927281 0.0075386874 0.011011238 0.077127808]
+
+  [-0.014932644 -0.0142657   -0.012324443 -0.0092822807 -0.0054109595
+   -0.0010562935 0.0033927281 0.0075386874 0.011011238   0.077127808 ]
 
 These differences are fairly small, four times smaller than the (fairly
 large) step size. And if I decrease the size of C<$h> by 2, these errors
@@ -823,6 +878,7 @@ PDL::PP parses this as
                           <dimension-name> => <value>,
                           ...
                         )
+
 and replaces it with a direct array access statement. In this statement,
 the C<n> on the left side of the fat comma (the C<< => >>) is the name of
 the dimension. The C<n> on the right side of the fat comma is part of a C
@@ -839,7 +895,7 @@ to control how PDL::PP presents data to your code, and to control which
 sections of code PDL::PP threads over. I have also shown you how to access
 specific memory locations when you have vector representations of your data.
 
-=head2 Exercise Set 2
+=head3 Exercise Set 2
 
 =over
 
@@ -928,24 +984,24 @@ Notice what's missing? The semicolon at the end of the C<printf> is missing.
 Unfortunately, the error output of this example (contained in
 F<_Inline/build/bad_error_reporting_pl_8328/out.make>) borders on useless:
 
- bad_error_reporting_pl_4420.xs: In function ‘pdl_my_print_rows_readdata’:
- bad_error_reporting_pl_4420.xs:177: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:177: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:178: error: expected ‘;’ before ‘}’ token
- bad_error_reporting_pl_4420.xs:222: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:222: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:223: error: expected ‘;’ before ‘}’ token
- bad_error_reporting_pl_4420.xs:267: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:267: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- bad_error_reporting_pl_4420.xs:268: error: expected ‘;’ before ‘}’ token
- bad_error_reporting_pl_4420.xs:312: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
- bad_error_reporting_pl_4420.xs:312: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
- bad_error_reporting_pl_4420.xs:313: error: expected ‘;’ before ‘}’ token
- bad_error_reporting_pl_4420.xs:357: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
- bad_error_reporting_pl_4420.xs:357: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
- bad_error_reporting_pl_4420.xs:358: error: expected ‘;’ before ‘}’ token
- bad_error_reporting_pl_4420.xs:403: error: expected ‘;’ before ‘}’ token
- bad_error_reporting_pl_4420.xs:448: error: expected ‘;’ before ‘}’ token
+ bad_error_reporting_pl_4420.xs: In function 'pdl_my_print_rows_readdata':
+ bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:178: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:223: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:268: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_Long'
+ bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_Long'
+ bad_error_reporting_pl_4420.xs:313: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_LongLong'
+ bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_LongLong'
+ bad_error_reporting_pl_4420.xs:358: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:403: error: expected ';' before '}' token
+ bad_error_reporting_pl_4420.xs:448: error: expected ';' before '}' token
 
 If you're a seasoned C programmer, you'll recognize the warning: it arises
 because PDL::PP creates a branches of code for each data type that PDL
@@ -957,7 +1013,10 @@ working on a much larger set of PP code, having the line number of the error
 would be B<much> more useful. You accomplish that by using the
 C<pp_line_numbers> function, which adds C<#line> directives into your code
 so that errors get reported on the correct lines. Here is a slightly
-doctored version to illustrate the issue:
+doctored version to illustrate the issue. (Note that the text
+C<#line 1 ...> must be flush against the left margin, just like the C<__END__>
+and C<__Pdlpp__> markers, or Perl won't realize that you are trying to tell
+it about line numbers and things will be mis-reported.)
 
 =for listing better-error-reporting
 
@@ -1001,24 +1060,24 @@ C<pp_line_numbers>. (The C<#line> directive is only necessary when using
 L<Inline::Pdlpp>, and is not necessary in a .pd file.) Now the error output
 gives the line of the closing bracket that reports the missing semicolon:
 
- my-inline-work: In function ‘pdl_my_print_rows_readdata’:
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- my-inline-work:13: error: expected ‘;’ before ‘}’ token
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- my-inline-work:13: error: expected ‘;’ before ‘}’ token
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘int’
- my-inline-work:13: error: expected ‘;’ before ‘}’ token
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_Long’
- my-inline-work:13: error: expected ‘;’ before ‘}’ token
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
- my-inline-work:12: warning: format ‘%f’ expects type ‘double’, but argument 2 has type ‘PDL_LongLong’
- my-inline-work:13: error: expected ‘;’ before ‘}’ token
- my-inline-work:13: error: expected ‘;’ before ‘}’ token
- my-inline-work:13: error: expected ‘;’ before ‘}’ token
+ my-inline-work: In function 'pdl_my_print_rows_readdata':
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_Long'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_Long'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_LongLong'
+ my-inline-work:12: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_LongLong'
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:13: error: expected ';' before '}' token
+ my-inline-work:13: error: expected ';' before '}' token
 
 All the errors are reported as occurring on line 13, immediately directing
 your eye to where the problem lies. This lets you fix your problem and get
@@ -1031,10 +1090,16 @@ C<pp_line_numbers> call.
 
 =item Wart: /* */ doesn't always work; use #if 0
 
-For better or for worse, some of XS code that PDL::PP generates includes
+Note: This issue has been addressed in the git copy of PDL as of April 23, 2012.
+It will make its way onto CPAN with the release of PDL v2.4.11, slated for
+spring or summer of 2012.
+
+Until the latest fixes, some of XS code that PDL::PP generates includes
 C-style comments indicating what they do. This is useful when you find
 yourself digging into the generated XS code as it helps you get your
 bearings. However, it can also break a relatively common use of comments.
+(With the latest work, the commentary is still present, but they use a
+preprocessor trick so that they don't break C-style comments anymore.)
 
 When there is a logic bug in my code I find it helpful to reduce the
 complexity of the code and comment-out sections at a time until I get an
@@ -1079,23 +1144,24 @@ foolproof:
 This I<should> work withou a hitch. Unfortunately, this gives
 me these errors:
 
- my-printout-pdlpp: In function ‘pdl_my_printout_readdata’:
- my-printout-pdlpp:7: error: expected statement before ‘)’ token
- my-printout-pdlpp:8: error: expected expression before ‘/’ token
- my-printout-pdlpp:7: error: expected statement before ‘)’ token
- my-printout-pdlpp:8: error: expected expression before ‘/’ token
- my-printout-pdlpp:7: error: expected statement before ‘)’ token
- my-printout-pdlpp:8: error: expected expression before ‘/’ token
- my-printout-pdlpp:7: error: expected statement before ‘)’ token
- my-printout-pdlpp:8: error: expected expression before ‘/’ token
- my-printout-pdlpp:7: error: expected statement before ‘)’ token
- my-printout-pdlpp:8: error: expected expression before ‘/’ token
- my-printout-pdlpp:7: error: expected statement before ‘)’ token
- my-printout-pdlpp:8: error: expected expression before ‘/’ token
- my-printout-pdlpp:7: error: expected statement before ‘)’ token
- my-printout-pdlpp:8: error: expected expression before ‘/’ token
+ my-printout-pdlpp: In function 'pdl_my_printout_readdata':
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
+ my-printout-pdlpp:7: error: expected statement before ')' token
+ my-printout-pdlpp:8: error: expected expression before '/' token
 
-Lines seven and eight are these:
+(Got different line numbers? Be sure to put remove all spaces before
+C<#line 1 "my-printout-pdlpp">.) Lines seven and eight are these:
 
              printf("  %f\r", $in());
              */
@@ -1157,7 +1223,7 @@ Hopefully this gives me enough to find that errant C<\r>.
 
 =back
 
-=head1 Recap
+=head2 Recap
 
 In this chapter, I've covered the very basics of using PDL::PP to write
 fast, versatile code. I have covered much less material than I had hoped,
@@ -1167,7 +1233,7 @@ I expect it will give you enough to dig into the PDL::PP documentation.
 
 Good luck, and happy piddling!
 
-=head1 Appendix A: Installing Inline::Pdlpp
+=head2 Appendix A: Installing Inline::Pdlpp
 
 The PDL installation always installs L<Inline::Pdlpp>, but that does not
 mean it works for you because L<Inline> is not actually a prerequisite for
@@ -1194,9 +1260,9 @@ walk away to get a cup of coffee and expect it to be done.
 
 Once that's installed, you should be ready to work with the examples.
 
-=head1 Appendix B: Solutions to Exercises
+=head2 Appendix B: Solutions to Exercises
 
-=head2 Excercise Set 1
+=head3 Excercise Set 1
 
 =over
 
@@ -1330,7 +1396,7 @@ regularly call functions
 
 =back
 
-=head2 Exercise Set 2
+=head3 Exercise Set 2
 
 =over
 

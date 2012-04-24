@@ -8,7 +8,7 @@ pod2pdf chap1.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output
 =for comment
 Converted from Latex to POD by Karl Glazebrook 5/Jan/2012, grep for 'XXX' for conversion comments.
 
-=head1 First Steps with  PDL
+=head1 First Steps with PDL
 
 I<"Maybe there are a few civilizations out there that have decided to stay
 home, piddle around and send out some radio waves once in a while.">
@@ -30,7 +30,7 @@ using the language and a useful reference for getting started doing real
 work. Later sections will focus on looking at the features introduced
 here, in more depth.
 
-=head2 Alright let's I<do> something.
+=head2 Alright, let's I<do> something
 
 We'll assume PDL is correctly installed and set up on your computer
 system (see L<http://pdl.perl.org/> for details of obtaining and installing PDL).
@@ -51,11 +51,11 @@ all that is required to bring up C<pdl>.
   are welcome to redistribute it under certain conditions, see
   the same file for details.
   ReadLines, NiceSlice, MultiLines  enabled
-  Reading /Users/kenworthy/.perldlrc...
-  Found docs database /Library/Perl/5.12/darwin-thread-multi-2level/PDL/pdldoc.db
+  Reading /Users/xxx/.perldlrc...
+  Found docs database /usr/lib/perl5/5.12/.../PDL/pdldoc.db
   Type 'help' for online help
   Type 'demo' for online demos
-  Loaded PDL v2.4.9_009 (supports bad values)
+  Loaded PDL v2.4.10 (supports bad values)
   pdl>
 
 We get a whole bunch of informational messages about what it is loading for
@@ -63,7 +63,9 @@ startup and the help system. Note; the startup is I<completely> configurable,
 an advanced user can completely customize which PDL modules
 are loaded. We are left with the 
 C<pdl>> prompt at which we can type commands. This kind
-of interactive program is called a 'shell'.
+of interactive program is called a 'shell'.  There is also C<pdl2>
+which is a newer version of the PDL shell with additional features.
+It is still under development but completely useable.
 
 Let's create something, and display it:
 
@@ -261,7 +263,7 @@ one data value corresponds to in physical units:
 
 
 This is also about 200 solar luminosities, (Note we have switched to using C<p>
-as a shorthand for C<print> - this only works in the C<pdl> shell.)
+as a shorthand for C<print> - which only works in the C<pdl> and C<pdl2> shells)
 which gives 4 billion solar luminosities for the whole galaxy.
 
 OK we do not need PDL for this simple arithmetic, let's get back to
@@ -328,7 +330,7 @@ Of course PDL being so powerful, we could have figured this out in one line:
   pdl> print avg($gal->where(rvals($gal)<50)) / avg($gal->where(rvals($gal)>=50))
   6.56590509414673
 
-=head2 Twinkle, twinkle, little star.
+=head2 Twinkle, twinkle, little star
 
 Let's look at something else, we'll zoom in on a small piece of the image:
 
@@ -412,7 +414,7 @@ about what we don't know use C<apropos>:
 
 This tells us a whole lot about various functions and modules to do with
 Gaussians. Note that we can abbreviate C<help> and C<apropos>
-with 'C<?>' and 'C<??>' when using the C<pdl> shell.
+with 'C<?>' and 'C<??>' when using the C<pdl> or C<pdl2> shells.
 
 
 Let's fit a Gaussian:
@@ -437,9 +439,9 @@ functional form.
 
 
 Note the use of a new function, C<sequence(N)>, which 
-generates a new piddle with values ranging 0..N. We are simply
-using this to generate the horizontal axis values for the plot.
-Now let's overlay it on the previous plot.
+generates a new piddle with N values ranging 0..(N-1).
+We are simply using this to generate the horizontal axis values
+for the plot.  Now let's overlay it on the previous plot.
 
 
   pdl> hold; # This command stops new plots starting new pages
@@ -576,10 +578,13 @@ If we want to enhance the large-scale structure we want to make a filter to only
 let through low-frequencies:
 
   pdl> $tmp = rvals($gal)<10;        # Radially-symmetric filter function
+  pdl> use PDL::ImageND;             # provides kernctr()
   pdl> $filter = kernctr $tmp, $tmp; # Shift origin to 0,0
   pdl> imag $filter;
 
-You can see from the image that C<$filter>  is zero everywhere except near the origin
+=for html <img WIDTH=400 src="firststeps/gal-filter.png">
+
+You can see from the image that C<$filter> is zero everywhere except near the origin
 (0,0) (and the 3 reflected corners). As a result it only lets through
 low-frequency wavelengths. So we multiply by the filter and  FFT back to
 see the result:

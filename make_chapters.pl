@@ -2,9 +2,13 @@
 use strict;
 use warnings;
 
+use lib ( qw(inc) );
+use pod2pdf;
+use POSIX qw(locale_h);
+
 =pod
 
-=head1 make_book.pl
+=head1 make_chapters.pl
 
 Reads a user defined list of POD chapters and produces a PDF file in the
 root directory.
@@ -16,13 +20,12 @@ directory.
 
 =head1 USAGE
 
-Run from the command prompt and edit your paths and the C<pod2pdf>
-command line options in the USER SELECTABLE OPTIONS area of this
-program.
+Edit the command line options in the USER SELECTABLE OPTIONS area of
+this program.
 
 =head2 AUTHOR
 
-Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2011 Dec 30
+Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2012 Feb 02
 
 =cut
 
@@ -30,18 +33,62 @@ Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2011 Dec 30
 # USER SELECTABLE OPTIONS
 
 my $book_dir        = "PDL/Book/"; # relative path to the PDL Book files
-my $book_chapters   = "FirstSteps Creating NiceSlice Functions Threading PGPLOT PLplot graphics_3d Transform Complex Pthreads PP Genesis Credits"; # an ordered list of POD files to process
-
-my $book_pdf        = "book.pdf"; # output name of PDF book
+my $book_chapters   = "Genesis FirstSteps Creating Manipulation Operations NiceSlice Functions Threading PGPLOT PLplot graphics_3d Transform Complex Pthreads PP Credits"; # an ordered list of POD files to process
 
 my $tmp = "book_pdf.pod.tmp"; # temporary filename for POD processing
 
 ##################################################
 # END OF USER SELECTABLE OPTIONS
 
+##################
+# old TOC file removal
+#
+# toc.txt is generated from =head directives in pod2pdf
+# so remove any old toc.txt files first
+#
+
+if (-e "toc.txt") {unlink "toc.txt"; print "Deleted old toc.txt\n"};
+
+my %config = (
+    page_number => 0,
+    icon_scale => 0.25,
+    title => "Foreward",
+    icon => $book_dir."logo2.png",
+    toc => 1
+);
+
+sub make_pdf_wrapper {
+    my $file = shift;
+    my $outpdf = shift;
+
+    print "Making $outpdf from $file...";
+
+    # uses %config from global. yes, I'm lazy.
+
+    open (BLARG,">$outpdf") or die("Cannot open output file $outpdf: $!\n");
+
+    #--Tell the OS we are going to create binary data--------------------------
+
+    setlocale(LC_ALL,'C');
+    binmode *BLARG;
 
 
-# loop through all the book chapters in their order
+    #--Parse our Pod-----------------------------------------------------------
+
+    my $parser = App::pod2pdf->new(%config);
+    $parser->parse_from_file($file);
+    #$parser->output;
+    print BLARG $parser->{pdf}->stringify;
+    close(BLARG);
+
+    print "done\n";
+    return ($parser->{page_number});
+
+}
+
+my $last_page_number = 0;
+
+# loop through all the book chapters in order
 
 my $chap_num = 1;
 
@@ -53,8 +100,6 @@ foreach (split " ",$book_chapters) {
         print "$chapter doesn't exist - skipping\n";
         next;
     }
-
-###    $chapter = "test_book.tmp";
 
     # filter on each chapter to put in O<image.png> tags
     print "Found $chapter...";
@@ -110,12 +155,16 @@ foreach (split " ",$book_chapters) {
     my $chapter_file = sprintf("Chapter%02d.pdf", $chap_num);
     print "Writing out $header to $chapter_file\n";
 
-    my $exec_string = "pod2pdf $tmp --icon-scale 0.25 --title '$header' --icon ".$book_dir."logo2.png --output-file ". $chapter_file;
+    $config{title} = $header;
+    $config{page_number} = $last_page_number;
+    ($last_page_number) = make_pdf_wrapper($tmp, $chapter_file);
 
-    print "Execing $exec_string\n";
+    #   my $exec_string = "pod2pdf $tmp --icon-scale 0.25 --title '$header' --icon ".$book_dir."logo2.png --output-file ". $chapter_file;
+
+    #  print "Execing $exec_string\n";
     # go ahead and make the call
 
-    `$exec_string`;
+    ##`$exec_string`;
 
     $chap_num += 1;
 

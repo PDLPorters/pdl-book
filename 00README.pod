@@ -7,7 +7,7 @@ pod2html --infile=00README.pod --outfile=00README.html --noindex
 =head1 The PDL Book
 
 This POD shows how to get a local copy of the PDL Book, and what
-programs you need to use to compile an HTML and PDF version of the book.
+programs you need to use to compile HTML and PDF versions of the book.
 
 =head2 Using C<git> to access the PDL Book
 
@@ -38,10 +38,15 @@ shell:
 All images are included in the PODs as HTML tags. A small script
 can convert these tags into PDF tags suitable for C<pod2pdf>.
 
-If you want to make the HTML and PDF versions of the book, you can then
+If you want to make the PDF version of the book, you can then
 run:
 
-    ./make_book.pl
+    ./make_chapters.pl
+    ./make_endpieces.pl
+
+This produces the files C<FrontPage.pdf> and C<Chapter??.pdf> files.
+These can be read individually or combined with C<pdfjam> or any
+software that can join individual PDF files together.
 
 =head2 Adding new material and getting write access to the PDL Book
 

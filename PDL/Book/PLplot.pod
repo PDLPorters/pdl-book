@@ -7,50 +7,23 @@ pod2pdf PLplot.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --outpu
 
 =head1 Graphics with PLplot
 
-A practical user's guide to B<PDL::GRAPHICS::PLplot>. Showing code usage in both functional
-and object oriented styles, so that new users can find the example code usages for thier
-plotting project. It is meant as a supplement to "perldoc PDL::GRAPHICS::PLplot",
-showing real code usages of the module's methods and settings. 
+The B<PDL::Graphics::PLplot> perl module, is an interface to the 
+L<http://plplot.sourceforge.net> PLplot C library. It is a
+2d plotting library, but also does 1-D bargraphs and 3-D projection graphs.
 
-This pod document, has been written so that it can be
-converted to html format, and PDF, both of which contain graphics,
-like screenshots, and highlighted source code , and links to sourcecode. 
-If this text-only pod documentation seems wanting, please see the html or pdf version. 
+Many of the examples, discussed below, are from the
+PDL::Graphics-PLplot/t subdirectory, of the source module. These are
+written in the functional style, and are direct translations of the
+examples which come with the B<PLplot C library> 
 
-I am a Perl programmer, and almost all the examples will
-be in Perl script form; but you should be able to easily run the
-same commands in B<perldl> or B<pdl2>.
-
-Finally, it is intended that this be a user-contributed userguide.
-I want others to contribute (or edit) code, which demonstrates
-a clear usage of some method or option.   
-
-The B<PDL::GRAPHICS::PLplot> perl module, is an interface to the 
-L<http://plplot.sourceforge.net> PLplot C library. It is an excellent
-2d plotting library, but also does 1d bargraphs and 3d projection graphs.
-As usual, the devil is in the details of actually using the module,
-and this document hopes to point out as many code details as possible,
-without getting too tedious or boring.
-
-=head2 About the examples.
-
-Many of the examples, discussed below, are from the PDL::Graphics-PLplot/t subdirectory,
-of the source module. These are written in the functional style, and are
-direct translations of the examples which come with the B<PLplot C library> 
-
-The rest of the examples, are object-oreiented, derived from David Merten's slideshow on B<PDL::Graphics-PLplot>.
-His very informative slideshow can be downloaded or viewed at 
-L<http://www.slideshare.net/dcmertens/p-lplot-talk>  
-
-
-I, as a Perl programmer, find the object oriented interface much easier
-to use, so I will tend to show that style in the examples.
-
-
+The rest of the examples, are object-oreiented, derived from David
+Merten's slideshow on B<PDL::Graphics::PLplot>.  His very informative
+slideshow can be downloaded or viewed at
+L<http://www.slideshare.net/dcmertens/p-lplot-talk>
 
 =head2 Introducing C<PDL::Graphics::PLplot>
 
-=head2 basic methods available
+The basic methods available:
 
   new, close ->  create and finalize plot objects
   xyplot, stripplots ->   2D plotting
@@ -63,10 +36,9 @@ to use, so I will tend to show that style in the examples.
 Once you specify a plotting option, the option will carry over to
 future calls on the same PLplot object.
 
-
-The first thing you will notice about invoking PLplot, is that
-it will prompt you for an output device, or maybe a file to save to,
-if you do not specify one either in B<perldl> or a script
+The first thing you will notice about invoking PLplot, is that it will
+prompt you for an output device, or maybe a file to save to, if you do
+not specify one either in B<perldl> or a script
 
 =for html
 <p> <b><center>Figure 00</b>: using PDL::Graphics::PLplot, invoking the output device menu.</center><br>
@@ -88,9 +60,9 @@ You can specify a device
                     );
                   
 
-=head2 Just plotting a simple parabola
+=head2 Plotting a simple parabola
 
-This code
+This code:
 
         #!/usr/bin/perl
 	use warnings;
@@ -110,16 +82,13 @@ produces a nice parabola, in a PNG file.
 <center><img WIDTH=400 src="PLplot/w01.pl.800.png"></center>
 <p>
 
-
-
-
-=head1 B<Object Oriented Examples>
+=head2 Object Oriented Examples
 
 This section shows how to use the object oriented methods of the B<Perl> interface
 to B<PDL::Graphics::PLplot> 
 
 
-=head2  axis labelling and titles  
+=head3 Axis labelling and titles
 
 	use PDL;
 	use PDL::Graphics::PLplot;
@@ -147,8 +116,7 @@ to B<PDL::Graphics::PLplot>
 
 
 
-=head2  interactive crosshairs with wxwidgets output device  
-
+=head2 Interactive crosshairs with the C<wxwidgets> output device
 
 	# Create the PLplot object: use wxwidgets for display
 	# wxwidgets allows saving to many file types, and
@@ -187,7 +155,7 @@ to B<PDL::Graphics::PLplot>
          --option MEM must be passed a piddle where the results will be plot
 
 
-=head2  outputting postscript 
+=head2 Outputting postscript
 
 	# Save the image to a postscript file
 	my $pl = PDL::Graphics::PLplot->new(
@@ -196,24 +164,26 @@ to B<PDL::Graphics::PLplot>
         );
 
 
-=head2  tools for plotting points
+=head2 Tools for plotting points
 
-  You can plot lines, symbols, or both by using the PLOTTYPE
-  option. You specify error bars in x and y by passing a scalar or a
-  piddle with those errors to XERRORBAR and YERRORBAR.
+You can plot lines, symbols, or both by using the PLOTTYPE
+option. You specify error bars in x and y by passing a scalar or a
+piddle with those errors to XERRORBAR and YERRORBAR.
+
    -- PLOTTYPE => LINE plots data as lines (default)
    -- PLOTTYPE => POINTS plots data as points
    -- PLOTTYPE => LINEPOINTS plots data as lines and points
    -- PLplot's built in error-bars can plot asymmetric error bars,
       but the high-level PDL bindings do not support this.
 
-  To set the symbol type and size, use the SYMBOL and SYMBOLSIZE options.
+To set the symbol type and size, use the SYMBOL and SYMBOLSIZE options.
+
   --  Symbol sizes are measured as multiples of the default size
   -- Symbol sizes can be fractional, such as 0.7 or 4.5
   -- Symbols are identified by their number
  
 
-=head3  A Symbols example: 
+=head2 A C<Symbols> example
 
   #!/usr/bin/perl
   use strict;
@@ -241,17 +211,16 @@ to B<PDL::Graphics::PLplot>
 
   $pl->close;
 
-
-
 =for html
 <center><img WIDTH=400 src="PLplot/w04.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/w04.pl.html>w04.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w04.pl> w04.pl text source code</a></center><hr><p>   
 
 
-=head2 plotting multiple curves
+=head2 Plotting multiple curves
 
-  Depending on what you want, there are at least five ways to plot multiple curves.
+Depending on what you want, there are at least five ways to plot multiple curves.
+
     -- plot a multidimensional piddle
     -- call xyplot multiple times
     -- use stripplots
@@ -259,7 +228,7 @@ to B<PDL::Graphics::PLplot>
     -- create insets using the VIEWPORT option
 
 
-=head3  plotting multiple curves with a multi-dimensional piddle
+=head3 Plotting multiple curves with a multi-dimensional piddle
 
    #!/usr/bin/perl
    use strict;
@@ -291,34 +260,37 @@ to B<PDL::Graphics::PLplot>
 <center><a TARGET="_new" href=PLplot/w05.pl.html>w05.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w05.pl> w05.pl text source code</a></center><hr><p>   
 
-=head3 colorizing multiple data sets
+=head3 Colorizing multiple data sets
 
-  Use color to differentiate different data sets:
+Use color to differentiate different data sets:
+
    -- For multidimensional piddles, plot as POINTS and use the
       COLORMAP and PALETTE options.
    -- For multiple calls to xyplot, use POINTS, COLORMAP, and
       PALETTE, or use COLOR option.
 
-   The COLORMAP option lets you specify a third value for each
-   (x, y) pair, making it (x, y, colorval).
+The COLORMAP option lets you specify a third value for each
+(x, y) pair, making it (x, y, colorval).
 
-   Which color is associated with the minimum colorval? Which
-   color is associated with the maximum value? All of these are set
-   with the PALETTE.
+Which color is associated with the minimum colorval? Which
+color is associated with the maximum value? All of these are set
+with the PALETTE.
 
-     Valid PALETTEs include:
-              RAINBOW - from red to violet through the spectrum
-              REVERSERAINBOW - violet through red
-              GREYSCALE - from black to white via grey
-              REVERSEGREYSCALE - from white to black via grey
-              GREENRED - from green to red
-              REDGREEN - from red to green
-  Note:
+Valid PALETTEs include:
+
+  RAINBOW - from red to violet through the spectrum
+  REVERSERAINBOW - violet through red
+  GREYSCALE - from black to white via grey
+  REVERSEGREYSCALE - from white to black via grey
+  GREENRED - from green to red
+  REDGREEN - from red to green
+
+Note:
+
     --  the default palette is not named
     --  this only works when plotting points, not lines or error bars
 
-
-  A multi-colored multi-curve plot
+A multi-colored multi-curve plot
 
    #!/usr/bin/perl
    use strict;
@@ -353,11 +325,13 @@ to B<PDL::Graphics::PLplot>
 <center> <a href=PLplot/w06.pl> w06.pl text source code</a></center><hr><p>   
 
 
-=head3  plotting multiple curves with differently colored calls to xyplot
+=head3 Plotting multiple curves with differently colored calls to C<xyplot>
 
-  An alternative to plotting a multi-dimensional piddle, you can plot multiple
-  curves by multiple calls to xyplot, specifying  a different color for each plot.
-  Legal colors are:
+An alternative to plotting a multi-dimensional piddle, you can plot multiple
+curves by multiple calls to xyplot, specifying  a different color for each plot.
+
+Legal colors are:
+
     BLACK       GREEN         WHEAT
     BLUE        RED           AQUAMARINE
     GREY        BLUEVIOLET    YELLOW
@@ -371,20 +345,20 @@ to B<PDL::Graphics::PLplot>
     SIENNA1     CORAL         HOTPINK
     LIGHTCORAL  LIGHTPINK1    LIGHTGOLDENROD
 
-  Notes:
+Notes:
+
    --  Curve clipping - the first plot sets the plotting boundaries
         and later plots fall outside of those boundaries
    --  Changing `current' color - the first plot sets the `current'
         color and the second does not specify a color
    --  PLplots has a discrete color limit of 16, including foreground and background color.
 
-  When plotting multiple curves, the first plot sets the boundaries, and
-  can result in subsequent plots being clipped. The obvious solution, is to
-  plot your curve with largest values first. To force a separate color from the
-  first set default color, always specify the colors in xyplot. 
+When plotting multiple curves, the first plot sets the boundaries, and
+can result in subsequent plots being clipped. The obvious solution, is
+to plot your curve with largest values first. To force a separate color
+from the first set default color, always specify the colors in xyplot. 
 
-
-=head4  a multiple curve with xyplot 
+=head3 A multiple curve with C<xyplot>
 
   #!/usr/bin/perl
   use strict;
@@ -416,16 +390,15 @@ to B<PDL::Graphics::PLplot>
 <center> <a href=PLplot/w07.pl> w07.pl text source code</a></center><hr><p>   
 
 
-=head4  solving curve clipping on multiple xyplots with the BOX option
+=head3 Solving curve clipping on multiple xyplots with the C<BOX> option
 
 =for html
 <center><img WIDTH=400 src="PLplot/w08a.pl.800.png"></center>
 <center> Clipped data </center> <p>   
 
+When you have multiple xyplots, with widely separated values, you can
+use the C<xyplot BOX> option to prevent clipping.
 
-  When you have multiple xyplots, with widely separated values, you can
-  use xyplot's BOX option to prevent clipping.
-  
   #!/usr/bin/perl
   use strict;
   use warnings;
@@ -458,7 +431,7 @@ to B<PDL::Graphics::PLplot>
 <center> <a href=PLplot/w08.pl> w08.pl text source code</a></center><hr><p>   
 
 
-=head3  plotting multiple curves with stripplot
+=head3 Plotting multiple curves with C<stripplot>
 
   #!/usr/bin/perl
   use strict;
@@ -493,7 +466,7 @@ to B<PDL::Graphics::PLplot>
 <center> <a href=PLplot/w09.pl> w09.pl text source code</a></center><hr><p>   
 
 
-=head3  stripplots and reading DATA with rcols
+=head3 Stripplots and reading C<DATA> with C<rcols>
 
   #!/usr/bin/perl
   use strict;
@@ -507,26 +480,23 @@ to B<PDL::Graphics::PLplot>
 
   # Make stripplots with the different time series
   # notice data must be transposed                        
-                                                        
   $pl->stripplots($t, $data->transpose);                  
-                                                        
   $pl->close;                                             
-__DATA__                                                
-#    t      x1     x2     x3            
-     1      4      6     -1             
-     2      3      9      3             
-     3      2      8      7             
-     3     -1      4     10
-     5      1      2      6             
-     6      5     -1      5
+  __DATA__                                                
+  #    t      x1     x2     x3            
+       1      4      6     -1             
+       2      3      9      3             
+       3      2      8      7             
+       3     -1      4     10
+       5      1      2      6             
+       6      5     -1      5
 
 =for html
 <center><img WIDTH=400 src="PLplot/w10.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/w10.pl.html>w10.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w10.pl> w10.pl text source code</a></center><hr><p>   
 
-
-=head3  multiple plots with SUBPAGE
+=head3 Multiple plots with C<SUBPAGE>
 
 When you create your PLplot object, you can carve the canvas
 into immutable subpages.
@@ -572,12 +542,13 @@ For example:
 <center> <a href=PLplot/w11.pl> w11.pl text source code</a></center><hr><p>   
 
 
-=head2 Boxes and Viewports  
+=head2 Boxes and Viewports
 
-=head3  using Insets
+=head3 Using Insets
 
- Sometimes you want a small inset in one of the corners of your plot. If you
- want to do this you should:
+ometimes you want a small inset in one of the corners of your plot. If you
+ant to do this you should:
+
   --  Specify the VIEWPORT
   --  Specify the BOX
   --  Use a smaller CHARSIZE
@@ -619,38 +590,38 @@ For example:
 <center><a TARGET="_new" href=PLplot/w12.pl.html>w12.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w12.pl> w12.pl text source code</a></center><hr><p>   
 
+=head2 Basics of viewports 
 
-=head3  basics of viewports 
+PLplot has three distinct measurements for your plot at any point:
 
- PLplot has three distinct measurements for your plot at any point:
     -- the plotting surface's dimensions
     -- the viewport's relative extent
     -- the `natural' coordinates within the viewport
 
-=head4 surface dimensions
+=head2 Surface dimensions
 
-  The dimensions of the canvas or surface that you are using can
-  be specified in the constructor (and cannot be changed later):
- 
+The dimensions of the canvas or surface that you are using can
+be specified in the constructor (and cannot be changed later):
+
    my $pl = PDL::Graphics::PLplot->new(
            # other options...
            PAGESIZE => [$width, $height]
           # other options...
       );
-  
-  These are measured either in pixels or milimeters depending on
-  whether the underlying format is a raster or vector format.
 
-=head4 viewport positioning
+These are measured either in pixels or milimeters depending on
+whether the underlying format is a raster or vector format.
 
-  The viewport carves out a chunk of space on the canvas for
-  plotting and can be changed with each plotting function.
+=head2 Viewport positioning
+
+The viewport carves out a chunk of space on the canvas for
+plotting and can be changed with each plotting function.
+
     $pl->xyplot($x, $y
              # other options
              , VIEWPORT => [$xmin, $xmax, $ymin, $ymax]
              # other options
          );
-   
     # Plot on right half of the page
     VIEWPORT => [0.5, 1, 0, 1]
     # Plot in upper half of the page
@@ -658,16 +629,14 @@ For example:
     # Vertically centered, horizontally offset
     VIEWPORT => [0.5, 0.7, 0.4, 0.6]
 
-  Viewport values are fractions of the full page (or sub-page) width
-  all four values should be a number between 0 and 1.
+Viewport values are fractions of the full page (or sub-page) width
+all four values should be a number between 0 and 1.
 
+=head3 The clipping box
 
-
-=head4 the clipping box
-
-  If the viewport indicates the chunk of space you will be graphing
-  on, the clipping box indicates the coordinates within that chunk
-  of space.
+If the viewport indicates the chunk of space you will be graphing
+on, the clipping box indicates the coordinates within that chunk
+of space.
 
     $pl->xyplot($x, $y
               # other options...
@@ -680,14 +649,13 @@ For example:
      # piddles have the minmax method:
      BOX => [$x pdl->minmax, $y pdl->minmax]
 
-  When plotting using the specified box, a data point near (0, -8)
-  will be plotted near the lower left corner and a data point near
-  (5, 0) will be plotted at the center.
-  Viewports define where plots are drawn. Tick labels, axis labels,
-  and plot titles are drawn outside the viewport.
+When plotting using the specified box, a data point near (0, -8)
+will be plotted near the lower left corner and a data point near
+(5, 0) will be plotted at the center.
+Viewports define where plots are drawn. Tick labels, axis labels,
+and plot titles are drawn outside the viewport.
 
-
-=head4 page size
+=head3 Page size
 
   #!/usr/bin/perl
   use strict;
@@ -716,8 +684,7 @@ For example:
 <center><a TARGET="_new" href=PLplot/w13.pl.html>w13.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w13.pl> w13.pl text source code</a></center><hr><p>   
 
-
-=head4 viewport upper right
+=head3 Viewport upper right
 
   #!/usr/bin/perl
   use strict;
@@ -748,7 +715,7 @@ For example:
 <center><a TARGET="_new" href=PLplot/w14.pl.html>w14.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w14.pl> w14.pl text source code</a></center><hr><p>   
 
-=head4 viewport centered
+=head3 Viewport centered
 
   #!/usr/bin/perl
   use strict;
@@ -777,8 +744,7 @@ For example:
 <center><a TARGET="_new" href=PLplot/w15.pl.html>w15.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w15.pl> w15.pl text source code</a></center><hr><p>   
 
-
-=head4 viewport extreme bounds
+=head3 Viewport extreme bounds
 
   #!/usr/bin/perl
   use strict;
@@ -809,7 +775,7 @@ For example:
 <center> <a href=PLplot/w16.pl> w16.pl text source code</a></center><hr><p>   
 
 
-=head4 viewport multiple plots
+=head3 Viewport multiple plots
 
   #!/usr/bin/perl
   use strict;
@@ -844,7 +810,7 @@ For example:
 <center> <a href=PLplot/w17.pl> w17.pl text source code</a></center><hr><p>   
 
 
-=head4 the basic box
+=head3 The basic box
 
   #!/usr/bin/perl
   use strict;
@@ -875,7 +841,7 @@ For example:
 <center><a TARGET="_new" href=PLplot/w18.pl.html>w18.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w18.pl> w18.pl text source code</a></center><hr><p>   
 
-=head4 the tweaked box
+=head3 The tweaked box
 
   #!/usr/bin/perl
   use strict;
@@ -907,7 +873,7 @@ For example:
 <center> <a href=PLplot/w19.pl> w19.pl text source code</a></center><hr><p>   
 
 
-=head4 box with 2 plots
+=head3 Box with 2 plots
 
   #!/usr/bin/perl
   use strict;
@@ -936,7 +902,7 @@ For example:
 <center> <a href=PLplot/w20.pl> w20.pl text source code</a></center><hr><p>   
 
 
-=head4 multiple plots, changing the box within a single viewport
+=head3 Multiple plots, changing the box within a single viewport
 
   #!/usr/bin/perl
   use strict;
@@ -967,75 +933,59 @@ For example:
 <center> <a href=PLplot/w21.pl> w21.pl text source code</a></center><hr><p>   
 
 
-=head4 box and viewport summary
+=head3 Box and viewport summary
 
-  -- For multiple plots on the same viewport, set the box with
-       the first call to xyplot
+For multiple plots on the same viewport, set the box with the first call to xyplot For non-overlapping plots (on different viewports), specify the box as necessary The viewport specifies the extent of the plotting region; tick labels, axis labels, and titles are drawn outside the viewport
 
-  -- For non-overlapping plots (on different viewports), specify
-       the box as necessary
+=head2 Other types of plot
 
-  -- The viewport specifies the extent of the plotting region; tick
-       labels, axis labels, and titles are drawn outside the viewport
-
-=head2 other plotting types
-
-=head3 shadeplot 
-
-=head4 shadeplot example 
+=head3 Shadeplot 
 
    #!/usr/bin/perl
    use strict;
    use warnings;
    use PDL;
    use aliased 'PDL::Graphics::PLplot';
-
    my $pl = PLplot->new(
        DEV => 'pscairo',
        FILE => 'shadeplot3.eps');
-
    # Define z = sin(x) + cos(y), a 2D piddle:
    my $x=zeroes(51)->xlinvals(-10, 10);
    my $y=zeroes(51)->xlinvals(1, 7);
    my $z=sin($x) + cos($y->transpose);
-
    # Make a shade plot with 15 color steps:
    $pl->shadeplot($z, 15,
        BOX => [$x->minmax, $y->minmax],
        XLAB => 'x', YLAB => 'y',
        TITLE => 'Egg Carton');
-
-# Add a 'vertical' color key:
-$pl->colorkey($z, 'v', VIEWPORT => [0.93, 0.96, 0.15, 0.85],
+  # Add a 'vertical' color key:
+  $pl->colorkey($z, 'v', VIEWPORT => [0.93, 0.96, 0.15, 0.85],
            XLAB => '', YLAB => '', TITLE => 'depth');
-
-$pl->close;
+  $pl->close;
 
 =for html
 <center><img WIDTH=400 src="PLplot/w22.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/w22.pl.html>w22.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w22.pl> w22.pl text source code</a></center><hr><p>   
 
-=head3 histogram 
-
-=head4 simple histogram 
+=head3 Histogram 
 
    #!/usr/bin/perl
    use strict;
    use warnings;
    use PDL;
    use aliased 'PDL::Graphics::PLplot';
-
+  
    my $pl = PLplot->new(
        DEV => 'pscairo',
        FILE => 'histogram.eps');
-
+  
    # Generate some data:
    my $data = grandom(1000);
-
+  
    # Make a histogram of that data in 20 bins:
    $pl->histogram($data, 20);
-
+  
    $pl->close;
 
 =for html
@@ -1043,7 +993,7 @@ $pl->close;
 <center><a TARGET="_new" href=PLplot/w23.pl.html>w23.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w23.pl> w23.pl text source code</a></center><hr><p>   
 
-=head4  histogram height
+=head3 Histogram height
 
    #!/usr/bin/perl
    use strict;
@@ -1077,30 +1027,28 @@ $pl->close;
 <center><a TARGET="_new" href=PLplot/w24.pl.html>w24.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w24.pl> w24.pl text source code</a></center><hr><p>   
 
-=head3 bargraph
-
-=head4 simple bargraph
+=head3 Bargraph
 
    #!/usr/bin/perl
    use strict;
    use warnings;
    use PDL;
    use aliased 'PDL::Graphics::PLplot';
-
+  
    my $pl = PLplot->new(
        DEV => 'pscairo',
        FILE => 'bargraph.eps');
-
+  
    # Generate some data:
    my @colors = qw(red orange yellow green blue purple);
    my $votes = random(scalar(@colors));
-
+  
    # Normalize the votes
    $votes /= $votes->sum;
-
+  
    # Make a barchart of the votes.
    $pl->bargraph(\@colors, $votes);
-
+  
    $pl->close;
 
 =for html
@@ -1108,41 +1056,39 @@ $pl->close;
 <center><a TARGET="_new" href=PLplot/w25.pl.html>w25.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w25.pl> w25.pl text source code</a></center><hr><p>   
 
-
-=head4 bargraph color and bar height
+=head3 Bargraph color and bar height
 
    #!/usr/bin/perl
    use strict;
    use warnings;
    use PDL;
    use aliased 'PDL::Graphics::PLplot';
-
+  
    my $pl = PLplot->new(
        DEV => 'pscairo',
        FILE => 'bargraph2.eps');
-
+  
    # Generate some data:
    my @colors = qw(red orange yellow green blue purple);
    my $votes = random(scalar(@colors));
-
+  
    # Normalize the votes
    $votes /= $votes->sum;
-
+  
    # Make a barchart of the votes.
    $pl->bargraph(\@colors, $votes,
         COLOR => 'BLUE',
         BOX => [0, scalar(@colors), 0, 1.1 * $votes->max]
      );
-
-$pl->close;
+  
+  $pl->close;
 
 =for html
 <center><img WIDTH=400 src="PLplot/w26.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/w26.pl.html>w26.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w26.pl> w26.pl text source code</a></center><hr><p>   
 
-
-=head4 bargraph and labelling 
+=head3 Bargraph with labelling 
 
    #!/usr/bin/perl
    use strict;
@@ -1176,7 +1122,7 @@ $pl->close;
 <center> <a href=PLplot/w27.pl> w27.pl text source code</a></center><hr><p>   
 
 
-=head3 using the MEM device 
+=head2 Using the MEM device 
 
 Use the MEM device to:
   --  load an image and plot over that image
@@ -1184,34 +1130,32 @@ Use the MEM device to:
   --  animated plots
 
 The way the MEM device works, is that it needs an
-RGB or RGBA ( RGB with alpha transparency ) buffer
+RGB or RGBA (RGB with alpha transparency) buffer
 to write on top of.
 
-
-=head4 creating a memory buffer
+=head3 Creating a C<MEM> memory buffer
 
 There are 2 drivers which handle the MEM device, mem and memcairo.
 mem is for plain RGB. memcairo can handle transparency values. 
 
   use PDL;
   ## creating the mem device buffer ##
-
+  
   # the mem device
   # Allocate the buffer for plain rgb
   my $buffer = zeroes(byte, 3, $width, $height);
-
+  
   # Create the PLplot object
   my $pl = PDL::Graphics::PLplot->new(
                  DEV => 'mem',
                  MEM => $buffer
           );                                            
-                                                        
-                                                        
+  
   ## For the memcairo device which handles tranparencies ##
-                                                        
+  
   # Allocate the buffer                                   
   my $buffer = zeroes(byte, 4, $width, $height);          
-
+  
   # Create the PLplot object
   my $pl = PDL::Graphics::PLplot->new(
                  DEV => 'memcairo',
@@ -1219,7 +1163,7 @@ mem is for plain RGB. memcairo can handle transparency values.
           );
 
 
-=head4 plotting over an image with the MEM device
+=head3 Plotting over an image with the C<MEM> device
 
   #!/usr/bin/perl
   use strict;
@@ -1256,20 +1200,13 @@ mem is for plain RGB. memcairo can handle transparency values.
 <center> <a href=PLplot/w29.pl> w29.pl text source code</a></center><hr><p>   
 
 
+=head2 B<Functional programming style examples>
+
+This section uses the functional programming style of the original C
+library examples.
 
 
-
-
-
-
-
-
-=head1 B<Functional programming style examples>
-
-This section uses the functional programming style of the original c library examples.
-
-
-=head2 Simple line plot and multiple windows demo x01
+=head3 Simple line plot and multiple windows demo x01
 
 =for html
 <center><img WIDTH=400 src="PLplot/x01.pl.800.png"></center>
@@ -1277,21 +1214,21 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x01.pl> x01.pl text source code</a></center><hr><p>   
 
 
-=head2 Multiple window and color map 0 demo x02
+=head3 Multiple window and color map 0 demo x02
 
 =for html
 <center><img WIDTH=400 src="PLplot/x02.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x02.pl.html>x02.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x02.pl> x02.pl text source code</a></center><hr><p>   
 
-=head2 Polar plot demo x03
+=head3 Polar plot demo x03
 
 =for html
 <center><img WIDTH=400 src="PLplot/x03.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x03.pl.html>x03.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x03.pl> x03.pl text source code</a></center><hr><p>   
 
-=head2  Log plot demo x04
+=head3 Log plot demo x04
 
 =for html
 <center><img WIDTH=400 src="PLplot/x04.pl.800.png"></center>
@@ -1299,42 +1236,42 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x04.pl> x04.pl text source code</a></center><hr><p>   
 
 
-=head2 Histogram demo x05
+=head3 Histogram demo x05
 
 =for html
 <center><img WIDTH=400 src="PLplot/x05.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x05.pl.html>x05.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x05.pl> x05.pl text source code</a></center><hr><p>   
 
-=head2 Font demo x06
+=head3 Font demo x06
 
 =for html
 <center><img WIDTH=400 src="PLplot/x06.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x06.pl.html>x06.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x06.pl> x06.pl text source code</a></center><hr><p>   
 
-=head2 Font demo x07
+=head3 Font demo x07
 
 =for html
 <center><img WIDTH=400 src="PLplot/x07.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x07.pl.html>x07.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x07.pl> x07.pl text source code</a></center><hr><p>   
 
-=head2 3-d plot demo x08
+=head3 3-d plot demo x08
 
 =for html
 <center><img WIDTH=400 src="PLplot/x08.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x08.pl.html>x08.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x08.pl> x08.pl text source code</a></center><hr><p>   
 
-=head2 Contour plot demo x09
+=head3 Contour plot demo x09
 
 =for html
 <center><img WIDTH=400 src="PLplot/x09.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x09.pl.html>x09.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x09.pl> x09.pl text source code</a></center><hr><p>   
 
-=head2 Window positioning demo x10
+=head3 Window positioning demo x10
 
 =for html
 <center><img WIDTH=400 src="PLplot/x10.pl.800.png"></center>
@@ -1342,14 +1279,14 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x10.pl> x10.pl text source code</a></center><hr><p>   
 
 
-=head2 Mesh plot demo x11
+=head3 Mesh plot demo x11
 
 =for html
 <center><img WIDTH=400 src="PLplot/x11.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x11.pl.html>x11.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x11.pl> x11.pl text source code</a></center><hr><p>   
 
-=head2 Bar chart demo x12
+=head3 Bar chart demo x12
 
 =for html
 <center><img WIDTH=400 src="PLplot/x12.pl.800.png"></center>
@@ -1357,7 +1294,7 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x12.pl> x12.pl text source code</a></center><hr><p>   
 
 
-=head2 simple pie chart x13
+=head3 simple pie chart x13
 
 =for html
 <center><img WIDTH=400 src="PLplot/x13.pl.800.png"></center>
@@ -1365,7 +1302,7 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x13.pl> x13.pl text source code</a></center><hr><p>   
 
 
-=head2 Shade plot demo x15
+=head3 Shade plot demo x15
 
 =for html
 <center><img WIDTH=400 src="PLplot/x15.pl.800.png"></center>
@@ -1373,35 +1310,35 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x15.pl> x15.pl text source code</a></center><hr><p>   
 
 
-=head2 plshade demo, using color fill x16
+=head3 plshade demo, using color fill x16
 
 =for html
 <center><img WIDTH=400 src="PLplot/x16.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x16.pl.html>x16.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x16.pl> x16.pl text source code</a></center><hr><p>   
 
-=head2 a simple stripchart with four pens x17
+=head3 A simple stripchart with four pens x17
 
 =for html
 <center><img WIDTH=400 src="PLplot/x17.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x17.pl.html>x17.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x17.pl> x17.pl text source code</a></center><hr><p>   
 
-=head2 3-d line and point plot demo x18
+=head3 3-d line and point plot demo x18
 
 =for html
 <center><img WIDTH=400 src="PLplot/x18.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x18.pl.html>x18.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x18.pl> x18.pl text source code</a></center><hr><p>   
 
-=head2 backdrop plotting of world, US maps. x19
+=head3 Backdrop plotting of world, US maps. x19
 
 =for html
 <center><img WIDTH=400 src="PLplot/x19.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x19.pl.html>x19.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x19.pl> x19.pl text source code</a></center><hr><p>   
 
-=head2 Grid data demo x21
+=head3 Grid data demo x21
 
 =for html
 <center><img WIDTH=400 src="PLplot/x21.pl.800.png"></center>
@@ -1409,7 +1346,7 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x21.pl> x21.pl text source code</a></center><hr><p>   
 
 
-=head2 Simple vector plot x22
+=head3 Simple vector plot x22
 
 =for html
 <center><img WIDTH=400 src="PLplot/x22.pl.800.png"></center>
@@ -1417,7 +1354,7 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x22.pl> x22.pl text source code</a></center><hr><p>   
 
 
-=head2 Displays Greek letters and mathematically interesting Unicode ranges x23
+=head3 Displays Greek letters and mathematically interesting Unicode ranges x23
 
 =for html
 <center><img WIDTH=400 src="PLplot/x23.pl.800.png"></center>
@@ -1425,42 +1362,42 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x23.pl> x23.pl text source code</a></center><hr><p>   
 
 
-=head2  Unicode Pace Flag x24
+=head3 Unicode Pace Flag x24
 
 =for html
 <center><img WIDTH=400 src="PLplot/x24.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x24.pl.html>x24.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x24.pl> x24.pl text source code</a></center><hr><p>   
 
-=head2 drawing polygons x25
+=head3 Drawing polygons x25
 
 =for html
 <center><img WIDTH=400 src="PLplot/x25.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x25.pl.html>x25.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x25.pl> x25.pl text source code</a></center><hr><p>   
 
-=head2 Frequency Amplitude and Phase x26
+=head3 Frequency Amplitude and Phase x26
 
 =for html
 <center><img WIDTH=400 src="PLplot/x26.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x26.pl.html>x26.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x26.pl> x26.pl text source code</a></center><hr><p>   
 
-=head2 spirograph curves - epitrochoids, cycolids, roulettes x27
+=head3 Spirograph curves - epitrochoids, cycolids, roulettes x27
 
 =for html
 <center><img WIDTH=400 src="PLplot/x27.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x27.pl.html>x27.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x27.pl> x27.pl text source code</a></center><hr><p>   
 
-=head2 plmtex3, plptex3 demo x28
+=head3 plmtex3, plptex3 demo x28
 
 =for html
 <center><img WIDTH=400 src="PLplot/x28.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x28.pl.html>x28.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x28.pl> x28.pl text source code</a></center><hr><p>   
 
-=head2 plots using date / time formatting for axes x29
+=head3 Plots using date / time formatting for axes x29
 
 =for html
 <center><img WIDTH=400 src="PLplot/x29.pl.800.png"></center>
@@ -1468,7 +1405,7 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x29.pl> x29.pl text source code</a></center><hr><p>   
 
 
-=head2 Alpha color values demonstration  x30
+=head3 Alpha color values demonstration  x30
 
 =for html
 <center><img WIDTH=400 src="PLplot/x30.pl.800.png"></center>
@@ -1476,7 +1413,7 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x30.pl> x30.pl text source code</a></center><hr><p>   
 
 
-=head2 using pllegend, including unicode symbols x33
+=head3 Using C<pllegend> including unicode symbols x33
 
 =for html
 <center><img WIDTH=400 src="PLplot/x33.pl.800.png"></center>
@@ -1484,12 +1421,11 @@ This section uses the functional programming style of the original c library exa
 <center> <a href=PLplot/x33.pl> x33.pl text source code</a></center><hr><p>   
 
 
-=head1 B<Text Issues>
+=head2 Typesetting, greek letters, symbols
 
-=head2 typesetting, greek letters, symbols
+Use escape sequences to insert superscripts, subscripts, Greek
+letters, etc.
 
-  Use escape sequences to insert superscripts, subscripts, Greek
-  letters, etc.
     #u - superscript until the next #d
     #d - subscript until the next #u
     #- - toggle underline mode
@@ -1504,16 +1440,13 @@ This section uses the functional programming style of the original c library exa
        YLAB => 'density #gr'
         # ...
        );
-  
-  Unicode is supported.
+
+Unicode is supported.
 
 =for html
 <center><img WIDTH=400 src="PLplot/w30a.pl.800.png"></center><hr><p>   
 
-
-=head3 typesetting examples
-
-=head4 a basic typsetting example
+=head3 A basic typsetting example
 
   #!/usr/bin/perl
   use strict;
@@ -1549,14 +1482,13 @@ This section uses the functional programming style of the original c library exa
 =head3 psfrag
 
 For LATEX typsetting, post-process eps images with psfrag.
+
    --  replaces simple strings with any valid LATEX text.
-
    --  ensures consistent fonts for both images and documents
-
    --  Do not use the pscairo device. Use ps or psc.
 
 
-=head3 annotations and TEXTPOSITION 
+=head2 annotations and TEXTPOSITION 
 
 To add text to a plot, use the text method, specifying the
 TEXTPOSITION option. The TEXTPOSITION takes either four or
@@ -1578,9 +1510,9 @@ $just indicates the location of the reference point of the string.
 0 means the reference point is the string's left edge; 1 indicates
 the right edge
 
-
 The five-argument form places the text within the viewport at an
 arbitrary position and slope:
+
   $pl->text($string, TEXTPOSITION => [$x, $y, $dx, $dy, $just]);
 
 $x, $y are the location of the string's reference point within the
@@ -1594,7 +1526,7 @@ $just indicates the location of the reference point of the string.
 0 means the reference point is the string's left edge; 1 indicates
 the right edge
 
-=head4 TEXTPOSITION 3 argument form
+=head3 TEXTPOSITION 3 argument form
 
   #!/usr/bin/perl
   use strict;
@@ -1631,7 +1563,7 @@ the right edge
 <center><a TARGET="_new" href=PLplot/w31.pl.html>w31.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w31.pl> w31.pl text source code</a></center><hr><p>   
 
-=head4 TEXTPOSITION 4 argument form
+=head3 TEXTPOSITION 4 argument form
 
   #!/usr/bin/perl
   use strict;
@@ -1666,13 +1598,11 @@ the right edge
 <center><a TARGET="_new" href=PLplot/w32.pl.html>w32.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w32.pl> w32.pl text source code</a></center><hr><p>   
 
-=head3 legends
+=head2 Legends
 
-PLplot does not have a command to create legends. We must
-make them ourselves.
-Legends are only necessary when plotting discrete data sets.
-If possible, use color keys instead of constructing legends by
-hand.
+PLplot does not have a command to create legends. We must make them
+ourselves. Legends are only necessary when plotting discrete data sets.
+If possible, use color keys instead of constructing legends by hand.
 
   #!/usr/bin/perl
   use strict;
@@ -1711,88 +1641,4 @@ $pl->close;
 <center><img WIDTH=400 src="PLplot/w33.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/w33.pl.html>w33.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w33.pl> w33.pl text source code</a></center><hr><p>   
-
-
-
-
-
-
-
-
-
-
-
-=head1 NOTES
-
-=head2 installing
-PDL::Graphics::PLplot ... What is it, installing it.
-
-An alternative to the PGPLOT 2d graphing module, is PLplot. Installing is
-relatively easy. First you must install the PLplot C libraries. 
-If you are using Ubuntu, use "sudo apt-get install libplplot-dev",
-and install all dependencies. For those who build from source,
-get the source package from L<http://plplot.sourceforge.net/>.
-
-Since version 5.7, libplplot uses the cmake build system, and I found it
-easy to install from source. Gone are the days of giant ./configure commands.
-
-There are only a few considerations when building the library from
-source. First, is where to put it, if in doubt, use the default /usr/local.
-Some purists would want to install all of PLplot's file to it's own
-directory, like /usr/local/plplot. If you do that, for housekeeping
-purposes, you will need to edit your .bashrc ( or your shell's file )
-to add
-
-
-=for example
-
-    # export PATH=/usr/local/plplot/bin:$PATH
-    # export LD_LIBRARY_PATH=/usr/local/plplot/lib/:$LD_LIBRARY_PATH
-
-
-But for ease of installation, lets just use the default locations. 
-To install to the default location /usr/local, from source code,
-run these commands from the module's source directory
-
-=for example
-
-	mkdir build_dir
-        cd build_dir
- 	cmake -DCMAKE_INSTALL_PREFIX=/usr/local ../ 
-
-Check for any errors
-Now cd to build_dir and run this script 
-
-=for example
-
-	make 
-        # check make out for errors
-
-Finally, run this command as root
-
-=for example
-
-	make install 
-        # check make install output for errors
-
-Now the C library should be set up. 
-
-When you install B<PDL>, it should automatically
-find the B<libplplot>, and build it's own internal copy of B<PDL::Graphics::PLplot>.
-If you installed B<PDL> first, without having the prerequisite B<libplplot> installed, you can manually
-install B<PDL::Graphics::PLplot> afterwards, by installing the latest version available on CPAN. 
-
-To install the B<PDL::Graphics::PLplot> Perl module, download it from CPAN,
-L<http://search.cpan.org/search?query=PDL%3A%3AGraphics%3A%3APLplot&mode=all>
-
-
-unpack the module source then build:
-
-=for example
-
-	tar -zxvf PDL-Graphics-PLplot-0.57.tar.gz
-	cd PDL-Graphics-PLplot-0.57 
-	perl Makefile.PL
-	make
-	make install # as root
 

@@ -5,7 +5,7 @@ version of the PDL Book. The biggest source of material has been "PDL -
 Scientific Programming in Perl", written in 2001 and added to over the
 past decade by Karl Glazebrook, Christian Soller, Tuomas J. Lukka, Marc
 Lehmann, Jarle Brinchmann, Doug Hunt, John Cerney, Robin Williams and
-Tim Pickering.
+Tim Pickering, and several chapters written by Craig DeForest from 2009.
 
 The original source was written in LaTeX and LyX, which allowed
 embedding of figures in the document. However, this has presented a
@@ -22,6 +22,10 @@ and figures into POD, and others have also contributed original new
 material for the PDL Book.
 
 In alphabetical order, we have:
+
+Joel Berger
+
+Craig DeForest
 
 Karl Glazebrook
 

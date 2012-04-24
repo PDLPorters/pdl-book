@@ -1,6 +1,5 @@
 =head1 Operating on PDLs
 
-
 PDL variables are structured (conventional) arrays of numbers. 
 The most basic operations on them are the familiar numerical 
 operations. All of the familiar C-like mathematical, logical, and 
@@ -18,7 +17,7 @@ been collapsed to have one fewer dimensions than it started
 with). A few operators, notably matrix multiplication, have more 
 than one active dimension.
 
-=head1 Expressions with PDLs
+=head2 Expressions with PDLs
 
 All of the standard Perl operators apply to PDLs, with the usual 
 precedence rules. They are listed in Table [tab:Perl-operators]. 
@@ -28,72 +27,12 @@ both a PDL and a Perl scalar to any of the two-parameter
 operators (like multiplication), the scalar is promoted to a PDL, 
 so the result is a PDL with appropriate threading.
 
-=head2 PDLs as boolean values; logicals and masks
+=for html  <img width=400 src="Operations/operator-precedence-table.png">
+
+ Operator Precedence Table for PDL.
 
 
-
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    | Prec.  |      Op.        | Associativity (side of first grouping)  | Action on perl scalars           | Action on PDLs                            |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   1    |       ()        |                   NA                    | Grouping and function eval.      | Identical to perl scalars.                |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   2    |       ->        |                  Left                   | Dereference a ref or a method    | Dereference a method or slice a PDL *     |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   3    |     ++, --      |             Either (Unary)              | Increment/decrement in-place.    | Elementwise *                             |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   4    |       **        |                 Right                   | Exponentiation                   | Elementwise                               |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   5    |       !         |             Right (Unary)               | Logical negation                 | Elementwise                               |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   5    |       ~         |             Right (Unary)               | Bitwise negation (bit flipping)  | Elementwise - gets coerced to long int.   |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   5    |       \         |             Right (Unary)               | Reference operator               | Identical to perl scalars.                |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   5    |      +, -       |             Right (Unary)               | Arithmetic no-op/negation        | Elementwise                               |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   6    |     =~, !~      |                  Left                   | String operation binding         | Acts on stringified PDL                   |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   7    |    *, /, %      |                  Left                   | Multiply, divide, and modulus    | Elementwise *                             |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   7    |       x         |                  Left                   | Repetition operator              | Matrix multiplication *                   |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   8    |      +,-        |                  Left                   | Addition and subtraction         | Elementwise                               |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   8    |       .         |                  Left                   | String concatenation             | Acts on stringified PDL                   |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |   9    |     <<,>>       |                  Left                   | Bit-shift operator               | Elementwise - gets coerced to long int.   |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  10    |     Named       |             Right (Unary.)              | Named operators - various        | Acts on stringified PDL *                 |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  11    |  <, >, <=, >=   |                   NA                    | Arithmetic comparisons           | Elementwise *                             |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  11    | lt, gt, le, ge  |                   NA                    | String (lexical) comparisons     | Forbidden                                 |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  12    |  ==, !=, <=>    |                   NA                    | Arithmetic equivalence           | Elementwise *                             |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  12    |  eq, ne, cmp    |                   NA                    | String equivalence               | Elementwise *                             |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  13    |       &         |                  Left                   | Bitwise AND                      | Elementwise logical AND                   |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  13    |      |,^        |                  Left                   | Bitwise OR and XOR               | Elementwise logical OR and XOR            |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  14    |       &&        |                  Left                   | Lazy Boolean logical AND         | Scalar (rejects multi-element PDLs)       |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  15    |       ||        |                  Left                   | Lazy Boolean logical OR          | Scalar (rejects multi-element PDLs)       |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  16    |    .., ...      |                 (none)                  | Range operators                  | Acts on stringified PDL                   |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  17    |       ?:        |            Right (Ternary)              | Ternary conditional operator     | L:Scalar; M,R: identical to perl scalars. |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  18    |       =         |                 Right                   | Assignment                       | Assignment-by-reference *                 |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  19    |    +=, etc.     |                 Right                   | In-place arithmetic modifiers    | Elementwise *                             |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-    |  20    |      ,,=>       |                  Left                   | List separators                  | Identical to perl scalars *               |
-    +--------+-----------------+-----------------------------------------+----------------------------------+-------------------------------------------+
-
-
+=head3 PDLs as boolean values; logicals and masks
 
 PDLs can be used in Perl's I<boolean context>. As in the C and Perl 
 environments, values that are zero are treated as boolean FALSE, 
@@ -163,7 +102,7 @@ clear. The final expression, C<(!!$a) & !!4>, returns true for every
 element because both sides of the C<&> operator have been converted 
 to true boolean values (0 or 1).
 
-=head2 Collapse/reduce: Summarizing by row
+=head3 Collapse/reduce: Summarizing by row
 
 
 The simplest operators have no active dimensions, simply 
@@ -203,7 +142,7 @@ accumulation is more precise, and may one day be introduced to
 the threading engine if there is sufficient demand. You might be 
 the person to demand and/or implement it...
 
-=head2 Arithmetic collapse: C<prodover> and C<sumover>
+=head3 Arithmetic collapse: C<prodover> and C<sumover>
 
 The C<sumover> and C<prodover> functions perform summing and product, 
 respectively, along the 0 dim of a PDL. For example, to take the 
@@ -219,7 +158,7 @@ instead). Similarly, the geometric mean is
 The related functions C<sum> and C<prod> work on the whole of $pdl and 
 return a single Perl scalar.
 
-=head2 Logical collapse: C<andover> and C<orover>
+=head3 Logical collapse: C<andover> and C<orover>
 
 The C<andover> and C<orover> operators provide true boolean (not 
 bitwise) masking of elements across rows. They are complementary 
@@ -231,7 +170,7 @@ set in the mask, and C<< $mask->orover >> returns a one-dimensional
 M-PDL mask indicating whether each row contains even a single 
 nonzero value.
 
-=head2 Statistical collapse: C<average> and C<statsover>
+=head3 Statistical collapse: C<average> and C<statsover>
 
 The C<average> collapse is complementary to C<avg>, which takes the 
 average of an entire PDL. For slightly more comprehensive 
@@ -240,7 +179,7 @@ which returns many stats (the mean, median, RMS, min, max,
 standard deviation, and population RMS) as separate PDLs in list 
 context; see the online documentation for more details.
 
-=head2 General purpose collapse/reduction: C<reduce>
+=head3 General purpose collapse/reduction: C<reduce>
 
 PDL comes with an ancillary module, C<PDL::reduce>, that supplies a 
 general-purpose C<reduce> function. C<reduce> is useful for collapsing 
@@ -254,7 +193,7 @@ a single set bit. (Otherwise you'd have to say something like
 C<< $mask->mv(1,0)->orover >>). You must explicitly use C<PDL::reduce>
 before you can invoke the reduce operator. 
 
-=head1 Combination operators: PDLs and Perl lists
+=head2 Combination operators: PDLs and Perl lists
 
 Perl arrays/lists are different than PDLs, but often you will 
 want to assemble a PDL from a list of values (or other PDLs), or 
@@ -265,7 +204,7 @@ image cube. Alternatively, you can slice up large chunks of data
 into lists of smaller chunks, that are appropriate for looping 
 over. 
 
-=head2 Global glomming / shredding: pdl and list
+=head3 Global glomming / shredding: pdl and list
 
 The PDL constructor, C<pdl()>, can combine multiple PDLs into one, 
 glomming a bunch of stuff together into a single data array. For 
@@ -288,14 +227,14 @@ to loop over the elements of a PDL:
 
   $pdl = sequence(3,3);
   for $el( list $pdl ) {
-      print $el,”\n”;
+      print $el,"\n";
   }
 
 is an expensive way to print the integers from 0 through 8. The 
 problem with C<list> is that it loses all dimensional information, 
 so you might prefer to have more control. Read on!
 
-=head2 Gathering/scattering: C<cat> and C<dog>
+=head3 Gathering/scattering: C<cat> and C<dog>
 
 If you have a collection of same-sized, same-type PDLs, you can 
 concatenate them with C<cat>:
@@ -317,7 +256,7 @@ its last dimension, so
 exactly undoes the effect of catting a collection of PDLs 
 together. 
 
-=head2 Extending a PDL: C<append>
+=head3 Extending a PDL: C<append>
 
 You can extend a PDL along the 0 dimension with C<append>. All other 
 dimensions must agree, thread-wise, between the original PDL and 
@@ -343,7 +282,7 @@ transposition operators (C<mv>, C<xchg>, and C<reorder>; [sub:Rearranging-a-dim]
 ) to append along any dimension of the input PDL, but read on: 
 there is a better way to do that...
 
-=head2 Finer control - use C<glue>
+=head3 Finer control - use C<glue>
 
 
 The C<glue> method acts just like C<append>, but along a specified 
@@ -362,7 +301,7 @@ To get a vertically stacked two-panel image, you can say:
 which eliminates the dimensional gymnastics you would have to do 
 with C<append>.
 
-=head1 Interpolation
+=head2 Interpolation
 
 
 Interpolation of values between integer array locations is a 
@@ -380,7 +319,7 @@ locations of your new grid points; PDL has a utility, described
 in Chapter [cha:Coordinate-Transformations], to do optimized 
 resampling under a variety of coordinate transformations.
 
-=head2 Interpolate virtually any regular grid: C<interpND>
+=head3 Interpolate virtually any regular grid: C<interpND>
 
 The workhorse interpolator for PDL is C<interpND>. It works almost 
 exactly like the C<indexND> operator described in [sub:IndexND], 
@@ -430,7 +369,7 @@ boundary conditions are:
   pdl> print $image->interpND($coords, {bound=>'forbid'});
   index out-of-bounds in range
 
-=head2 Interpolate on a 1-D irregular grid: interpol, interpolate
+=head3 Interpolate on a 1-D irregular grid: interpol, interpolate
 
 For simple linear interpolation on a non-uniform grid, you can 
 use C<interpolate> or C<interpol>. They will both use linear 

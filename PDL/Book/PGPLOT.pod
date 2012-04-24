@@ -35,7 +35,7 @@ package installed, and in addition have the Perl PGPLOT module (written
 by Karl Glazebrook and available through CPAN) installed and working. In
 the following we will assume that you have this all set up. 
 
-=head1 Introducing C<PDL::Graphics::PGPLOT>
+=head2 Introducing C<PDL::Graphics::PGPLOT>
 
 2-dimensional graphics in PDL is normally performed by the
 C<PDL::Graphics::PGPLOT> module. The C<PDL::Graphics::PGPLOT> package
@@ -138,7 +138,7 @@ error-bars might not be symmetric (although you often wish they were),
 and we will explain how to do this later when we discuss C<errb> in more
 detail below. 
 
-=head1 An overview of 2D plotting commands
+=head2 An overview of 2D plotting commands
 
 Before we proceed to an overview of all commands in
 C<PDL::Graphics::PGPLOT> it is necessary to define a couple of terms:
@@ -479,7 +479,7 @@ method outlined in the next section.
 
 =back
 
-=head2 Setting default values for options
+=head3 Setting default values for options
 
 You might not be happy with the default settings for the various options
 and want to set a different value permanently instead of specifying it
@@ -503,7 +503,7 @@ the C<LineWidth> and C<LineStyle> options will also affect the axis and
 axis labels drawn. However, character size, device default plot symbol,
 border and other options can be conveniently be specified in this way.
 
-=head2 Setting up the plot area
+=head3 Setting up the plot area
 
 The first step for the budding plot maker is to set up the drawing area.
 This involves selecting what device you want to create the plots on and
@@ -633,7 +633,7 @@ piddle as the symbol value, in which case it should have the same length
 as C<$x> and C<$y> and each point will be plotted with the corresponding
 symbol value.
 
-=head3 Plotting error-bars 
+=head2 Plotting error-bars 
 
 Closely related to C<points> is the routine for plotting symbols with
 error-bars, C<errb> . This can be called in a variety of ways to allow
@@ -664,7 +664,7 @@ following example:
 
 =for html <img width=400 src="PGPLOTFigs/ex_errb2.8.png">
 
-=head3 Drawing lines
+=head2 Drawing lines
 
 We saw above that we could draw
 lines between points by setting the C<PlotLine> option
@@ -681,7 +681,7 @@ The style, width and colour of the line can be changed with the options
 C<Style>, C<LineWidth> and C<Colour> / C<Color> respectively as outlined
 in L</"Options in plot commands">.
 
-=head3 Plotting histograms
+=head2 Plotting histograms
 
 A very similar command is C<bin> which is useful for plotting
 histograms. This command draws horizontal lines between I<x(i)> and
@@ -698,7 +698,7 @@ need to set the option C<Centre>/C<Center> to a true value. In addition
 the appearance of the lines can be modified using the same options as
 for the C<line> command.
 
-=head3 Drawing polygons
+=head2 Drawing polygons
 
 Finally the C<poly> command is like C<line> but fills the polygon
 defined by C<$x> and C<$y> with the chosen fillstyle (defaults to solid
@@ -773,7 +773,7 @@ your call to C<imag> . If you want to pass options to the C<draw_wedge>
 command, you can do that with the C<Wedge> option. See below for
 further details.
 
-=head3 Transforms 
+=head2 Transforms 
 
 Finally a very useful feature of PGPLOT that is relevant both to images
 and also the contour plots (see below) is the concept of a transform
@@ -811,7 +811,7 @@ with a logarithmic transfer function. Here we show the use of the C<ITF>
 and and C<Transform> options. Note that using C<Transform> in
 conjunction with C<Pix> is going to lead to unwanted results! 
 
-=head3 Colour bar/wedge 
+=head2 Colour bar/wedge 
 
 It is often desireable to annotate an image with a colour wedge showing
 the range of values in the image. This is accomplished with the
@@ -1038,7 +1038,7 @@ Thus C<\u> starts a superscript or ends a subscript - it signals a shift
 "up". Likewise C<\d> starts a subscript or ends a superscript.  Consult
 the PGPLOT documentation for a full list.
 
-=head1 Labelling your figures in PGPLOT
+=head2 Labelling your figures in PGPLOT
 
 The only additional text-related function in the PDL::Graphics::PGPLOT
 interface is the C<legend> command which draws a legend in the plot
@@ -1144,7 +1144,7 @@ synonym (more natural for the TeX-heads out there).
 =back
 
 
-=head1 Using colour
+=head2 Using colour
 
 PGPLOT has a two disjoint sets of colours. One set determines the colour
 table used when displaying images and is initialised to a grayscale, and
@@ -1237,7 +1237,7 @@ And the resultant figure is shown below:
 
 =for html <img width=400 src="PGPLOTFigs/ColorTables2.8.png">
 
-=head1 Threading in PDL::Graphics::PGPLOT
+=head2 Threading in PDL::Graphics::PGPLOT
 
 The plot commands do not always lend themselves to easy threading
 because it can sometimes be difficult to know what the user intends to
@@ -1282,7 +1282,7 @@ and vary the line-styles as well:
 
 =for html <img width=400 src="PGPLOTFigs/ex_tline1.8.png">
 
-=head1 Recording and playing back plot commands
+=head2 Recording and playing back plot commands
 
 Have you ever created a good-looking plot on the command line of
 an interactive data program, be it PDL, IDL, Matlab, Octave or any other
@@ -1485,7 +1485,7 @@ only saving is probably in typing, but if the facility is extended to
 saving and restoring plot commands the situation would change. 
 
 
-=head1 The object oriented approach
+=head2 The object oriented approach
 
 Assume that you are developing a simulation. When you are testing the
 code (all written in PDL of course) you have to keep track of how some
@@ -1531,7 +1531,7 @@ the previous example would be
     $integralwindow->points($x, $sum/$n);
 
 
-=head2 Why use the OO interface
+=head3 Why use the OO interface
 
 So, you may say, what is the point with the OO interface except
 appeasing the OO fanatics around? It seems to require more typing and I
@@ -1568,7 +1568,7 @@ that they can all be accessed in a similar way, but we are not there
 yet. 
 
 
-=head2 Usage of the OO interface
+=head3 Usage of the OO interface
 
 To use the OO interface one needs to create a new plot object and then
 call the plot routines through this object. If you want several windows,
@@ -1670,7 +1670,7 @@ The bottom line is that whatever your requirements are, the OO approach
 is probably better when you need more than one plot window, but when you
 only use one window, and particularly on the C<perldl> command line. 
 
-=head1 Using PGPLOT commands directly
+=head2 Using PGPLOT commands directly
 
 The Perl module PGPLOT contains interfaces to all PGPLOT functions. The
 majority of these functions have alternative interfaces in the PDL

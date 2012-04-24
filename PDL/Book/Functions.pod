@@ -20,11 +20,8 @@ Here's a simple function in a PDL script:
 
     sub my_sums {
         my ($a1, $a2) = @_; # pdls passed in the perl array @_
-
         my $c = $a1 + $a2;
-
         my $difference = $a1 - $a2;
-
         return($c, $difference);
     }
 
@@ -80,7 +77,6 @@ name C<my_sums.pdl>.
 
 Now create a separate script in the same directory:
 
-
     #!/usr/bin/perl
     use PDL;
     use PDL::AutoLoader;
@@ -90,10 +86,10 @@ Now create a separate script in the same directory:
     print $result;
     print my_sums(pdl(10,20,30), pdl(3,4,5) );
 
-
 Running this Perl script will include PDL, and PDL will automatically
 look for a file called C<my_sums.pdl> (remember the extension has to
 have C<.pdl>) and use it.
+
 
 =head2 Getting PDL to look for your functions in other places
 
@@ -109,21 +105,6 @@ used functions. The directory path is specified to your PDL library
 directory. The C<+> sign at the end of the path tells PDL to also look
 in all the subdirectories below the PDLLIB directory.
 
-=head2 Passing Options to your function with Hashes
-
-Sometimes you need to pass in one or more options into your PDL
-function, and these are typically passed into a PDL routine using an
-anonymous hash. As an example of this, we'll modify the routine above to
-optionally print the result of the function:
-
-
-    sub my_sums {
-        ($a1, $a2) = @_;
-        my $c = $a1 + $a2;
-        my $difference = $a1 - $a2;
-        return($c, $difference);
-    }
-    1;
 
 =head2 Documenting your Functions
 
