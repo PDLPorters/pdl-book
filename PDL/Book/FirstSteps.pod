@@ -44,19 +44,19 @@ in a terminal window. On a Windows system we would type C<pdl>
 in a command prompt window. If PDL is installed correctly this is
 all that is required to bring up C<pdl>.
 
-   myhost% pdl
-  perlDL shell v1.354_001
-  PDL comes with ABSOLUTELY NO WARRANTY. For details, see the file
-  'COPYING' in the PDL distribution. This is free software and you
-  are welcome to redistribute it under certain conditions, see
-  the same file for details.
+  myhost% pdl
+  perlDL shell v1.356
+   PDL comes with ABSOLUTELY NO WARRANTY. For details, see the file
+   'COPYING' in the PDL distribution. This is free software and you
+   are welcome to redistribute it under certain conditions, see
+   the same file for details.
   ReadLines, NiceSlice, MultiLines  enabled
-  Reading /Users/xxx/.perldlrc...
-  Found docs database /usr/lib/perl5/5.12/.../PDL/pdldoc.db
+  Reading PDL/default.perldlrc...
+  Found docs database /usr/lib/perl5/.../PDL/pdldoc.db
   Type 'help' for online help
   Type 'demo' for online demos
-  Loaded PDL v2.4.10 (supports bad values)
-  pdl>
+  Loaded PDL v3.000 (supports bad values)
+  pdl> 
 
 We get a whole bunch of informational messages about what it is loading for
 startup and the help system. Note; the startup is I<completely> configurable,
@@ -65,7 +65,7 @@ are loaded. We are left with the
 C<pdl>> prompt at which we can type commands. This kind
 of interactive program is called a 'shell'.  There is also C<pdl2>
 which is a newer version of the PDL shell with additional features.
-It is still under development but completely useable.
+It is still under development but completely usable.
 
 Let's create something, and display it:
 
@@ -131,11 +131,11 @@ through these examples exactly you should be able to find them in the directory
 C<PDL/Book/> on your system.
 
 We'll be playing with an image of the famous spiral galaxy discovered by
-Charles Messier, known to astronomrs as M51 and commonly as the Whirlpool
+Charles Messier, known to astronomers as M51 and commonly as the Whirlpool
 Galaxy. This is a 'nearby' galaxy, a mere 25 million light years from Earth.
 The image file is stored in the 'FITS' format, a common astronomical format,
 which is one of the many formats standard PDL can read. (FITS stores more
-shades of grey than GIF or JPEG, but PDL can read these formats too).
+shades of gray than GIF or JPEG, but PDL can read these formats too).
 
   pdl> $a = rfits("PDL/Book/m51_raw.fits");
   Reading IMAGE data...
@@ -194,7 +194,7 @@ function.
 It is certainly a spiral galaxy with a few foreground stars thrown in for good
 measure. But what is that horrible stripey pattern running from bottom right to
 top left? That certainly is not part of the galaxy? Well no. What we have here
-is the uneven senistivity of the detector used to record the image, a common
+is the uneven sensitivity of the detector used to record the image, a common
 artifact in digital imaging. We can correct for this using an image of a
 uniformly illuminated screen, what is commonly known as a 'flatfield'.
 
@@ -217,8 +217,8 @@ Well that's a lot better.  But think what we have
 just done. Both C<$a>  and C<$flat> are I<images>, with 512 pixels by
 512 pixels. B<The divide operator 'C</>' has been applied over all
 262144 data values in the piddles C<$a>  and C<$flat>.> And it was
-pretty fast too - these are what are known as I<vectorised>
-operations. In PDL each of these is implemented by heavily optimised
+pretty fast too - these are what are known as I<vectorized>
+operations. In PDL each of these is implemented by heavily optimized
 C code, which is what makes PDL very efficient for procession of
 large chunks of data. If you did the same operation using normal
 perl arrays rather than piddles it would be about ten to twenty times slower
@@ -241,7 +241,7 @@ B<This the key to PDL: the ability to process large chunks of data at once.>
 
 How might we extract some useful
 scientific information out of this image? A simple
-quanitity an astronomer might want to know is how the brightness of the
+quantity an astronomer might want to know is how the brightness of the
 the 'disk' of the galaxy (the outer region which contains the spiral
 arms) compares with the 'bulge' (the compact inner nucleus). Well
 let's find out the total sum of all the light in the image:
@@ -355,7 +355,7 @@ exact figure for this blurring.
 
 We want to plot all the brightness of all the pixels in this section, against
 the distance from the centre. (We've chosen the section to be conveniently
-centred on the star, you could think if you want about how you might determine
+centered on the star, you could think if you want about how you might determine
 the centroid automatically using the C<xvals> and C<yvals> functions). Well it
 is simple enough to get the distance from the centre:
 
@@ -388,7 +388,7 @@ These blurring functions are usually represented by the C<Gaussian>
 function. PDL comes with a whole variety of general purpose and
 special purpose fitting functions which people have written for
 their own purposes (and so will you we hope!). Fitting Gaussians
-is something that happens rather a lot and there is surpisingly
+is something that happens rather a lot and there is surprisingly
 enough a special function for this very purpose. (One could use
 more general fitting packages like C<PDL::Fit::LM> or
 C<PDL::Opt::Simplex> but that would require more care).
@@ -433,7 +433,7 @@ functional form.
 
   pdl> $rrr = sequence(2000)/100;  # Generate radial values 0,0.01,0,02..20
        
-  # Generate gaussian with given FWHM
+  # Generate Gaussian with given FWHM
 
   pdl> $fit = $peak * exp(-2.772 * ($rrr/$fwhm)**2) + $background;
 
@@ -563,7 +563,7 @@ Let's do it:
 Now C<$gal> contains real values, to do the Fourier transform it has to
 have complex values. We create a variable C<$imag> to hold the imaginary
 component and set to zero.(For reasons of efficiency complex numbers
-are represented in PDL by seperate real and imaginary arrays - more about this
+are represented in PDL by separate real and imaginary arrays - more about this
 in Chapter 2.)
 
   pdl> $imag = $gal * 0;       # Create imaginary component, equal to zero

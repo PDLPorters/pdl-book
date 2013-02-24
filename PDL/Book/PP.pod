@@ -1,4 +1,4 @@
-=head1 The PDL PreProcessor
+=head1 The PDL Preprocessor
 
 The PDL PreProcessor, or PDL::PP, is PDL's secret weapon. With
 PDL::PP, you can quickly and easily implement new "primitive" compiled
@@ -123,7 +123,7 @@ The C<Pars> key specifies the B<piddle> arguments for your function. It
 accepts a simple Perl string with the argument names and dimensions, 
 delimited by semicolons. In the example I only use a single argument, but
 you can specify multiple input and output arguments, and you can even
-restrict (that is, force a coersion in) their data types. Note that the
+restrict (that is, force a coercion in) their data types. Note that the
 parentheses that follow the C<a> are important and cannot be omitted. They
 might make the statement look like a function, but we'll see soon why they
 are important.
@@ -379,7 +379,7 @@ The PP code that I present puts all the output piddles at the end of the
 C<Pars> section. What happens if you move them to the beginning of the
 section instead of the end?
 
-=item 5. Supplyling Outputs in the Function Call
+=item 5. Supplying Outputs in the Function Call
 
 You can call C<pp_def>ined functions by supplying all the arguments to the
 function. For example, instead of calling C<my_sum_and_diff> like this:
@@ -457,16 +457,16 @@ access, which is quite fast. As a general rule regarding C<$SIZE>, optimize
 for clarity. The only exception is that, as of this writing, you B<cannot>
 use C<$SIZE> within a direct memory access, as I discuss next.
 
-=item Wart: no parenthisized expressions within direct memory access
+=item Wart: no parenthesized expressions within direct memory access
 
-Due to a current limitation in PDL::PP, you cannot use parenthized
+Due to a current limitation in PDL::PP, you cannot use parenthesized
 expressions within a memory access. For example, this will fail to compile
 and will throw a most obscure error:
 
  $sum() += $input(n => (i-1));
 
 The reason is that the parser isn't a real parser: it's just a series of
-regexes. It takes everything up until the first closing parenthesis and
+regular expressions. It takes everything up until the first closing parenthesis and
 doesn't realize that you put C<i-1> in parentheses. This means that these
 also fail:
 
@@ -483,9 +483,9 @@ work-arounds:
  long N = $SIZE(n);
  $sum() += $input(n => N-1);
 
-I intend to improve this soon so that at least parenthized expressions will
+I intend to improve this soon so that at least parenthesized expressions will
 work in memory access statements. However, fixing access statement parsing
-to allow C<$SIZE(n)> may require a more substanial overhaul of the parser
+to allow C<$SIZE(n)> may require a more substantial overhaul of the parser
 and may not happen any time soon. Sorry.
 
 =cut
@@ -689,7 +689,7 @@ A snippet of that output looks like this:
 
 There are two important aspects to remember about threadloops. First, you
 must not put anything between the C<threadloop> and the C<%{> except
-whitespace. For example:
+white space. For example:
 
  /* ok */
  threadloop %{
@@ -702,7 +702,7 @@ whitespace. For example:
  threadloop /* outer loop */ %{
 
 As you can see, the parser for the PDL PreProcessor is not terribly
-sophisticated. It's mostly a pile of regexes, and 99% of the time, it
+sophisticated. It's mostly a pile of regular expressions, and 99% of the time, it
 does exactly what you need.
 
 Another potential area of confusion can arise if you have something that
@@ -733,7 +733,7 @@ contains the C<loop(n)> block, below the C<#endif>, does not have the threadloop
 logic that it needs to do its job, and you will get erroneous results.
 
 The easiest fix for this? In addition to commenting out the blocks, put
-something (anything) between the text C<threadloop> and the percenty block
+something (anything) between the text C<threadloop> and the percent block
 C<%{>. As already discussed, this will always prevent PDL from identifying
 the threadloop, which is what you need it to temporarily do in this case.
 
@@ -855,7 +855,7 @@ accesses later.
 
 =item point 3, C looping commands
 
-The C<loop> construct creates a bona-fide C C<for> loop, so you can use
+The C<loop> construct creates a bona fide C<for> loop, so you can use
 C<break> and C<continue>, just like in a real C C<for> loop.
 
 =item point 4, explicit dimension values within a loop block
@@ -911,7 +911,7 @@ The function C<my_sumover> uses a C<loop> construct, so it only operates on
 individual rows. What if you wanted to perform the sum an entire matrix?
 Using Perl level operations, find a way to manipulate the incoming piddle
 so that you can call C<my_sumover> to get the sum over the entire matrix.
-Bonux points if the same technique works for higher dimensional piddles.
+Bonus points if the same technique works for higher dimensional piddles.
 
 =item 3. Cumulative Sum
 
@@ -985,20 +985,20 @@ Unfortunately, the error output of this example (contained in
 F<_Inline/build/bad_error_reporting_pl_8328/out.make>) borders on useless:
 
  bad_error_reporting_pl_4420.xs: In function 'pdl_my_print_rows_readdata':
- bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
- bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ bad_error_reporting_pl_4420.xs:177: warning: format '%f' expects type 'double', but argument 2 has type 'int'
  bad_error_reporting_pl_4420.xs:178: error: expected ';' before '}' token
- bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
- bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ bad_error_reporting_pl_4420.xs:222: warning: format '%f' expects type 'double', but argument 2 has type 'int'
  bad_error_reporting_pl_4420.xs:223: error: expected ';' before '}' token
- bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
- bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type ‘int'
+ bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type 'int'
+ bad_error_reporting_pl_4420.xs:267: warning: format '%f' expects type 'double', but argument 2 has type 'int'
  bad_error_reporting_pl_4420.xs:268: error: expected ';' before '}' token
- bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_Long'
- bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_Long'
+ bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_Long'
+ bad_error_reporting_pl_4420.xs:312: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_Long'
  bad_error_reporting_pl_4420.xs:313: error: expected ';' before '}' token
- bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_LongLong'
- bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type ‘PDL_LongLong'
+ bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_LongLong'
+ bad_error_reporting_pl_4420.xs:357: warning: format '%f' expects type 'double', but argument 2 has type 'PDL_LongLong'
  bad_error_reporting_pl_4420.xs:358: error: expected ';' before '}' token
  bad_error_reporting_pl_4420.xs:403: error: expected ';' before '}' token
  bad_error_reporting_pl_4420.xs:448: error: expected ';' before '}' token
@@ -1016,7 +1016,7 @@ so that errors get reported on the correct lines. Here is a slightly
 doctored version to illustrate the issue. (Note that the text
 C<#line 1 ...> must be flush against the left margin, just like the C<__END__>
 and C<__Pdlpp__> markers, or Perl won't realize that you are trying to tell
-it about line numbers and things will be mis-reported.)
+it about line numbers and things will be reported incorrectly.)
 
 =for listing better-error-reporting
 
@@ -1141,7 +1141,7 @@ foolproof:
      }),
  );
 
-This I<should> work withou a hitch. Unfortunately, this gives
+This I<should> work without a hitch. Unfortunately, this gives
 me these errors:
 
  my-printout-pdlpp: In function 'pdl_my_printout_readdata':
@@ -1207,7 +1207,7 @@ programmers for cutting out blocks of code:
 PDL::PP will still merrily fiddle with the stuff between the C<#if 0> and
 C<#endif>, but the C preprocessor will get rid of it before it actually
 tries to compile the code. Now the code at least runs and printouts the
-exptected dumb results:
+expected dumb results:
 
  This piddle contains:
    Here
@@ -1368,7 +1368,7 @@ Different input order would be like this:
 The only consistency here is that C<sum> always comes before C<diff>, and
 C<left> always comes before right.
 
-=item 5. Supplyling Outputs in the Function Call
+=item 5. Supplying Outputs in the Function Call
 
 For a C<Pars> key like this:
 

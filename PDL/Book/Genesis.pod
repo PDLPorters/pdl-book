@@ -15,11 +15,11 @@ numbers are the most effectual?" - Pliny the Elder.>
 
 The PDL project began in February 1996, when I decided to experiment
 with writing my own 'Data Language'.  I am an astronomer. My day job
-involves a lot of analysis of digital data accumualated on many nights
+involves a lot of analysis of digital data accumulated on many nights
 observing on telescopes around the world. Such data might for example be
 images containing millions of pixels and thousands of images of distant
 stars and galaxies. Or more abstrusely, many hundreds of digital
-spectral revealing the secrets of the composition and propertues of
+spectral revealing the secrets of the composition and properties of
 these distant objects.
 
 Obviously many astronomers before have dealt with these problems, and a
@@ -29,7 +29,7 @@ frustrated by the lack of generality and flexibility of these programs
 and the difficulty of doing anything out of the ordinary quickly and
 easily. What I wanted had a name: 'Data Language', i.e. a language which
 allowed the manipulation of large amounts of data with simple arithmetic
-expressions.  In fact some commericial software worked like this, and I
+expressions.  In fact some commercial software worked like this, and I
 was impressed with the capabilities but not with the price tag. And I
 thought I could do better.
 
@@ -40,7 +40,7 @@ around the world. I was impressed by it's power and flexibility, and
 especially it's ease of use.  I had even explored the depths of it's
 internals and written an interface to allow graphics - the PGPLOT module
 (The PGPLOT module for perl is an interface to the pgplot graphics
-library (written in C and Fortran) created by Tim Pearson of Caltech.
+library (written in C and FORTRAN) created by Tim Pearson of Caltech.
 More information about this library can be obtained from:
 L<http://astro.caltech.edu/~tjp/pgplot/>). The ease with which I could
 then create charts and graphs, for my papers, was refreshing.
@@ -91,9 +91,9 @@ I<   - Karl Glazebrook, Sydney, Australia. 4/March/1999>
 
 =head2 The case for a high-level approach
 
-We've all been there. You know how you want to analyse your data. You
+We've all been there. You know how you want to analyze your data. You
 need to Fourier transform it, take the square root, multiply by a
-high-pass filter and sum up all the high frequence modes. But it's two
+high-pass filter and sum up all the high frequency modes. But it's two
 in the morning and you are staring at the guts of your C or FORTRAN
 program trying to figure out why your program keeps crashing with array
 overflow errors. You know these problems have been solved individually
@@ -104,7 +104,7 @@ The reason is though subroutines are available low-level languages still
 force a lot of complexity on you. You must manage memory yourself,
 declare variables however trivial, call subroutines with a whole bunch
 of arguments in case just one of them is needed, etc. And you must be
-able to pull together seperate subroutine libraries to do file
+able to pull together separate subroutine libraries to do file
 input/output, user interaction, data processing and graphics.
 
 Whereas all you really want to do is tell the computer things like 'read
@@ -116,7 +116,7 @@ While natural language understanding is still quite a long way off,
 high-level computer languages are currently proliferating. Examples
 include Perl, TCL, JAVAscriptm, Visual Basic, Python, and many more.
 Such systems have also been developed for data processing. Worthy of
-note are commericial software such as C<IDL> ('Image Data Language' from
+note are commercial software such as C<IDL> ('Image Data Language' from
 Research Systems Inc.L<http://www.rsinc.com>), C<MATLAB> (from The
 Mathworks, Inc. L<http://www.mathworks.com>) and the public domain
 program C<Octave> L<http://www.octave.org>.  These implement
@@ -149,7 +149,7 @@ the few years. This has been most vivid in the success of the Linux, a
 free UNIX-like Operating System. Sometimes this movement is also
 described as 'Open Source' rather than 'free,' and the term 'free' is
 often used to mean freedom of use rather than freedom from price.
-Athough much of the code is indeed free/public domain money is made out
+Although much of the code is indeed free/public domain money is made out
 of the sale of packaged distributions, support, books, etc.
 Nevertheless the software is usually available at minimal cost.
 
@@ -171,14 +171,14 @@ or FORTRAN to allow general use.
 
 Why aren't they working at a higher level? As we explained above this
 would allow faster creation and make the software more portable and more
-easily customisable. Well in our view one of the reasons this has not
+easily customizable. Well in our view one of the reasons this has not
 happened is because of the lack of a suitable free high-level
 data-centric language, with powerful enough facilities. 
 
 This is not just a minor point, it is critical. Even if software is not
 published and is for internal use among a team of researchers, in the
 modern world the team is often distributed among dozens of individuals
-across many instititutes and nations. The only way to ensure that all
+across many institutes and nations. The only way to ensure that all
 will be able to use software is if  it is freely available. All the PDL
 authors have had direct experience with this problem in the past. We
 have often been hindered in sharing our code by collaborators having
@@ -187,11 +187,11 @@ lack of access to software.
 Moreover scientific work often involves extensive innovations and
 modifications to old ways of doing things. For software as well as being
 freely available it is critical to have access to the source code to
-permit easy customisation.
+permit easy customization.
 
 Finally there I<is> also the issue of cost. Equivalent commercial
 packages cost several thousand dollars per workstation. We are not
-anti-commericial, these packages are very powerful and useful. However
+anti-commercial, these packages are very powerful and useful. However
 we certainly think there should be something like PDL that I<anybody>
 can use and develop for free. Science is a worldwide activity and we
 like to think that anybody with a PC could use PDL to do research and
@@ -208,7 +208,7 @@ So we chose Perl as our implementation language. Our basic data language
 extensions could have been built around quite a few high-level languages
 so why did we choose Perl? {Of course the real reason we chose Perl was
 because we were using it already and liked it a lot. These 'reasons' are
-really 'compelling rationalisations'!)
+really 'compelling rationalizations'!)
 
 =over
 
@@ -249,14 +249,14 @@ interfaces, multi-process and multi-processor interactions, text
 handling, the list could go on for several more sentences. In fact none
 of the data languages mentioned above have all these features, in
 particular the commercial systems are hampered in their access to these
-features by their propritary nature and specialist syntax. We think it
+features by their proprietary nature and specialist syntax. We think it
 is easier to add numerical features to a robust language which has all
 these other features than to do it the other way around.
 
 =item 6.
 
 The language must have a clean and well-documented way of incorporating
-new subroutines, in low-level languages such as C and Fortran, in to the
+new subroutines, in low-level languages such as C and FORTRAN, in to the
 core. First this lets us implement PDL, secondly it allows diverse
 groups of people to create their own PDL modules and include compiled
 code with their own specialist subroutines.
@@ -271,8 +271,8 @@ the above requirements. Indeed their is already a numerical extension
 - NumPy (L<http://numpy.scipy.org/>). However in our 
 view the syntax is a bit too strange for
 new users. We prefer a language where simple code can still achieve useful
-results and which grows with the user. We recognise of course that much
-of this is just a matter of preference. NumPy snd SciPy have grown into
+results and which grows with the user. We recognize of course that much
+of this is just a matter of preference. NumPy and SciPy have grown into
 a well supported set of modules, so if you are into Python, go on and
 use them!
 

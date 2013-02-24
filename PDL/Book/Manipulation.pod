@@ -7,7 +7,7 @@ operations -- they select (or extract) subfields from a source
 array and arrange them for use by other operations. Slicing is 
 the act of selecting affine chunks -- linear or rectangular 
 N-dimensional subfields that are regularly sampled; normal array 
-subfields are called “slices”. Dicing is similar but without the 
+subfields are called “slices��. Dicing is similar but without the 
 affine constraint: selection of an arbitrary set of locations 
 along one or more axes of an array. Indexing is the selection of 
 a completely arbitrary collection of elements from an array. 
@@ -31,7 +31,7 @@ described in detail in Section [sec:Selection-Operators], below.
 
 The opposite of selection is location, which generates indices 
 where a particular condition is true in an array. PDL has several 
-location opeators, including the unique C<where> operator that 
+location operators, including the unique C<where> operator that 
 selects corresponding elements from related arrays. These 
 operations are described in Section [sec:Location-Operators].
 
@@ -39,11 +39,11 @@ operations are described in Section [sec:Location-Operators].
 
 Here is a simple example that illustrates some of the selection 
 and indexing operations in PDL. Consider a color image of a 
-starfield:
+star field:
 
   $starfield = rim('starfield.fits');
 
-might read in the starfield as a 1000x1000x3 image. Then 
+might read in the star field as a 1000x1000x3 image. Then 
 
   $subfield=$starfield->(500:599,500:599);
 
@@ -272,10 +272,10 @@ properly recognize most quote constructs. So saying C<print "myval is $val ($uni
 want. You can avoid that by not using as much string 
 interpolation: C<print "myval is $val (".$units.")";> or 
 C<printf "myval is %s (%s)",$val,$units;> should work fine. You can also 
-shut off nice slicing with C<no PDL::NiceSLice;>, and resume by 
+shut off nice slicing with C<no PDL::NiceSlice;>, and resume by 
 using it again just after your quote.
 
-=head3 Slice - string-conrolled subfields of a PDL
+=head3 Slice - string-controlled subfields of a PDL
 
 The C<slice> method works almost exactly like C<NiceSlice>, except that 
 it accepts a single string that contains the arguments. The 
@@ -320,7 +320,7 @@ source data set via dataflow: if you have a collection of image
 coordinates as a C<2xN> PDL, you can assign to the index PDL and 
 mark the original image. C<IndexND> can accept and handle boundary 
 conditions, in case your index might run off the edge of the 
-source PDL - see the writeup for C<range>, below, for details. 
+source PDL - see the write up for C<range>, below, for details. 
 
   pdl> $a = xvals(5,4)+10*yvals(5,4); print $a;
   [
@@ -406,7 +406,7 @@ dimensions allocated for them.
 C<$size> can be a scalar, in which case it applies to all 
 dimensions, or an N-vector, in which case each element is applied 
 independently to the corresponding dimension in C<$source>. Each 
-element of C<$size> should be nonnegative. 
+element of C<$size> should be non-negative. 
 
 If an element of C<$size> is positive, then the corresponding output 
 dim is made to have the indicated size. If an element is zero, 
@@ -578,10 +578,10 @@ to true elements of the expression C<condition($source)>. The data
 remain connected back to the original C<$source>. For example:
 
   $source = - (xvals(10) % 2);
-  print “Source is $source.\n”;
+  print "Source is $source.\n";
   $zeroes = $source->where( !$source );
   $zeroes .= xvals($zeroes);
-  print “Source is now $source.\n”;
+  print "Source is now $source.\n";
 
 outputs:
 
@@ -612,7 +612,7 @@ C<flat> ([sub:Rearranging-a-dim]) so that it can be indexed with a
 single number. Note that this may or may not be a useful way to 
 address thread dimensions, depending on your application. You can 
 use the returned index list either in C<index> or in a C<NiceSlice> 
-expression, to get access to the elements. For exmple:
+expression, to get access to the elements. For example:
 
   $dex = which( $source==5 );
   $fives = $source->($dex); # niceslice

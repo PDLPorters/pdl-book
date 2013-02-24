@@ -24,7 +24,7 @@ It is now time to answer a question which has probably been nagging at the back 
 
 Why bother with piddles? Why not just use normal Perl `arrays'?
 
-By Perl `arrays' we of couse mean entities like @x and @Data z which one would normally create and manipulate like this:
+By Perl `arrays' we of course mean entities like @x and @Data z which one would normally create and manipulate like this:
 
    @x = (1,2,3);
    push @x, 42;
@@ -46,7 +46,7 @@ Perl lists consume a lot of memory. At least 20 bytes per number, of which only 
 
 Perl lists are scattered about memory. The list data structure means consecutive numbers are not stored in a neat block of consecutive memory addresses as C and FORTRAN programmers are used to. This makes it difficult to pass the arrays to low-level C and FORTRAN routines for processing -- the numbers must be collected together -a process known as `packing' -- processed and unpacked back into lists. If you have `lists of lists' then it get's even worse.
 
-Perl lists do not support the range of datatypes that piddles do (byte arrays, integer arrays, single precision, double precision, etc.)
+Perl lists do not support the range of data types that piddles do (byte arrays, integer arrays, single precision, double precision, etc.)
 
 That is why PDL does not use Perl lists. Just to be clear from now on we'll always refer to PDL numeric data arrays as `piddles' and Perl-style number/text arrays as `lists'. 
 

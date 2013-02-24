@@ -96,7 +96,7 @@ The C<$a & 5> expression performs a bitwise mask of each element of
 C<$a>, keeping the 1's and 4's bit only (5 in binary is C<0101>). The 
 second expression, C<(!!$a) & 5>, returns true for every nonzero 
 element of C<$a>, because C<!> always returns 0 or 1. The third 
-expresion, C<(!!$a) & 4>, returns C<false> for every element, because 
+expression, C<(!!$a) & 4>, returns C<false> for every element, because 
 C<!!$a> is always 0 or 1, and 4 is C<0100> in binary: its 1's bit is 
 clear. The final expression, C<(!!$a) & !!4>, returns true for every 
 element because both sides of the C<&> operator have been converted 

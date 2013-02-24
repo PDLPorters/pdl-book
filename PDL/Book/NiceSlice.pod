@@ -1,6 +1,6 @@
 =head1 Slicing, Dicing and Threading dims with PDL
 
-Fundamental to any vectorised data language such as PDL is the ability
+Fundamental to any vectorized data language such as PDL is the ability
 to manipulate subsets of data in convenient ways.  PDL provides the
 facilities to change the size and dimensionality of data, to take
 contiguous and non-contiguous subsections of data along dimensions and
@@ -72,21 +72,21 @@ But first we notice that C<slice> is implemented via a named function.
 Through the magic of C<PDL::NiceSlice> and source filtering you can
 access C<slice> functionality in a form very similar to the vector
 array syntax found in many array computation languages such as
-FORTRAN-90 and Matlab.  The chief difference being that the argument
-to the C<slice> method call is a I<string> descrbing the elements
+FORTRAN-90 and MATLAB.  The chief difference being that the argument
+to the C<slice> method call is a I<string> describing the elements
 to be selected.  For the new C<PDL::NiceSlice> syntax, you don't use
 the method or function call and the argument does not need to be
 wrapped up in a string.
 
 In this chapter, we will usually show the C<PDL::NiceSlice> syntax
 but refer to the operation as a slice even though with the new
-sytax there is no longer an explicit C<slice> method being called.
+syntax there is no longer an explicit C<slice> method being called.
 
 =head3 The basic slicing specification.
 
 The slicing argument syntax is just a list of ranges, the simplest
 if of the form C<A:B> to specify the start and end pixels.  This
-generalises to arbitrary dimensions; 
+generalizes to arbitrary dimensions; 
 
     $data = zeroes(1000);
     $sec = $data(0:20);
@@ -148,7 +148,7 @@ All very well.  But now we modify the slice using the assignment operator.
     pdl> print $x;
     [0 1 2 3 0 5 0 7 0 9 0 11 0 13 0 15 0 17 0 19 0 21 22 23 24]
 
-Modifying the slice automatically modfies the original data! However it
+Modifying the slice automatically modifies the original data! However it
 is done ( C<$slice++> etc.  work just as well).
 
 All the PDL slicing and dicing functions work this way, from the
@@ -167,9 +167,9 @@ If you monitor the memory consumed by the PDL process on your computer
 (UNIX/Linux users can try the C<top> command) you will see that the
 amount of memory consumed does not go up - B<even when the slice is
 modified> .  This is because the way PDL is written allows many of the
-simple operations on slices to be optimised - i.e.  a temporary internal
+simple operations on slices to be optimized - i.e.  a temporary internal
 copy of the slice need not be made.  Of course sometimes - for example
-when passing to an external subroutine - this optimisation is not
+when passing to an external subroutine - this optimization is not
 possible.  But the book-keeping of propagating the changes back to the
 original piddle is handled automatically.  
 
@@ -177,7 +177,7 @@ original piddle is handled automatically.
 
 C<slice> has some advanced syntactical features which allow dimensions
 to be inserted or removed (this comes in quite useful when passing 2D
-arrays to functions expecting 1D arguments and visa-versa, this comes in
+arrays to functions expecting 1D arguments and vice versa, this comes in
 extremely useful when using PDL's advanced B<threading> features (see
 I<PDL threading and the signature> later.
 
@@ -201,7 +201,7 @@ This sort of thing is very useful for advanced threading trickery.
 
 At this point we would like to introduce the varied notations for
 calling C<slice> and it's friends.  This is because it will be
-commonly seen in PDL code and is very handy.  While at first unfamilar
+commonly seen in PDL code and is very handy.  While at first unfamiliar
 to C and FORTRAN users it is not rocket science, PDL users will quickly
 become used to it.
 
@@ -210,7 +210,7 @@ Objects can have their own personal functions, known as methods.  The
 difference between a method and a function is that a method can only be
 used on the class of object it belongs too.  And methods have a new
 notation for calling them.  This means names (which can get in short
-suppply) can be re-used for different objects.  
+supply) can be re-used for different objects.  
 
 Many of PDL's functions are available as methods too, in fact once you
 started using the more advanced features you will find that many of them
@@ -278,15 +278,15 @@ This is a simple matrix transpose.  The method C<<$z->transpose>> and
 the equivalent operator C<~$z> also do this, though they
 also make a copy (i.e. return a new piddle) not a slice and can operate
 on 1D piddles (i.e. convert a row vector into a column vector).
-Somethimes this is what you want.  C<xchg> works like C<slice> and
-C<dice> - changes affect the original.  Also C<xchg> generalises to
+Sometimes this is what you want.  C<xchg> works like C<slice> and
+C<dice> - changes affect the original.  Also C<xchg> generalizes to
 N-dimensions: 
 
     $z = zeroes(3,4,5,6,7);
     $t = $z->xchg(1,3); # Dims now 3,6,5,4,7
 
 A different way of switching dimensions around is provided by C<$z->mv(A,B)>
-which justs moves the axis C<A> to posiition C<B> :
+which just moves the axis C<A> to position C<B> :
 
     $z = zeroes(3,4,5,6,7);
     $t = $z->mv(1,3); # Dims now 3,5,6,4,7
@@ -451,7 +451,7 @@ and above 0.9:
     pdl> print $a<0.25 | $a>0.85;
     [1 1 1 0 0 0 0 0 0 1]
 
-We'll use this as an example of an arbitrary condtion.  Using C<which>
+We'll use this as an example of an arbitrary condition.  Using C<which>
 we can return a piddle containing the positions of the elements which
 match the condition:
 
@@ -472,7 +472,7 @@ boring kind of slice and have our results affect the original:
     pdl> print $a;
     [0 0 0 0.3 0.4 0.5 0.6 0.7 0.8 0]
 
-In fact PDL posesses a convenience function called C<where> which
+In fact PDL possesses a convenience function called C<where> which
 actually lets you combine these steps at once:
 
     $a = sequence(10)/10;
@@ -509,11 +509,11 @@ You can of course use C<where> too for any number of dimensions:
 
 =head2 PDL threading and signatures
 
-Slicing and indexing arbritary subsets of data is certainly a
+Slicing and indexing arbitrary subsets of data is certainly a
 fundamental aspect of any array processing language and PDL is no
-exeption (as you can tell from the preceding examples).  In PDL those
+exception (as you can tell from the preceding examples).  In PDL those
 functions might be even more important since they are absolutely vital
-in using PDL B<threading> , the fast (and automagic) vectorised
+in using PDL B<threading> , the fast (and automagic) vectorized
 iteration of "elementary operations" over arbitrary slices of
 multidimensional data.  First we have to explain what we mean by B<threading>
 in the context of PDL, especially since the term B<threading>
@@ -597,7 +597,7 @@ a one-dimensional vector.  If the input piddle is of higher dimension
 this B<elementary operation> is automatically iterated over all
 one-dimensional subslices of the input piddle
 
-And, most imporatantly, this automatic iteration (we call it the
+And, most importantly, this automatic iteration (we call it the
 B<threadloop>) is implemented as fast optimized C loops.  As a
 convention, these subslices are by default taken along the first
 dimensions of the input piddle.  In our current example the subslices
@@ -704,7 +704,7 @@ command? There are several (very good) reasons.  The more you use PDL
 for your daily work the quicker you will appreciate this.
 
 Before we get into the details of the why and how let's admit: PDL is by
-no means the first data language that supports this type of automatical
+no means the first data language that supports this type of automatic
 implicit looping facility: the authors have in fact been inspired by
 several previous data language implementations, most notably C<Yorick>
 
@@ -783,7 +783,7 @@ than that required to execute the explicit looping code.
 Another distinct advantage becomes apparent when comparing the code
 required to implement the equivalent of the C<maximum> functionality
 explicitly in perl code.  We have to write extra code to create the
-right size ouput piddle, explicitly handle dimension sizes, etc.  All in
+right size output piddle, explicitly handle dimension sizes, etc.  All in
 all the code is much less concise and also less general.
 
 With the requirement to deal with all dimensions, loop limits, etc
@@ -797,7 +797,7 @@ taking care of some of the "messy" details it leaves you with another
 task: you have to find the places in your algorithm/problem where
 threading can effectively be used and help to make for speedy execution
 even when using an (almost inevitably slower) scripting language.  But
-finding such places and making use of these vectorised features is the
+finding such places and making use of these vectorized features is the
 key to using an array-oriented high level language like PDL
 successfully.  This is what the programmer new to PDL and used to
 low-level programming has to learn: avoid explicit loops where possible
@@ -878,7 +878,7 @@ argument.  This seems to suggest that we could C<maximum> also call as
 C<maximum($im, $result)>;
 
 This is in fact possible and an intended feature of PDL that is useful
-in B<tight loops> where it helps to avoid unneccesary reallocation of
+in B<tight loops> where it helps to avoid unnecessary reallocation of
 variables (see below).  In general, however, we will call functions in
 the usual way that can be written symbolically as:
 
@@ -968,11 +968,11 @@ identifies our piddle's shape as C<[3,4,3,6,1]>
 
 Alright, the principles are simple.  But nothing is better than a few
 examples.  Again a typical imaging processing task is our starting
-point.  We want to convert a colour image to greyscale.  The input image
+point.  We want to convert a colour image to grayscale.  The input image
 is represented as a two-dimensional array of triples of RGB colour
 coordinates, or in other words, a piddle of shape C<[3,n,m]> .
 Without delving too deeply into the details of digital colour
-representation it suffices to note that commonly a grey value B<i>
+representation it suffices to note that commonly a gray value B<i>
 corresponding to a colour represented by a triple of red, green and blue
 intensities B<(r,g,b)> is obtained as a weighted sum:
 
@@ -1025,9 +1025,9 @@ Now threading makes extending this example to a whole RGB image very straightfor
 
     use PDL::IO::Pic; # IO for popular image formats
     $im = rpic 'pdllogo.jpg'; # a colour image from the book dataset
-    $grey = inner($im->pdim('COLOR'),$conv);
+    $gray = inner($im->pdim('COLOR'),$conv);
        # threaded inner product over all pixels
-    $gb = $grey->byte; # back to byte type
+    $gb = $gray->byte; # back to byte type
     COLOR Byte D [3,500,300]
 
 The code needs no modification! Let us analyze what is going on.  We
@@ -1037,7 +1037,7 @@ threading.  However, the first argument C<$im> has two B<extra dimensions>
 (shape C<[500,300]>).  In this case threading
 works (as you would probably expect) by iterating the inner product over
 the combination of all 1D subslices of C<$im> with the one and only
-subslice of C<$conv> creating a resulting piddle (the greyscale image)
+subslice of C<$conv> creating a resulting piddle (the grayscale image)
 that is made up of all results of these elementary operations: a 500x300
 array of scalars, or in other words, a 2D piddle of shape C<[500,300]>.
 
@@ -1047,7 +1047,7 @@ dimensions.  At the top we write C<inner>'s signature and at the
 bottom the C<slice> expressions that show the subslices involved in
 each elementary operation:
 
-    Piddles $im $conv $grey
+    Piddles $im $conv $gray
     Signature a(n); b(n); [o]c()
     Dims (3)[500,300] (3)[] ()[500,300]
     Slices ":,($i),($j)" ":" "($i)($j)"
@@ -1056,7 +1056,7 @@ Remember that the slice notation at the bottom does not mean that you
 have to generate all these slices yourself.  It rather tells you which
 subslices are used in a elementary operation.  It is a way to keep track
 what is going on behind the scenes when PDL threading is at work.
-Threading makes it possible that we can call the greyscale conversion
+Threading makes it possible that we can call the grayscale conversion
 with piddles representing just one RGB pixel (shape C<[3]>), a
 line of RGB pixels (shape C<[3,n]>), RGB images (shape C<[3,m,n]>),
 volumes of RGB data (shape C<[3,m,n,o]>), etc.
@@ -1066,8 +1066,8 @@ also does some type conversion to complete it:
     sub rgbtogr {
        my ($im) = @_;
        my $conv = float([77,150,29])/256; # conversion factor
-       my $grey = inner $im, $conv;
-       return $grey->convert($im->type); # convert to original type
+       my $gray = inner $im, $conv;
+       return $gray->convert($im->type); # convert to original type
     }
 
 
@@ -1083,7 +1083,7 @@ C<sig> will only know about functions that were created using C<PDL::PP> or if w
 documentation but from the properties of C<inner> and the definition
 of C<rgbtogr> we can work it out.  As input it takes piddles with a
 size of the first dimension of 3 and returns for each of the 1D
-subslices a 0D result (the greyvalue).  In other words, the signature is
+subslices a 0D result (the gray value).  In other words, the signature is
 
     a(tri = 3); [o] b()
 
@@ -1110,7 +1110,7 @@ in both piddle arguments.  Corresponding extra dimensions are those that
 occur in both piddles.  However, one piddle can have more extra
 dimensions than the other without causing a mismatch.  That sounds
 strange? Ok, here is an example.  We use one of the fundamental
-arithmetic operations in PDL, addition implemente d by the "C<+>"
+arithmetic operations in PDL, addition implemented by the "C<+>"
 operator.  You know already that in an array-oriented language like PDL
 addition is performed element-by-element on scalars.  So the signature
 of "C<+>" comes as no surprise
@@ -1128,7 +1128,7 @@ cases.  First make some simple piddles
     $d = pdl [3,4];
     print $a + $b, "\n"; 
 
-No big deal.  Extradims for both piddles have shape C<[3]>
+No big deal.  extradims for both piddles have shape C<[3]>
 obviously matching, resulting in
 
     [2 3 4]
@@ -1143,7 +1143,7 @@ Next,
 
 Alright, this probably is exactly what you expected but let us go
 through our new terminology and check that we can formally agree with
-what we intuitive ly expected anyway.
+what we intuitively expected anyway.
 
 C<$a>'s B<extradim> (s) has shape C<[3]> , those of C<$c> shape C<[3,2]>.
 The B<corresponding> B<extradim>(s) in this case is
@@ -1167,7 +1167,7 @@ that leaves us with a result piddle of shape C<[3,2]>.
 
 In the next example we want to multiply C<$c> with C<$d> so that
 each row of C<$c> is multiplied by the corresponding element of C<$d>
-or expressed in slices (with niceslice syntax):
+or expressed in slices (with NiceSlice syntax):
 
     $result(($i),($j)) = $c(($i),($j)) * $d(($j)) $i=0..2, $j=0..1
 
@@ -1210,7 +1210,7 @@ And now the extra dimensions B<match>(!):
     print $result;
 
 Using our symbolic way of writing down the slices that are paired in a
-elementar y operation we can see that we achieve what we wanted
+elementary operation we can see that we achieve what we wanted
 
     $c $d->dummy(0,$c->getdim(0)) $result
     "($i),(j)" "($i),($j)" "($i),($j)"
@@ -1241,7 +1241,7 @@ corresponding extra dimension is marched through all its positions (e.g.
 C<slice(":,($i)") $i=0..n-1>) the elastic dimension just uses its one
 and only position 0 repeatedly ( C<slice(":,(0)") $i=0..n-1>).
 Therefore, an equivalent and more concise way to write the threaded
-multiplicat ions makes use of this and the fact that a dummy dimension
+multiplications makes use of this and the fact that a dummy dimension
 of size 1 is created by default if the second argument is omitted (see
 C<help dummy>)
 

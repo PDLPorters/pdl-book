@@ -211,7 +211,7 @@ other operand would. Threading is explained in detail in Section
 PDL lets you access the memory of a PDL variable directly, using 
 a perl string variable. You normally won't have to use this 
 mechanism, but I include it here for completeness - if you are 
-just learning PDL, you can probably skip thsi subsection.
+just learning PDL, you can probably skip this subsection.
 
 The string variable mechanism gives you access to the low-level 
 representation of the data (which is the same as your C compiler 
@@ -255,7 +255,7 @@ right, without shuffling the actual bytes around.
 If you use this low-level mechanism, you are responsible for 
 making sure that the data you put into the new PDL has the same 
 form as the PDL's formal data type! You are also responsible for 
-figuring out byteswapping for your machine - the bytes in the 
+figuring out byte swapping for your machine - the bytes in the 
 string are in machine order, not network order.
 
 =head3 Conversion to Perl types: C<at> and C<list>
@@ -621,9 +621,9 @@ C<print pdl([1,2],[3,4]) * 3> prints the string C<[ [3 6] [9 12] ]>.
 
 =back
 
-=head3 Conrolling threading and dimension order: xchg, mv, reorder, flat, clump, and reshape
+=head3 Controlling threading and dimension order: xchg, mv, reorder, flat, clump, and reshape
 
-Because rearranging the dim list of a PDL (ie transposing it) is 
+Because rearranging the dim list of a PDL (i.e. transposing it) is 
 the way to control the threading engine, PDL has many operators 
 that are devoted to rearranging dim lists. Here are six of them:
 

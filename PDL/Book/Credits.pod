@@ -3,7 +3,7 @@
 Several separate sources of material have been used to make this 2012
 version of the PDL Book. The biggest source of material has been "PDL -
 Scientific Programming in Perl", written in 2001 and added to over the
-past decade by Karl Glazebrook, Christian Soller, Tuomas J. Lukka, Marc
+past decade by Karl Glazebrook, Christian Soeller, Tuomas J. Lukka, Marc
 Lehmann, Jarle Brinchmann, Doug Hunt, John Cerney, Robin Williams and
 Tim Pickering, and several chapters written by Craig DeForest from 2009.
 
@@ -39,8 +39,8 @@ Joe Milosch
 
 Creating.pod:
 
-Section 2.4 from PDL-4.lyx book by Craig DeForest
-PODded by M. Kenworthy
+Section 2.4 from PDL LyX book by Craig DeForest
+POD-ed by M. Kenworthy
 
 Functions:
 
@@ -50,7 +50,7 @@ PGPLOT.pod:
 
 Original text from "PDL - Scientific Programming in Perl" (2001) Chap. 4
 
-Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Söller,
+Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Soeller,
 Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
 Doug Hunt, Tim Pickering.
 
@@ -62,10 +62,10 @@ PLplot:
 
 Joe Milosch, also known as zentara on perlmonks, assembled this document.
 David Merten, wrote most of the section and examples on Object Oriented usage,
-which were taken from his slideshow on PLplot.
+which were taken from his slide show on PLplot.
 
-David Merten's slideshow on B<PDL::Graphics-PLplot>.  His very
-informative slideshow can be downloaded or viewed at
+David Merten's slide show on B<PDL::Graphics-PLplot>.  His very
+informative slide show can be downloaded or viewed at
 L<http://www.slideshare.net/dcmertens/p-lplot-talk>  
 
 PP.pod:
@@ -82,7 +82,7 @@ Piddle.pod:
 
 Original text from "PDL - Scientific Programming in Perl" (2001) Chap. 1
 
-Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian SoÌˆller,
+Authors: Karl Glazebrook, Marc Lehmann, John Cerney, Christian Soeller,
 Jarle Brinchmann, Robin Williams, Christopher Marshall, Tuomas J. Lukka,
 Doug Hunt, Tim Pickering.
 

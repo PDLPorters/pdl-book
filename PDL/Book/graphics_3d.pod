@@ -281,7 +281,7 @@ A lot of fun things can be done with points but we'll go into
 that later.
 
 Then, there are---of course---lines. As a fun demo of lines, 
-let's plot a number of flowlines moving in the Lorenz attractor. 
+let's plot a number of flow lines moving in the Lorenz attractor. 
 As you may know, the Lorenz attractor is described by
 
 =for asciitex
@@ -365,7 +365,7 @@ step instead:
 
    line3d [$tim, $ys, $zs], [$col, $tim , 1-$col];
 
-This yields a much clearer plot of the chaotic behaviour when the 
+This yields a much clearer plot of the chaotic behavior when the 
 lines diverge with time.
 
 =for html <img WIDTH=300 src="graphics_3d/timeseries-lorenz.png">
@@ -386,7 +386,7 @@ which just draws the surface as a wire mesh instead of a
 solid surface. On slow machines this can be of great help.
 
 Finally, there are two commands for quickly painting strictly 
-rectangular truecolor images: C<imagrgb> and C<imagrgb3d>. This can be 
+rectangular true color images: C<imagrgb> and C<imagrgb3d>. This can be 
 demonstrated by Tuomas J. Lukka's 4-liner:
 
    use PDL; use PDL::Graphics::TriD;$a=zeroes 300,300;$r=$a->xlinvals(-1.5,
@@ -432,7 +432,7 @@ However, if you want to put objects of more than one type, or
 objects of more than one resolution on the same graph, then you 
 do need to do so explicitly. As an example we'll use some fractal 
 mountain code by Tuomas J. Lukka from the 3D Gallery. Unlike with 
-the mandelbrot that has a well-known algorithm, this code we'd 
+the Mandelbrot that has a well-known algorithm, this code we'd 
 just better format clearly from the start (the parameters have 
 also been slightly modified and the code has been modified to 
 plot all the iterations on top of each other).
