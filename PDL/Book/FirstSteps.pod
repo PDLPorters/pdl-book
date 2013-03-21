@@ -32,20 +32,23 @@ here, in more depth.
 
 =head2 Alright, let's I<do> something
 
-We'll assume PDL is correctly installed and set up on your computer
-system (see L<http://pdl.perl.org/> for details of obtaining and installing PDL).
+We'll assume PDL is correctly installed and set up on
+your computer system (see L<http://pdl.perl.org/> for details
+of obtaining and installing PDL).
 
-For interactive use PDL comes with a program called C<pdl>. This allows
+For interactive use PDL comes with a program called C<perldl>. This allows
 you to type raw PDL (and perl) commands and see the result right away. It
 also allows command line recall and editing (via the arrow keys) on most
-systems. So we begin by running the C<pdl> program from the system
-command line. On a Mac/UNIX/Linux system we would simply type C<pdl>
-in a terminal window. On a Windows system we would type C<pdl>
-in a command prompt window. If PDL is installed correctly this is
-all that is required to bring up C<pdl>.
+systems.
 
-  myhost% pdl
-  perlDL shell v1.356
+So we begin by running the C<perldl> program from the system
+command line. On a Mac/UNIX/Linux system we would simply type C<perldl>
+in a terminal window. On a Windows system we would type C<perldl>
+in a command prompt window. If PDL is installed correctly this is
+all that is required to bring up C<perldl>.
+
+  myhost% perldl
+  perlDL shell v1.357
    PDL comes with ABSOLUTELY NO WARRANTY. For details, see the file
    'COPYING' in the PDL distribution. This is free software and you
    are welcome to redistribute it under certain conditions, see
@@ -55,13 +58,14 @@ all that is required to bring up C<pdl>.
   Found docs database /usr/lib/perl5/.../PDL/pdldoc.db
   Type 'help' for online help
   Type 'demo' for online demos
-  Loaded PDL v3.000 (supports bad values)
+  Loaded PDL v2.006 (supports bad values)
   pdl> 
 
 We get a whole bunch of informational messages about what it is loading for
 startup and the help system. Note; the startup is I<completely> configurable,
 an advanced user can completely customize which PDL modules
 are loaded. We are left with the 
+
 C<pdl>> prompt at which we can type commands. This kind
 of interactive program is called a 'shell'.  There is also C<pdl2>
 which is a newer version of the PDL shell with additional features.
@@ -69,9 +73,8 @@ It is still under development but completely usable.
 
 Let's create something, and display it:
 
-  pdl> use PDL::Graphics::PGPLOT
+  pdl> use PDL::Graphics::Simple
   pdl> imag (sin(rvals(200,200)+1))
-  Displaying 200 x 200 image from -1 to 0.999999940395355 ... 
 
 The result should look like the image below - a two dimensional C<sin> function.
 C<rvals> is a handy PDL function for creating an image whose pixel values are
@@ -88,13 +91,13 @@ some convenient graphics library.
 
 =for html <img WIDTH=400 src="firststeps/whirl-sync.png">
 
-Figure of a two dimensional C<sin>  function.
+  Figure of a two dimensional C<sin>  function.
 
 That's all fine. But what if we wanted to achieve the same results in a standalone
 perl script? Well it is pretty simple:
 
   use PDL;
-  use PDL::Graphics::PGPLOT;
+  use PDL::Graphics::Simple;
   imag (sin(rvals(200,200)+1));
 
 That's it. This is a complete perl/PDL program. One could run it by typing 
@@ -127,8 +130,10 @@ of it you want).
 =head2 Whirling through the Whirlpool
 
 Enough about the mechanics of using PDL, let's look at some real data! To work
-through these examples exactly you should be able to find them in the directory
-C<PDL/Book/> on your system.
+through these examples exactly you can download any needed input files from
+L<http://sourceforge.net/projects/pdl/files/PDL/PDL%20Book%20Example%20Data%20Set/>
+and we'll assume you are running any of these examples in the same
+directory as you have downloaded the input data files.
 
 We'll be playing with an image of the famous spiral galaxy discovered by
 Charles Messier, known to astronomers as M51 and commonly as the Whirlpool
@@ -137,7 +142,7 @@ The image file is stored in the 'FITS' format, a common astronomical format,
 which is one of the many formats standard PDL can read. (FITS stores more
 shades of gray than GIF or JPEG, but PDL can read these formats too).
 
-  pdl> $a = rfits("PDL/Book/m51_raw.fits");
+  pdl> $a = rfits("m51_raw.fits");   # m51_raw.fits is in current directory
   Reading IMAGE data...
   BITPIX =  -32  size = 262144 pixels 
   Reading  1048576  bytes
@@ -173,8 +178,8 @@ Let's look at M51:
 
 =for html <img WIDTH=600 src="firststeps/whirl-m51.png">
 
-Figure of the raw image C<m51_raw.fits> shown with progressively greater
-contrast using the C<imag> command.
+  Figure of the raw image C<m51_raw.fits> shown with
+  progressively greater contrast using the C<imag> command.
 
 A couple of bright spots can be seen, but where is the galaxy? It's the faint
 blob in the middle: by default the display range is autoscaled linearly from
@@ -207,7 +212,8 @@ image, we merely have to divide the image by the flatfield:
 
 =for html <img WIDTH=400 src="firststeps/whirl-flat.png">
 
-Figure: The 'flatfield' image showing the detector sensitivity of the raw data.
+  Figure: The 'flatfield' image showing the detector sensitivity of the raw data.
+
 
   pdl> $gal = $a / $flat;
   pdl> imag $gal,0,300;  
@@ -227,7 +233,8 @@ do whatever arithmetic operations we like on image piddles:
 
 =for html <img WIDTH=400 src="firststeps/whirl-flattened.png">
 
-Figure: The M51 image corrected for the flatfield.
+  Figure: The M51 image corrected for the flatfield.
+
 
   pdl> $funny = log(($gal/300)**2 - $gal/100  + 4); 
   pdl> imag $funny; # Surprise!
@@ -276,6 +283,7 @@ function:
 
   pdl> $r = rvals $gal;
   pdl> imag $r;
+  ...
 
 Remember C<rvals>? It replaces all the pixels in an image with its distance
 from the centre. We can turn this into a I<mask> with a simple
@@ -283,13 +291,17 @@ operation like:
 
   pdl> $mask = $r<50;
   pdl> imag $mask;
+  ...
 
 =for html <img WIDTH=400 src="firststeps/whirl-mask.png">
 
-Figure: Using  C<rvals> to generate a mask image to isolate the galaxy bulge 
-and disk. Top row: radial gradient image C<$r>, and radial gradient
-masked with  less than operator C<$r < 50>. Bottom row: Bulge and disk of
-the galaxy.
+ Figure: Using  C<rvals> to generate a mask image
+ to isolate the galaxy bulge and disk.
+ 
+ Top row: radial gradient image C<$r>, and radial gradient
+ masked with less than operator C<$r < 50>.
+ 
+ Bottom row: Bulge and disk of the galaxy.
 
 The Perl I<less than operator> is applied to all pixels in the image.
 You can see the result is an image which is 0 on the outskirts and 1 in
@@ -300,13 +312,13 @@ galaxy:
 
  pdl> $bulge = $mask * $gal
  pdl> imag $bulge,0,300
- Displaying 512 x 512 image from 0 to 300 ...
+ ...
  pdl> print sum $bulge;
  3011125
  
  pdl> $disk = $gal * (1-$mask)
  pdl> imag $disk,0,300
- Displaying 512 x 512 image from 0 to 300 ...
+ ...
  pdl> print sum $disk
  14904884
 
@@ -372,16 +384,15 @@ function, which 'clumps' together an arbitrary number of dimensions:
   pdl> points $rr, $sec;  # Radial plot
 
 You should see a nice graph with points like those
-in the figure below
-showing the drop-off
-from the bright centre of the star. The blurring is usually measured
+in the figure below showing the drop-off from the bright centre of the star.
+The blurring is usually measured
 by the 'Full Width Half Maximum' (FWHM) - or in plain terms how
-fat the profile is across when it drops by half. Looking at Figure 1.6
+fat the profile is across when it drops by half. Looking at the plot
 it looks like this is about 2-3 pixels - pretty compact!
 
 =for html <img WIDTH=400 src="firststeps/whirl-starradial.png">
 
-Figure: Radial light profile of the bright star with fitted curve.
+  Figure: Radial light profile of the bright star with fitted curve.
 
 Well we don't just want a guess - let's fit the profile with a function.
 These blurring functions are usually represented by the C<Gaussian>
@@ -460,6 +471,7 @@ easy:
   pdl> $fit2d = $peak * exp(-2.772 * ($r/$fwhm)**2);
   pdl> release; # Back to new page for new plots;
   pdl> imag $fit2d;
+  ...
   pdl> wfits $fit2d, 'fake_star.fits'; # Save our work
 
 
@@ -473,7 +485,7 @@ star in 3D (see the right hand panel);
 
 =for html <img WIDTH=600 src="firststeps/whirl-starsim.png">
 
-Figure: Two different views of the 2D simulated Point Spread Function.
+  Figure: Two different views of the 2D simulated Point Spread Function.
 
    pdl> use PDL::Graphics::TriD; # Load the 3D graphics module
    pdl> imag3d [$fit2d];
@@ -542,7 +554,7 @@ in the figure below and takes virtually no time to compute.
 
 =for html <img WIDTH=400 src="firststeps/whirl-fakestars.png">
 
-Figure: M51 covered in fake stars.
+  Figure: M51 covered in fake stars.
 
 =head2 Getting Complex with M51
 
@@ -595,8 +607,8 @@ see the result:
 
 =for html <img WIDTH=400 src="firststeps/whirl-fft.png">
 
-Figure: Fourier filtered smoothed image and contrast enhanced image with 
-the smoothed image subtracted.
+  Figure: Fourier filtered smoothed image and contrast enhanced
+  image with the smoothed image subtracted.
 
 Well that looks quite a bit different!  Just about all the
 high-frequency information has vanished. To see the high-frequency
