@@ -18,7 +18,7 @@ Most of the time you can forget about the fact that piddles are objects and trea
 
 The only time the distinction becomes important is when creating piddles and using the `=' operator. 
 
-=head1 Piddles are NOT Perl `arrays'
+=head2 Piddles are NOT Perl `arrays'
 
 It is now time to answer a question which has probably been nagging at the back of your mind for a while.
 
