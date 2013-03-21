@@ -24,7 +24,7 @@ Matthew Kenworthy <matthew.kenworthy@gmail.com>, 2012 Jan 25
 # USER SELECTABLE OPTIONS
 
 my $book_dir        = "PDL/Book/"; # relative path to the PDL Book files
-my $book_chapters   = "../Book FirstSteps Creating NiceSlice Functions Threading PGPLOT PLplot graphics_3d Transform Complex Pthreads PP Genesis Credits"; # an ordered list of POD files to process
+my $book_chapters   = "../Book FirstSteps Piddle Creating NiceSlice Functions Threading PGPLOT PLplot graphics_3d Transform Complex Pthreads PP Genesis Credits"; # an ordered list of POD files to process
 
 my $book_pdf        = "book.html"; # output name of book
 
@@ -98,7 +98,7 @@ print "execing $exec_string\n";
 
 # delete the temporary file
 
-unlink($tmp);
+## unlink($tmp);
 
 print "\n$0 finished.\n\n";
 
