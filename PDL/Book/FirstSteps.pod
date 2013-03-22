@@ -87,7 +87,7 @@ more like C than FORTRAN). It is interesting to reflect on how much C code
 would be required to generate the same display, even given the existence of
 some convenient graphics library.
 
-=for html <img WIDTH=400 src="firststeps/whirl-sync.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-sync.png">
 
   Figure of a two dimensional C<sin>  function.
 
@@ -174,7 +174,7 @@ Let's look at M51:
 
   pdl> imag $a;
 
-=for html <img WIDTH=600 src="firststeps/whirl-m51.png">
+=for html <img WIDTH=600 src="firststeps/sepia/crop/whirl-m51-default.png">
 
   Figure of the raw image C<m51_raw.fits> shown with
   progressively greater contrast using the C<imag> command.
@@ -186,8 +186,15 @@ bottom right of the center can be seen without contrast enhancement. We can
 easily change that by specifying the black/white data values (Note: C<#> starts
 a Perl comment and can be ignored - i.e. no need to type the stuff after it!):
 
+=for html <img WIDTH=600 src="firststeps/sepia/crop/whirl-m51-1000.png">
+
   pdl> imag $a,0,1000; # More contrast
+
+
+=for html <img WIDTH=600 src="firststeps/sepia/crop/whirl-m51-300.png">
+
   pdl> imag $a,0,300;  # Even more contrast
+
 
 You can see that C<imag> takes additional arguments to specify the display
 range. In fact C<imag> takes quite a few arguments, many of them optional. By
@@ -208,9 +215,9 @@ This is shown in the next figure. Because the image is of a uniform field,
 the actual image reflects the detector sensitivity. To correct our M51
 image, we merely have to divide the image by the flatfield:
 
-=for html <img WIDTH=400 src="firststeps/whirl-flat.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-flat.png">
 
-  Figure: The 'flatfield' image showing the detector sensitivity of the raw data.
+Figure: The 'flatfield' image showing the detector sensitivity of the raw data.
 
 
   pdl> $gal = $a / $flat;
@@ -229,9 +236,9 @@ perl arrays rather than piddles it would be about ten to twenty times slower
 (and use ten times more memory). In fact we can
 do whatever arithmetic operations we like on image piddles:
 
-=for html <img WIDTH=400 src="firststeps/whirl-flattened.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-flattened.png">
 
-  Figure: The M51 image corrected for the flatfield.
+Figure: The M51 image corrected for the flatfield.
 
 
   pdl> $funny = log(($gal/300)**2 - $gal/100  + 4); 
@@ -291,15 +298,17 @@ operation like:
   pdl> imag $mask;
   ...
 
-=for html <img WIDTH=400 src="firststeps/whirl-mask.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-maska.png">
 
- Figure: Using  C<rvals> to generate a mask image
- to isolate the galaxy bulge and disk.
- 
- Top row: radial gradient image C<$r>, and radial gradient
- masked with less than operator C<$r < 50>.
- 
- Bottom row: Bulge and disk of the galaxy.
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-maskb.png">
+
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-maskc.png">
+
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-maskd.png">
+
+Figure: Using  C<rvals> to generate a mask image to isolate the galaxy bulge and disk.
+Top row: radial gradient image C<$r>, and radial gradient masked with less than operator C<$r < 50>.
+Bottom row: Bulge and disk of the galaxy.
 
 The Perl I<less than operator> is applied to all pixels in the image.
 You can see the result is an image which is 0 on the outskirts and 1 in
@@ -388,9 +397,9 @@ by the 'Full Width Half Maximum' (FWHM) - or in plain terms how
 fat the profile is across when it drops by half. Looking at the plot
 it looks like this is about 2-3 pixels - pretty compact!
 
-=for html <img WIDTH=400 src="firststeps/whirl-starradial.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-star-radial.png">
 
-  Figure: Radial light profile of the bright star with fitted curve.
+Figure: Radial light profile of the bright star with fitted curve.
 
 Well we don't just want a guess - let's fit the profile with a function.
 These blurring functions are usually represented by the C<Gaussian>
@@ -481,9 +490,11 @@ as a feature!). Using the C<PDL::Graphics::TriD> library
 which does OpenGL graphics we can look at our simulated
 star in 3D (see the right hand panel);
 
-=for html <img WIDTH=600 src="firststeps/whirl-starsim.png">
+=for html <img WIDTH=300 src="firststeps/sepia/crop/whirl-starsima.png">
 
-  Figure: Two different views of the 2D simulated Point Spread Function.
+=for html <img WIDTH=300 src="firststeps/grey/work/whirl-starsimb.png">
+
+Figure: Two different views of the 2D simulated Point Spread Function.
 
    pdl> use PDL::Graphics::TriD; # Load the 3D graphics module
    pdl> imag3d [$fit2d];
@@ -552,9 +563,9 @@ and quite like C except that the entities being manipulated here are entire
 arrays of data, not single numbers. The result is shown, for amusement,
 in the figure below and takes virtually no time to compute.
 
-=for html <img WIDTH=400 src="firststeps/whirl-fakestars.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-fakestars.png">
 
-  Figure: M51 covered in fake stars.
+Figure: M51 covered in fake stars.
 
 =head2 Getting Complex with M51
 
@@ -594,7 +605,7 @@ let through low-frequencies:
   pdl> $filter = kernctr $tmp, $tmp; # Shift origin to 0,0
   pdl> imag $filter;
 
-=for html <img WIDTH=400 src="firststeps/gal-filter.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/gal-filter.png">
 
 You can see from the image that C<$filter> is zero everywhere except near the origin
 (0,0) (and the 3 reflected corners). As a result it only lets through
@@ -605,10 +616,11 @@ see the result (C<cmul> is complex multiplication):
   pdl> ifftnd $gal2, $imag2;
   pdl> imag $gal2,0,300;
 
-=for html <img WIDTH=400 src="firststeps/whirl-fft.png">
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-ffta.png">
 
-  Figure: Fourier filtered smoothed image and contrast enhanced
-  image with the smoothed image subtracted.
+=for html <img WIDTH=400 src="firststeps/sepia/crop/whirl-fftb.png">
+
+Figure: Fourier filtered smoothed image and contrast enhanced image with the smoothed image subtracted.
 
 Well that looks quite a bit different!  Just about all the
 high-frequency information has vanished. To see the high-frequency
