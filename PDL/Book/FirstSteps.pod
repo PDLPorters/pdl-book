@@ -64,9 +64,7 @@ all that is required to bring up C<perldl>.
 We get a whole bunch of informational messages about what it is loading for
 startup and the help system. Note; the startup is I<completely> configurable,
 an advanced user can completely customize which PDL modules
-are loaded. We are left with the 
-
-C<pdl>> prompt at which we can type commands. This kind
+are loaded. We are left with the C<pdl>> prompt at which we can type commands. This kind
 of interactive program is called a 'shell'.  There is also C<pdl2>
 which is a newer version of the PDL shell with additional features.
 It is still under development but completely usable.
@@ -339,7 +337,7 @@ much higher.
 
 Of course PDL being so powerful, we could have figured this out in one line:
 
-  pdl> print avg($gal->where(rvals($gal)<50)) / avg($gal->where(rvals($gal)>=50))
+  pdl> print ( avg($gal->where(rvals($gal)<50)) / avg($gal->where(rvals($gal)>=50)) )
   6.56590509414673
 
 =head2 Twinkle, twinkle, little star
@@ -477,7 +475,7 @@ easy:
 
 But the figure below is a
 boring. So far we have been using simple 2D graphics from the
-C<PDL::Graphics::PGPLOT> library. In fact PDL has more
+C<PDL::Graphics::Simple> library. In fact PDL has more
 than one graphics library (some see this as a flaw, some
 as a feature!). Using the C<PDL::Graphics::TriD> library
 which does OpenGL graphics we can look at our simulated
@@ -495,6 +493,8 @@ different sides by simply dragging in the plot window with the mouse! You can
 also zoom in and out with the right mouse button.  Note that C<imag3d> has it's
 a rather different syntax for processing it's arguments - for very good reasons
 - we'll explore 3D graphics further in L<PDL::Book::TriD>.
+
+   To continue: Select the TriD window and type q
 
 Finally here's something interesting. Let's take our fake star and place it
 elsewhere on the galaxy image.
@@ -526,7 +526,7 @@ Just to amuse ourselves, lets write a short script to cover M51 with dozens of f
 stars of random brightnesses:
 
    use PDL;
-   use PDL::Graphics::PGPLOT;
+   use PDL::Graphics::Simple;
    use PDL::NiceSlice;  # must use in each program file
 
    srand(42); # Set the random number seed
@@ -599,9 +599,9 @@ let through low-frequencies:
 You can see from the image that C<$filter> is zero everywhere except near the origin
 (0,0) (and the 3 reflected corners). As a result it only lets through
 low-frequency wavelengths. So we multiply by the filter and  FFT back to
-see the result:
+see the result (C<cmul> is complex multiplication):
 
-  pdl> ($gal2, $imag2) = cmul $gal, $imag, $filter, 0; # Complex multiplication
+  pdl> ($gal2, $imag2) = cmul $gal, $imag, $filter, 0;
   pdl> ifftnd $gal2, $imag2;
   pdl> imag $gal2,0,300;
 
@@ -627,3 +627,5 @@ arithmetical operations and a scattering of useful functions - and learned how
 to find more.  You certainly ought now to have a good feel of what PDL is all
 about.  In the next chapter we'll take a more comprehensive look at the basic
 parts of PDL that all keen PDL users should know.
+
+
