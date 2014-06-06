@@ -85,6 +85,9 @@ foreach (split " ",$book_chapters) {
 
     }
 
+    print FOUT "\n=ff\n"; 
+#add a Form Feed to the end of each chapter so that new chapters start on new pages
+
     close(FIN);
 
     print "done\n";
