@@ -6,6 +6,10 @@
 
 =for html <img WIDTH=300 src="graphics_3d/gnuplot-eg.png">
 
+
+
+
+
 =for man
   +-----------------------------+
   |,,'........................',|
@@ -40,7 +44,11 @@ especially in response to the mouse.
 
 =for html <img WIDTH=200 src="graphics_3d/pdltrid-eg1.png">
 
+
+
 =for html <img WIDTH=200 src="graphics_3d/pdltrid-eg2.png">
+
+
 
 =for man
   +-----------------------------++-----------------------------+
@@ -194,6 +202,8 @@ And here's our colorful torus!
 
 =for html <img WIDTH=300 src="graphics_3d/color-torus.png">
 
+
+
 It looks a bit more like a barrel 
 because TriD automatically scales the axes but there it is. Note 
 how we use C<imag3d_ns> to get the colors instead of the shaded 
@@ -230,6 +240,8 @@ an extra dimension into C<$torus>:
 
 =for html <img WIDTH=300 src="graphics_3d/torus-stack.png">
 
+
+
 And further, if we want to distort them, it's perfectly possible:
 
    $x = $cone(0);
@@ -238,6 +250,8 @@ And further, if we want to distort them, it's perfectly possible:
 
 
 =for html <img WIDTH=300 src="graphics_3d/torus-stack-warp.png">
+
+
 
 Any other kind of mutilation is also possible but we leave you to 
 discovering the interesting things that are possible by yourself, 
@@ -276,6 +290,8 @@ with different colors:
 And the result:
 
 =for html <img WIDTH=300 src="graphics_3d/two-prob-distributions.png">
+
+
 
 A lot of fun things can be done with points but we'll go into 
 that later.
@@ -347,6 +363,8 @@ to each other.
 
 =for html <img WIDTH=300 src="graphics_3d/busy-lorenz-attr.png">
 
+
+
 =cut
 
 =pod
@@ -370,6 +388,8 @@ lines diverge with time.
 
 =for html <img WIDTH=300 src="graphics_3d/timeseries-lorenz.png">
 
+
+
 In the latest versions of PDL 
 it is possible to adjust the line width as well: 
 
@@ -378,6 +398,8 @@ it is possible to adjust the line width as well:
 gives the same plot but with much thicker lines.
 
 =for html <img WIDTH=300 src="graphics_3d/timeseries-lorenz-thick.png">
+
+
 
 The basic rectangular surface you already saw in the preceding
 sections. It also has an option to turn off the lines.  There
@@ -472,6 +494,8 @@ the sequence of images created:
 =for html <img WIDTH=400 src="graphics_3d/fractal-mountain-sequence.png">
 
 
+
+
 =head2 Putting it all together---cool hacks
 
 Here's one where the original idea is by Robin Williams, done for 
@@ -521,6 +545,8 @@ distorted, just as ordered.
 
 =for html <img WIDTH=400 src="graphics_3d/nest-sphere-01.png">
 
+
+
 This is not yet a good picture: there 
 is a hole in the point set where the surface is parallel to the X 
 axis, naturally, since there there is no difference between the 
@@ -567,6 +593,8 @@ check whether all the bits are equal, i.e. whether the number is
 
 =for html <img WIDTH=400 src="graphics_3d/nest-sphere-02.png">
 
+
+
 The image quality can be slightly improved by removing the Moire 
 effect through randomization:
 
@@ -576,6 +604,8 @@ effect through randomization:
 
 =for html <img WIDTH=400 src="graphics_3d/nest-sphere-moire.png">
 
+
+
 Now, to further improve image quality we could add 
 different-color pixels but that would require alpha blending to 
 the OpenGL parameters and this would get into complications we 
@@ -583,3 +613,5 @@ don't necessarily want here. So now we're going to KISS*
 this topic away and move to the next one.
 
    * Keep It Simple, Stupid
+
+=cut

@@ -43,6 +43,9 @@ POD:
 
     =for html <img WIDTH=400 src="path_to_image/image.png">
 
+
+(Insert 2 or 3 blank lines after any =for html call so that HTML rendering looks and works better.)
+
 Longer explanation:
 
 Images for HTML and PDF generation should come from the single PNG image

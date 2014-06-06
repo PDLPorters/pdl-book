@@ -51,7 +51,12 @@ which draws continuous lines and individual plotting symbols
 respectively. The final result should look similar to Figure 1.
 
 =for html <img width=400 src="PGPLOTFigs/ex_linepoint.8.png">
+
+
+
 =for html <img width=400 src="PGPLOTFigs/ex_errorbars.8.png">
+
+
 
 The first step is to start C<perldl> and use the
 C<PDL::Graphics::PGPLOT> package (some output is suppressed) 
@@ -583,6 +588,8 @@ and Y as input:
 
 =for html <img width=400 src="PGPLOTFigs/ex_env1.8.png">
 
+
+
 =for comment convert ex_env1.pdf -rotate 90 -resize 300x ex_env2.png
 
 sets up a plotting area with both axes going from 0 to 1. If a
@@ -592,6 +599,8 @@ the env command, we can also use this to set the axis labels:
     env(1, 1000, 0, 1, {Axis => 'LOGX', Xtitle => 'X-axis', Ytitle => 'Y-axis'});
 
 =for html <img width=400 src="PGPLOTFigs/ex_env2.8.png">
+
+
 
 Further information on the C<Axis> option can be found in L</"Options in plot commands">.
 
@@ -611,6 +620,8 @@ x and y values:
 
 =for html <img width=400 src="PGPLOTFigs/ex_points.8.png">
 
+
+
     pdl> $x = sequence(10)
     pdl> $y = $x*$x + 1
     pdl> points $x, $y
@@ -625,6 +636,8 @@ through the plots:
     pdl> points $x, $y, {Symbol => 'Triangle', Plotline => 1, Charsize => 5}
 
 =for html <img width=400 src="PGPLOTFigs/ex_points2.8.png">
+
+
 
 The string C<Triangle> is equivalent to symbol number 7 and in general
 symbols will have to be accessed using the numerical system, but there
@@ -648,6 +661,7 @@ errorbars are required. A typical call is:
 =for html <img width=400 src="PGPLOTFigs/ex_errb.8.png">
 
 
+
 which plots
 squares with symmetrical vertical error-bars. To get error bars in the
 horizontal direction one gives these before the y-errors. Likewise it is
@@ -664,6 +678,8 @@ following example:
 
 =for html <img width=400 src="PGPLOTFigs/ex_errb2.8.png">
 
+
+
 =head2 Drawing lines
 
 We saw above that we could draw
@@ -677,8 +693,9 @@ between each point.
 
 =for html <img width=400 src="PGPLOTFigs/ex_line1.8.png">
 
-The style, width and colour of the line can be changed with the options
-C<Style>, C<LineWidth> and C<Colour> / C<Color> respectively as outlined
+
+
+The style, width and colour of the line can be changed with the options C<Style>, C<LineWidth> and C<Colour> / C<Color> respectively as outlined
 in L</"Options in plot commands">.
 
 =head2 Plotting histograms
@@ -691,6 +708,8 @@ I<x(i+1)> with the value I<y(i)>.
     pdl> bin $x, sin($x)
 
 =for html <img width=400 src="PGPLOTFigs/ex_bin.8.png">
+
+
 
 By default the routine assumes that the X-values are the start points of
 the bin, if instead your values are for the centers of the bins, you
@@ -714,6 +733,8 @@ L</"Setting default values for options">, or you can set it explicitly as in the
 
 =for html <img width=400 src="PGPLOTFigs/linepoly_ex.8.png">
 
+
+
 In this example
 it is worth noting the added complications to ensure that the polygon is
 closed. In addition we have used the option C<FillType>
@@ -734,6 +755,8 @@ The simplest use of C<imag> is to let it act on a 2D piddle so:
     pdl> imag $a;
 
 =for html <img width=400 src="PGPLOTFigs/ex_imag1.8.png">
+
+
 
 However, most likely you will find that the shape is not
 circularly symmetric because the aspect ratio of your graphics window is
@@ -804,6 +827,8 @@ array.
 
 =for html <img width=400 src="PGPLOTFigs/ex_imag2.8.png">
 
+
+
 Here we are contrasting two different ways of displaying the same image.
 On the left is the default display of a Gaussian, whereas on this right
 is the result when mapping the pixels to a range from I<-10> to I<10>
@@ -858,6 +883,8 @@ The label used to annotate the wedge.
 
 =for html <img width=400 src="PGPLOTFigs/eg_wedge.8.png">
 
+
+
     dev '/xs', {WindowWidth => 6, Aspect => 1};
     $im = rfits('Frei/n4013lJ.fits');
     $im += abs(min($im)-1);
@@ -881,6 +908,8 @@ argument.
 
 =for html <img width=400 src="PGPLOTFigs/ex_cont1.8.png">
 
+
+
 That might be all you need, but most likely you would like to specify
 contour levels, label contours and maybe draw them in different colours.
 
@@ -896,6 +925,8 @@ shown in the example below:
     cont $z, {Contours => pdl(-1, 0, 1), Labels => ['-1', '0', '1']};
 
 =for html <img width=400 src="PGPLOTFigs/ex_cont2.8.png">
+
+
 
 In addition it is possible to colour the labels differently from
 the contour lines (C<LabelColour>), to specify the number of contours
@@ -927,6 +958,8 @@ result of using this technique is shown below together with the code
 that produced the plot. 
 
 =for html <img width=400 src="PGPLOTFigs/ex_vec1.8.png">
+
+
 
     pdl> $x = xlinvals(zeroes(100,100), -5, 5)
     pdl> $y = ylinvals(zeroes(100,100), -5, 5)
@@ -964,6 +997,8 @@ radius and the x and y position of the center:
 
 =for html <img width=400 src="PGPLOTFigs/ex_circle1.8.png">
 
+
+
 The C<ellipse> function is like the C<circle> function but it requires
 the user to specify the minor and major axis and the angle between the
 major axis and the horizontal. For ease of use it is probably better to
@@ -977,6 +1012,8 @@ I<y>-position, major axis, minor axis, angle):
 
 =for html <img width=400 src="PGPLOTFigs/ex_ellipse1.8.png">
 
+
+
 And finally the C<rectangle> command draws
 rectangles where you can give the position of the centre, the length of
 the sides and the angle with the horizontal. The operation is very
@@ -988,6 +1025,8 @@ rectangle taking place of the major and minor axis.
     pdl> rectangle 4, 4, {XSide => 2, YSide => 1, Angle => atan2(1,1)}
 
 =for html <img width=400 src="PGPLOTFigs/ex_rect1.8.png">
+
+
 
 Note that C<Angle> and C<Theta> are synonyms. 
 
@@ -1014,6 +1053,8 @@ and I<y> position:
     pdl> text 'Right justfied', 4, 3, { Justification => 1.0}
 
 =for html <img width=400 src="PGPLOTFigs/ex_text1.8.png">
+
+
 
 Here we have included grid-lines to show the effect of the different
 justifications.  Note that C<Justify> is a synonym for C<Justification>,
@@ -1052,6 +1093,8 @@ will be adjusted to contain the legend with the default font-size (or
 that set by the user via the C<CharSize> option). 
 
 =for html <img width=400 src="PGPLOTFigs/ex_legend1.8.png">
+
+
 
     pdl> $x = sequence(100) / 5; $y1 = sqrt($x); $y2 = $x**2;
     pdl> env(0, 4, 0, 15);
@@ -1168,6 +1211,8 @@ contrast and brightness are optional so that we can say:
 
 =for html <img width=400 src="PGPLOTFigs/ex_col1.8.png">
 
+
+
 ...which should display a circularly symmetric figure
 with green in the centre, going through blue to red-ish where C<$a> is
 at a maximum.
@@ -1237,6 +1282,8 @@ And the resultant figure is shown below:
 
 =for html <img width=400 src="PGPLOTFigs/ColorTables2.8.png">
 
+
+
 =head2 Threading in PDL::Graphics::PGPLOT
 
 The plot commands do not always lend themselves to easy threading
@@ -1281,6 +1328,8 @@ and vary the line-styles as well:
     pdl> line $x, $y, {Colour => ['Red', 'Blue'], Linestyle=>[0,1,2,3,4,5]}
 
 =for html <img width=400 src="PGPLOTFigs/ex_tline1.8.png">
+
+
 
 =head2 Recording and playing back plot commands
 
