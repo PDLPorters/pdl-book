@@ -64,7 +64,7 @@ Joe Milosch, also known as zentara on perlmonks, assembled this document.
 David Merten, wrote most of the section and examples on Object Oriented usage,
 which were taken from his slide show on PLplot.
 
-David Merten's slide show on B<PDL::Graphics-PLplot>.  His very
+David Merten's slide show on B<PDL::Graphics::PLplot>.  His very
 informative slide show can be downloaded or viewed at
 L<http://www.slideshare.net/dcmertens/p-lplot-talk>  
 

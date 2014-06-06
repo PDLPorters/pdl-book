@@ -1,3 +1,10 @@
+=for comment
+:!podchecker NiceSlice.pod && pod2html --infile=NiceSlice.pod --outfile=NiceSlice.html
+open NiceSlice.html and click 'reload'
+also
+conversion for PDF reading is:
+pod2pdf NiceSlice.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file NiceSlice.pdf
+
 =head1 Slicing, Dicing and Threading dims with PDL
 
 Fundamental to any vectorized data language such as PDL is the ability

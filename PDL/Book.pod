@@ -12,7 +12,7 @@
 
 =item L<PDL::Book::Functions|PDL::Book::Functions> Writing your own functions for PDL
 
-=item L<PDL::Book::Threading|PDL::Book::Threading> Threading and Getting rid of FOR loops
+=item L<PDL::Book::Threading|PDL::Book::Threading> (NOT YET) Threading and Getting rid of FOR loops
 
 =item L<PDL::Book::PGPLOT|PDL::Book::PGPLOT> Graphics with PGPLOT
 
@@ -20,11 +20,11 @@
 
 =item L<PDL::Book::TriD|PDL::Book::TriD> 3D Graphics with TriD
 
-=item L<PDL::Book::Transform|PDL::Book::Transform> Rotating, Scaling and Translating with PDL::Transform
+=item L<PDL::Book::Transform|PDL::Book::Transform> (NOT YET) Rotating, Scaling and Translating with PDL::Transform
 
-=item L<PDL::Book::Complex|PDL::Book::Complex> Complex Numbers
+=item L<PDL::Book::Complex|PDL::Book::Complex> (NOT YET) Complex Numbers
 
-=item L<PDL::Book::Pthreads|PDL::Book::Pthreads> Parallel Computations with pthreads
+=item L<PDL::Book::Pthreads|PDL::Book::Pthreads> (NOT YET) Parallel Computations with pthreads
 
 =item L<PDL::Book::PP|PDL::Book::PP> Getting C routines into PDL with PDL::PP
 
@@ -61,4 +61,3 @@ libraries and data types, so we have Complex numbers handled by PDL and
 the capabilities of PDL::Transform, the Slatec libraries accessible in
 PDL::Slatec, and any other libraries that you can access through Perl.
 
-=ff
