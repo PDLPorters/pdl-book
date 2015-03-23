@@ -30,7 +30,7 @@ my $book_pdf        = "book.html"; # output name of book
 
 my $tmp = "book_pdf.pod.tmp"; # temporary filename for POD processing
 
-my $exec_string = "pod2html --infile=$tmp --title 'The PDL Book' --index --outfile=". $book_pdf;
+my $exec_string = "pod2html --quiet --infile=$tmp --title 'The PDL Book' --index --outfile=". $book_pdf;
 
 ##################################################
 # END OF USER SELECTABLE OPTIONS
