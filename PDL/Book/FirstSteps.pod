@@ -36,6 +36,14 @@ We'll assume PDL is correctly installed and set up on
 your computer system (see L<http://pdl.perl.org/> for details
 of obtaining and installing PDL).
 
+Many of the graphics examples in this chapter use a simplified
+interface to whatever PDL Graphics library you have installed.
+However, this simplified interface is not included with the normal PDL
+distribution.  To get it, install PDL::Graphics::Simple from CPAN.
+This should do it (perhaps prefixed with 'sudo'):
+
+  myhost% cpan PDL::Graphics::Simple
+
 For interactive use PDL comes with a program called C<perldl>. This allows
 you to type raw PDL (and perl) commands and see the result right away. It
 also allows command line recall and editing (via the arrow keys) on most
