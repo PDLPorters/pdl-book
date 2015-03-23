@@ -44,9 +44,12 @@ run:
     ./make_chapters.pl
     ./make_endpieces.pl
 
-This produces the files C<FrontPage.pdf> and C<Chapter??.pdf> files.
-These can be read individually or combined with C<pdfjam> or any
-software that can join individual PDF files together.
+This produces the files C<FrontPage.pdf>, C<toc.pdf>, and
+C<Chapter??.pdf> files.  These can be read individually or combined
+with C<pdfjam> or any software that can join individual PDF files
+together.
+
+    pdfjam -o book_complete.pdf FrontPage.pdf toc.pdf Chapter??.pdf
 
 =head2 Adding new material and getting write access to the PDL Book
 
