@@ -1199,12 +1199,12 @@ mem is for plain RGB. memcairo can handle transparency values.
 <center><a TARGET="_new" href=PLplot/w29.pl.html>w29.pl highlighted  source code</a></center>
 <center> <a href=PLplot/w29.pl> w29.pl text source code</a></center><hr><p>   
 
+=ff
 
 =head2 B<Functional programming style examples>
 
 This section uses the functional programming style of the original C
 library examples.
-
 
 =head3 Simple line plot and multiple windows demo x01
 
@@ -1214,12 +1214,15 @@ library examples.
 <center> <a href=PLplot/x01.pl> x01.pl text source code</a></center><hr><p>   
 
 
+
 =head3 Multiple window and color map 0 demo x02
 
 =for html
 <center><img WIDTH=400 src="PLplot/x02.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x02.pl.html>x02.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x02.pl> x02.pl text source code</a></center><hr><p>   
+
+=ff
 
 =head3 Polar plot demo x03
 
@@ -1235,6 +1238,7 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x04.pl.html>x04.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x04.pl> x04.pl text source code</a></center><hr><p>   
 
+=ff
 
 =head3 Histogram demo x05
 
@@ -1250,6 +1254,8 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x06.pl.html>x06.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x06.pl> x06.pl text source code</a></center><hr><p>   
 
+=ff
+
 =head3 Font demo x07
 
 =for html
@@ -1263,6 +1269,8 @@ library examples.
 <center><img WIDTH=400 src="PLplot/x08.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x08.pl.html>x08.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x08.pl> x08.pl text source code</a></center><hr><p>   
+
+=ff
 
 =head3 Contour plot demo x09
 
@@ -1278,6 +1286,7 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x10.pl.html>x10.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x10.pl> x10.pl text source code</a></center><hr><p>   
 
+=ff
 
 =head3 Mesh plot demo x11
 
@@ -1293,6 +1302,7 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x12.pl.html>x12.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x12.pl> x12.pl text source code</a></center><hr><p>   
 
+=ff
 
 =head3 simple pie chart x13
 
@@ -1309,6 +1319,7 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x15.pl.html>x15.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x15.pl> x15.pl text source code</a></center><hr><p>   
 
+=ff
 
 =head3 plshade demo, using color fill x16
 
@@ -1324,6 +1335,8 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x17.pl.html>x17.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x17.pl> x17.pl text source code</a></center><hr><p>   
 
+=ff
+
 =head3 3-d line and point plot demo x18
 
 =for html
@@ -1337,6 +1350,8 @@ library examples.
 <center><img WIDTH=400 src="PLplot/x19.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x19.pl.html>x19.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x19.pl> x19.pl text source code</a></center><hr><p>   
+
+=ff
 
 =head3 Grid data demo x21
 
@@ -1353,6 +1368,7 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x22.pl.html>x22.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x22.pl> x22.pl text source code</a></center><hr><p>   
 
+=ff
 
 =head3 Displays Greek letters and mathematically interesting Unicode ranges x23
 
@@ -1369,6 +1385,8 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x24.pl.html>x24.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x24.pl> x24.pl text source code</a></center><hr><p>   
 
+=ff
+
 =head3 Drawing polygons x25
 
 =for html
@@ -1383,6 +1401,8 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x26.pl.html>x26.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x26.pl> x26.pl text source code</a></center><hr><p>   
 
+=ff
+
 =head3 Spirograph curves - epitrochoids, cycolids, roulettes x27
 
 =for html
@@ -1396,6 +1416,8 @@ library examples.
 <center><img WIDTH=400 src="PLplot/x28.pl.800.png"></center>
 <center><a TARGET="_new" href=PLplot/x28.pl.html>x28.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x28.pl> x28.pl text source code</a></center><hr><p>   
+
+=ff
 
 =head3 Plots using date / time formatting for axes x29
 
@@ -1412,6 +1434,7 @@ library examples.
 <center><a TARGET="_new" href=PLplot/x30.pl.html>x30.pl highlighted  source code</a></center>
 <center> <a href=PLplot/x30.pl> x30.pl text source code</a></center><hr><p>   
 
+=ff
 
 =head3 Using C<pllegend> including unicode symbols x33
 
@@ -1424,7 +1447,7 @@ library examples.
 =head2 Typesetting, greek letters, symbols
 
 Use escape sequences to insert superscripts, subscripts, Greek
-letters, etc.
+letters, etc. Unicode is supported.
 
     #u - superscript until the next #d
     #d - subscript until the next #u
@@ -1440,8 +1463,6 @@ letters, etc.
        YLAB => 'density #gr'
         # ...
        );
-
-Unicode is supported.
 
 =for html
 <center><img WIDTH=400 src="PLplot/w30a.pl.800.png"></center><hr><p>   
