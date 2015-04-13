@@ -116,8 +116,8 @@ While natural language understanding is still quite a long way off,
 high-level computer languages are currently proliferating. Examples
 include Perl, TCL, JAVAscriptm, Visual Basic, Python, and many more.
 Such systems have also been developed for data processing. Worthy of
-note are commercial software such as C<IDL> ('Image Data Language' from
-Research Systems Inc.L<http://www.rsinc.com>), C<MATLAB> (from The
+note are commercial software such as C<IDL> ('Interactive Data Language' from
+Exelis L<http://www.exelisvis.com>), C<MATLAB> (from The
 Mathworks, Inc. L<http://www.mathworks.com>) and the public domain
 program C<Octave> L<http://www.octave.org>.  These implement
 special-purpose high-level languages where data is handled in large

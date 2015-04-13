@@ -1,4 +1,6 @@
-=head1 PDL Book - Table of Contents
+=head1 Forward
+
+=head2 List of Chapters
 
 =over
 
