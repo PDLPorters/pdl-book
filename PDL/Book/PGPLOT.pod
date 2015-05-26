@@ -495,8 +495,8 @@ B<must> be written as above. (You will be notified if you did something
 wrong). 
 
 That said it is fairly easy to use. You would normally set this in your
-C<.perldlrc> file (see ' C<help\InsetSpace ~perldl> ' in the perldl
-shell or ' C<pdldoc pdl> '). The relevant function is
+C<.perldlrc> file (see ' C<help perldl> ' in the perldl
+shell or ' C<pdldoc perldl> '). The relevant function is
 C<set_pgplot_options> which takes a hash as argument with the options
 and their values, as in the following example: 
 
