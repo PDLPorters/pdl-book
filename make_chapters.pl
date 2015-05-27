@@ -13,7 +13,7 @@ use POSIX qw(locale_h);
 Reads a user defined list of POD chapters and produces a PDF file in the
 root directory.
 
-This program converts "=for html <img sec="xxx">" tags
+This program converts "=for html <img src="xxx">" tags
 to C<< O <xxx> >> tags for the C<pod2pdf> converter and
 adjusts the relative paths so that you can run C<pod2pdf> in the root
 directory.
@@ -142,9 +142,9 @@ foreach (split " ",$book_chapters) {
                 $whole_line = $whole_line . $_;
             }
 
-            $whole_line =~ /.*src=\"(.*)\">/; # search for quoted image filename
-            print FOUT "O<" . $book_dir . "$1>\n\n";
-
+            if ($whole_line =~ /.*src=\"(.*)\"\/>/){ # search for quoted image filename
+		print FOUT "O<" . $book_dir . "$1>\n\n";
+	    }
        } else {print FOUT $_;}
 
     }

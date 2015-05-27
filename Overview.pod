@@ -41,10 +41,10 @@ output does. For the figure, here's the one line summary:
 Make an 8-bit color PNG with width 800 pixels and add this line in the
 POD:
 
-    =for html <img WIDTH=400 src="path_to_image/image.png">
+    =for html <p><img width="400" alt="" src="path_to_image/image.png"/></p>
 
 
-(Insert 2 or 3 blank lines after any =for html call so that HTML rendering looks and works better.)
+(Insert 3 blank lines after any =for html call so that HTML rendering looks and works better.)
 
 Longer explanation:
 
@@ -57,6 +57,9 @@ Only the HTML code should be added in a POD document - I have a script
 that will automatically add the correct pod formatting code for a PDF image
 afterwards. This is done because C<podchecker> complains about the pod
 formatting code for the PDF image.
+
+The <p></p>, alt="", and width="400" (cf WIDTH=400) elements make the
+html output valid XHTML.
 
 =head2 Book
 

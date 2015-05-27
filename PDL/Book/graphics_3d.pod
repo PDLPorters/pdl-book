@@ -4,7 +4,7 @@
 
 =head2 Introduction
 
-=for html <img WIDTH=300 src="graphics_3d/gnuplot-eg.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/gnuplot-eg.png"/></p>
 
 
 
@@ -42,11 +42,11 @@ able to grasp the presented 3D surface much better when it moves,
 especially in response to the mouse.
 
 
-=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg1.png">
+=for html <p> <img width="200" alt="" src="graphics_3d/pdltrid-eg1.png"/></p>
 
 
 
-=for html <img WIDTH=200 src="graphics_3d/pdltrid-eg2.png">
+=for html <p> <img width="200" alt="" src="graphics_3d/pdltrid-eg2.png"/></p>
 
 
 
@@ -200,7 +200,7 @@ parametric coordinates can be easily derived.
 
 And here's our colorful torus!
 
-=for html <img WIDTH=300 src="graphics_3d/color-torus.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/color-torus.png"/></p>
 
 
 
@@ -238,7 +238,7 @@ an extra dimension into C<$torus>:
    imag3d $cone;
 
 
-=for html <img WIDTH=300 src="graphics_3d/torus-stack.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/torus-stack.png"/></p>
 
 
 
@@ -249,7 +249,7 @@ And further, if we want to distort them, it's perfectly possible:
    imag3d $cone;
 
 
-=for html <img WIDTH=300 src="graphics_3d/torus-stack-warp.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/torus-stack-warp.png"/></p>
 
 
 
@@ -289,7 +289,7 @@ with different colors:
 
 And the result:
 
-=for html <img WIDTH=300 src="graphics_3d/two-prob-distributions.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/two-prob-distributions.png"/></p>
 
 
 
@@ -361,7 +361,7 @@ to each other.
 
 =pod
 
-=for html <img WIDTH=300 src="graphics_3d/busy-lorenz-attr.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/busy-lorenz-attr.png"/></p>
 
 
 
@@ -386,7 +386,7 @@ step instead:
 This yields a much clearer plot of the chaotic behavior when the 
 lines diverge with time.
 
-=for html <img WIDTH=300 src="graphics_3d/timeseries-lorenz.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/timeseries-lorenz.png"/></p>
 
 
 
@@ -397,7 +397,7 @@ it is possible to adjust the line width as well:
 
 gives the same plot but with much thicker lines.
 
-=for html <img WIDTH=300 src="graphics_3d/timeseries-lorenz-thick.png">
+=for html <p> <img width="300" alt="" src="graphics_3d/timeseries-lorenz-thick.png"/></p>
 
 
 
@@ -491,7 +491,7 @@ kernels like ours). We use a 5x5 kernel to smooth our data at
 each step by convolution. That's the numerical part, now here is
 the sequence of images created:
 
-=for html <img WIDTH=400 src="graphics_3d/fractal-mountain-sequence.png">
+=for html <p> <img width="400" alt="" src="graphics_3d/fractal-mountain-sequence.png"/></p>
 
 
 
@@ -543,7 +543,7 @@ And indeed, we get a rotatable set of points in 3-space that are
 in the shape of a sphere with an ellipsoid inside, slightly 
 distorted, just as ordered.
 
-=for html <img WIDTH=400 src="graphics_3d/nest-sphere-01.png">
+=for html <p> <img width="400" alt="" src="graphics_3d/nest-sphere-01.png"/></p>
 
 
 
@@ -591,7 +591,7 @@ find whether the function crosses zero at that cube, we simply
 check whether all the bits are equal, i.e. whether the number is 
 255 or 0 and if it isn't we know the function changes sign.
 
-=for html <img WIDTH=400 src="graphics_3d/nest-sphere-02.png">
+=for html <p> <img width="400" alt="" src="graphics_3d/nest-sphere-02.png"/></p>
 
 
 
@@ -602,7 +602,7 @@ effect through randomization:
 
 
 
-=for html <img WIDTH=400 src="graphics_3d/nest-sphere-moire.png">
+=for html <p> <img width="400" alt="" src="graphics_3d/nest-sphere-moire.png"/></p>
 
 
 

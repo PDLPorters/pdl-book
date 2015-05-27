@@ -72,10 +72,13 @@ foreach (split " ",$book_chapters) {
                 $whole_line = $whole_line . $_;
             }
 
-            $whole_line =~ s/(.*src=\")(.*\">.*)/$1$book_dir$2/g; # search for quoted image filename
+	    $whole_line =~ s/(.*src=\")(.*\"\/>.*)/$1$book_dir$2/g; # search for quoted image filename
             # want to replace $1 with $book_dir$1
+	    $whole_line =~ s/(.*href=\")(.*\">.*)/$1$book_dir$2/g; # search for hyperref
             print FOUT $whole_line;
 
+       } elsif (/^=ff/){
+	   #html doesn't need form feeds, just pdf, so just skip those lines
        } else {print FOUT $_;}
 
     }

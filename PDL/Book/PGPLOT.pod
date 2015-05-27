@@ -5,7 +5,7 @@ also
 conversion for PDF reading is:
 pod2pdf PGPLOT.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file PGPLOT.pdf
 
-=head1 Plotting and Labeling Data and Images using PGPLOT
+=head1 Graphics with PGPLOT
 
 A central requirement of any data analysis package is the possibility of
 visualization of data. PDL deals with this in a slightly different
@@ -50,11 +50,11 @@ two sections. We will concentrate on the C<line> and C<points> commands
 which draws continuous lines and individual plotting symbols
 respectively. The final result should look similar to Figure 1.
 
-=for html <img width=400 src="PGPLOTFigs/ex_linepoint.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_linepoint.8.png"/></p>
 
 
 
-=for html <img width=400 src="PGPLOTFigs/ex_errorbars.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_errorbars.8.png"/></p>
 
 
 
@@ -586,7 +586,7 @@ and Y as input:
 
     env(0, 1, 0, 1);
 
-=for html <img width=400 src="PGPLOTFigs/ex_env1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_env1.8.png"/></p>
 
 
 
@@ -598,7 +598,7 @@ the env command, we can also use this to set the axis labels:
 
     env(1, 1000, 0, 1, {Axis => 'LOGX', Xtitle => 'X-axis', Ytitle => 'Y-axis'});
 
-=for html <img width=400 src="PGPLOTFigs/ex_env2.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_env2.8.png"/></p>
 
 
 
@@ -618,7 +618,7 @@ line drawing and point plotting commands C<line> and C<points> . The
 most basic command is C<points> which plots particular symbols at given
 x and y values:
 
-=for html <img width=400 src="PGPLOTFigs/ex_points.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_points.8.png"/></p>
 
 
 
@@ -635,7 +635,7 @@ through the plots:
 
     pdl> points $x, $y, {Symbol => 'Triangle', Plotline => 1, Charsize => 5}
 
-=for html <img width=400 src="PGPLOTFigs/ex_points2.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_points2.8.png"/></p>
 
 
 
@@ -658,7 +658,7 @@ errorbars are required. A typical call is:
     pdl> $dy = sqrt($x+1); 
     pdl> errb $x, $y, $dy, { Symbol => 'Square' }
 
-=for html <img width=400 src="PGPLOTFigs/ex_errb.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_errb.8.png"/></p>
 
 
 
@@ -676,7 +676,7 @@ following example:
     pdl> $yl= $y2 - pdl(7, 20, -2) 
     pdl> errb $x2, $y2, $dx, $dx, $yl, $yu, {Symbol => 'Triangle'}
 
-=for html <img width=400 src="PGPLOTFigs/ex_errb2.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_errb2.8.png"/></p>
 
 
 
@@ -691,7 +691,7 @@ between each point.
     pdl> $x = zeroes(10)->xlinvals(-3, 3)
     pdl> line $x, sin($x)
 
-=for html <img width=400 src="PGPLOTFigs/ex_line1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_line1.8.png"/></p>
 
 
 
@@ -707,7 +707,7 @@ I<x(i+1)> with the value I<y(i)>.
     pdl> $x = zeroes(10)->xlinvals(-3, 3) 
     pdl> bin $x, sin($x)
 
-=for html <img width=400 src="PGPLOTFigs/ex_bin.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_bin.8.png"/></p>
 
 
 
@@ -731,7 +731,7 @@ L</"Setting default values for options">, or you can set it explicitly as in the
     pdl> $ypoly = append($y->where($x <= 0), pdl(0)); 
     pdl> poly $xpoly, $ypoly, {FillType => 'Hatched'};
 
-=for html <img width=400 src="PGPLOTFigs/linepoly_ex.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/linepoly_ex.8.png"/></p>
 
 
 
@@ -754,7 +754,7 @@ The simplest use of C<imag> is to let it act on a 2D piddle so:
     pdl> $a = rvals(50,50, {Center => [ 25, 25]}); 
     pdl> imag $a;
 
-=for html <img width=400 src="PGPLOTFigs/ex_imag1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_imag1.8.png"/></p>
 
 
 
@@ -825,7 +825,7 @@ array.
     # a logarithmic transfer function.
     imag $y, {Transform => $tr, ITF => 'Log'}; 
 
-=for html <img width=400 src="PGPLOTFigs/ex_imag2.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_imag2.8.png"/></p>
 
 
 
@@ -881,7 +881,7 @@ The label used to annotate the wedge.
 
 =back
 
-=for html <img width=400 src="PGPLOTFigs/eg_wedge.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/eg_wedge.8.png"/></p>
 
 
 
@@ -906,7 +906,7 @@ argument.
 
     $a = sequence(100,100); cont $a;
 
-=for html <img width=400 src="PGPLOTFigs/ex_cont1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_cont1.8.png"/></p>
 
 
 
@@ -924,7 +924,7 @@ shown in the example below:
     $z = cos($x**2)+sin($y*2);
     cont $z, {Contours => pdl(-1, 0, 1), Labels => ['-1', '0', '1']};
 
-=for html <img width=400 src="PGPLOTFigs/ex_cont2.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_cont2.8.png"/></p>
 
 
 
@@ -957,7 +957,7 @@ arrows on top of a similarly sized image will quickly be unreadable. The
 result of using this technique is shown below together with the code
 that produced the plot. 
 
-=for html <img width=400 src="PGPLOTFigs/ex_vec1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_vec1.8.png"/></p>
 
 
 
@@ -995,7 +995,7 @@ radius and the x and y position of the center:
     pdl> $radius=2; ($x, $y) = (4, 4) 
     pdl> circle $x, $y, $radius, {LineWidth => 3}
 
-=for html <img width=400 src="PGPLOTFigs/ex_circle1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_circle1.8.png"/></p>
 
 
 
@@ -1010,7 +1010,7 @@ I<y>-position, major axis, minor axis, angle):
     pdl> env 0, 10, 0, 10 
     pdl> ellipse 4, 4, {MajorAxis => 2, MinorAxis => 1, Theta => atan2(1,1)}
 
-=for html <img width=400 src="PGPLOTFigs/ex_ellipse1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_ellipse1.8.png"/></p>
 
 
 
@@ -1024,7 +1024,7 @@ rectangle taking place of the major and minor axis.
     pdl> env 0, 10, 0, 10 
     pdl> rectangle 4, 4, {XSide => 2, YSide => 1, Angle => atan2(1,1)}
 
-=for html <img width=400 src="PGPLOTFigs/ex_rect1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_rect1.8.png"/></p>
 
 
 
@@ -1052,7 +1052,7 @@ and I<y> position:
     pdl> text 'Centered', 4, 2, { Justification => 0.5} 
     pdl> text 'Right justfied', 4, 3, { Justification => 1.0}
 
-=for html <img width=400 src="PGPLOTFigs/ex_text1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_text1.8.png"/></p>
 
 
 
@@ -1092,7 +1092,7 @@ be drawn. If this is not set or it is set to the string C<Automatic> it
 will be adjusted to contain the legend with the default font-size (or
 that set by the user via the C<CharSize> option). 
 
-=for html <img width=400 src="PGPLOTFigs/ex_legend1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_legend1.8.png"/></p>
 
 
 
@@ -1209,7 +1209,7 @@ contrast and brightness are optional so that we can say:
     pdl> $a = rvals(100, 100)
     pdl> imag $a
 
-=for html <img width=400 src="PGPLOTFigs/ex_col1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_col1.8.png"/></p>
 
 
 
@@ -1280,7 +1280,7 @@ this script:
 
 And the resultant figure is shown below:
 
-=for html <img width=400 src="PGPLOTFigs/ColorTables2.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ColorTables2.8.png"/></p>
 
 
 
@@ -1327,7 +1327,7 @@ and vary the line-styles as well:
     pdl> $y = sin($freq*transpose($x)) 
     pdl> line $x, $y, {Colour => ['Red', 'Blue'], Linestyle=>[0,1,2,3,4,5]}
 
-=for html <img width=400 src="PGPLOTFigs/ex_tline1.8.png">
+=for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_tline1.8.png"/></p>
 
 
 
@@ -1795,3 +1795,4 @@ might end up in a situation where you need the finer control offered by
 the C<PGPLOT> package, but for day-to-day use it is hoped that
 PDL::Graphics::PGPLOT will address most people's needs. And if doesn't
 then let us know!
+
