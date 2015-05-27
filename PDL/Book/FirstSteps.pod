@@ -621,8 +621,7 @@ Let's do it:
 Now C<$gal> contains real values, to do the Fourier transform it has to
 have complex values. We create a variable C<$imag> to hold the imaginary
 component and set to zero.(For reasons of efficiency complex numbers
-are represented in PDL by separate real and imaginary arrays - more about this
-in Chapter 2.)
+are represented in PDL by separate real and imaginary arrays; see PDL::Complex.)
 
   pdl> $imag = $gal * 0;       # Create imaginary component, equal to zero
   pdl> fftnd $gal, $imag;      # Perform Fourier transform

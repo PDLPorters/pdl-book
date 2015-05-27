@@ -377,7 +377,7 @@ familiar to C programmers: byte, short, unsigned short, long,
 long long, float, and double. You can compile 64-bit support into 
 your copy of PDL, and have access to wide doubles and other such 
 exotica. Complex numbers are supported as a subclass of PDL; see 
-Chapter [cha:Subclass-Smorgasbord]. 
+PDL::Complex in the main PDL documentation.
 
 PDL types are automatically converted as necessary within 
 arithmetic expressions, at some cost in speed. Numeric 
