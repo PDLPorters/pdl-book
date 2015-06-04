@@ -258,7 +258,7 @@ form as the PDL's formal data type! You are also responsible for
 figuring out byte swapping for your machine - the bytes in the 
 string are in machine order, not network order.
 
-=head3 Conversion to Perl types: C<at> and C<list>
+=head3 Conversion to Perl types: C<at>, C<list>, and C<unpdl>
 
 You can get a PDL scalar out into the Perl world with C<at>, which 
 requires the index of the scalar to pull out:
@@ -271,6 +271,17 @@ You can also export a whole PDL with C<list>:
   pdl> @a = $a->list;
   pdl> for($a->list) { print $_, - ; }
   0 - 2 - 4 - 6 - 8 - 
+
+The C<unpdl> command returns a whole PDL as a reference to a
+list-of-lists structure equivalent to the input PDL in the sense
+that C<< sum($x - pdl( $x->unpdl )) >> equals 0.  E.g.,
+
+  pdl> p $a = pdl([ [0,1,2], [3,4,5] ]);
+  [
+   [0 1 2]
+   [3 4 5]
+  ]
+  pdl> $aperl = $a->unpdl # $aperl is [ [0,1,2], [3,4,5] ] 
 
 Be careful with C<at>, as you almost never want to use it - it is 
 tedious for anything nontrivial, and extremely slow! Particularly 
@@ -482,9 +493,10 @@ For example:
   pdl> print $a;
   [0 1 100 3 4]
 
-Here, C<$a> and C<$b> remain connected by the slicing/indexing 
-operation, so the change in C<$b> flows back to C<$a>. Most indexing 
-operations maintain dataflow. 
+Here, C<$a(2)> is a slice corresponding to the third element of C<$a>
+using the L<PDL::NiceSlice> syntax.  C<$a> and C<$b> remain connected
+by the slicing/indexing operation, so the change in C<$b> flows back
+to C<$a>. Most indexing operations maintain dataflow. 
 
 At times, you want to ensure that your variables remain separate 
 or to make a physical copy of your data. 
