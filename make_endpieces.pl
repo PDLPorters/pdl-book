@@ -34,11 +34,11 @@ $text->text('The PDL Book');
 
 $text->font($font, 24);
 $text->translate(70, 500);
-$text->text('May 2015');
+$text->text('June 2015');
 
 $text->font($font, 24);
 $text->translate(70, 90);
-$text->text('for PDL 2.008');
+$text->text('for PDL 2.011');
 # Save the PDF
 $pdf->saveas('FrontPage.pdf');
 
