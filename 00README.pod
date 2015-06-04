@@ -14,11 +14,11 @@ programs you need to use to compile HTML and PDF versions of the book.
 The Book source is in POD format and can be read online in the git
 repository at:
 
-    http://pdl.git.sourceforge.net/git/gitweb.cgi?p=pdl/pdl-book;a=tree
+    http://sourceforge.net/p/pdl/pdl-book/ci/master/tree/00README.pod
 
 To get a local copy on your computer, use:
 
-    git clone git://pdl.git.sourceforge.net/gitroot/pdl/pdl-book
+    git clone http://git.code.sf.net/p/pdl/pdl-book pdl-pdl-book
 
 =head2 Making a PDF from the POD - Installing C<pod2pdf>
 
@@ -57,7 +57,7 @@ You need to have a sourceforge account, and be authorised by one of the
 PDL gurus to have access to this repository. When you have both of these
 things, clone this URL:
 
-    git clone ssh://USERNAME@pdl.git.sourceforge.net/gitroot/pdl/pdl-book
+    git clone ssh://USERNAME@git.code.sf.net/p/pdl/pdl-book pdl-pdl-book
 
 where USERNAME is your sf.net username. When you've downloaded it, do:
 
