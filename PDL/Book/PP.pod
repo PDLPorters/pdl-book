@@ -138,6 +138,7 @@ prefix the name with a dollar-sign and you must postfix it with parentheses.
 In the next section we'll see just what sort of arguments you can put in
 those parentheses.
 
+
 =over
 
 =item Best Practice: Use q{ } for Code Sections
@@ -576,8 +577,9 @@ my first guess at this function looked like this:
      Code => q{
          loop (n) %{
              loop (p) %{
+                 $output() = 0;
                  loop (m) %{
-                     $output() = $left() * $right();
+                     $output() += $left() * $right();
                  %}
              %}
          %}
@@ -596,7 +598,7 @@ You can run that with this Perl code:
  use PDL;
  use Inline 'Pdlpp';
  my $left = sequence(2,4);
- my $right = sequence(4, 5);
+ my $right = sequence(4,5);
  print "$left times $right is ", $left->my_matrix_mult($right);
 
 =for listing run-matrix-multiplication [my-perl-matrix-multiplication,Inline-intermediate-boilerplate,my-matrix-multiplication]
@@ -1391,8 +1393,8 @@ C<$sum> and C<$diff>). When you supply a null piddle (as in the middle
 example) or you call the function with the input piddles only (as in the
 first example), PDL will allocate memory for you. As demonstrated with the
 last example, you can supply a pre-allocated piddle, in which case PDL will
-B<not> allocate memory for you. This can be a performance issue when you
-regularly call functions 
+B<not> allocate memory for you. This can improve performance when you
+repeatedly call the same function.
 
 =back
 
@@ -1404,7 +1406,12 @@ regularly call functions
 
 The corrected C<Pars> section should look like this:
 
- Pars => 'left(m,n); right(p,m); [o] output(n,p)',
+ Pars => 'left(m,n); right(p,m); [o] output(p,n)',
+
+Note that you will have to make sure the dimensions of the input piddles match this new specification, e.g.:
+
+ my $left = sequence(2,4)->transpose;
+ my $right = sequence(4,5)->transpose;
 
 =item 2. Threading Engine Tricks
 
