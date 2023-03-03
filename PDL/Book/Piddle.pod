@@ -44,7 +44,7 @@ Perl lists are intrinsically one-dimensional. You can have `lists of lists' but 
 
 Perl lists consume a lot of memory. At least 20 bytes per number, of which only a few are for the actual value. This is because Perl lists are flexible, and can contains text strings as well as numbers. This flexibility requires an internal complex data structure which contains extra information such as a place holder for the number, a place holder for the text and pointers forward and back along the list.
 
-Perl lists are scattered about memory. The list data structure means consecutive numbers are not stored in a neat block of consecutive memory addresses as C and FORTRAN programmers are used to. This makes it difficult to pass the arrays to low-level C and FORTRAN routines for processing -- the numbers must be collected together -a process known as `packing' -- processed and unpacked back into lists. If you have `lists of lists' then it get's even worse.
+Perl lists are scattered about memory. The list data structure means consecutive numbers are not stored in a neat block of consecutive memory addresses as C and FORTRAN programmers are used to. This makes it difficult to pass the arrays to low-level C and FORTRAN routines for processing -- the numbers must be collected together -a process known as `packing' -- processed and unpacked back into lists. If you have `lists of lists' then it gets even worse.
 
 Perl lists do not support the range of data types that piddles do (byte arrays, integer arrays, single precision, double precision, etc.)
 
