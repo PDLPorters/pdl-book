@@ -74,8 +74,8 @@ startup and the help system. Note; the startup is I<completely> configurable,
 an advanced user can completely customize which PDL modules
 are loaded. We are left with the C<< pdl> >> prompt at which we can type commands. This kind
 of interactive program is called a 'shell'.  There is also C<pdl2>
-which is a newer version of the PDL shell with additional features.
-It is still under development but completely usable.
+which is another PDL shell with additional features, available on CPAN
+as L<PDL::Perldl2>.
 
 Let's create something, and display it:
 
@@ -296,7 +296,7 @@ one data value corresponds to in physical units:
 
 
 This is also about 200 solar luminosities, (Note we have switched to using C<p>
-as a shorthand for C<print> - which only works in the C<pdl> and C<pdl2> shells)
+as a shorthand for C<print> - which only works in the C<pdl> shell)
 which gives 4 billion solar luminosities for the whole galaxy.
 
 OK we do not need PDL for this simple arithmetic, let's get back to
@@ -463,7 +463,7 @@ about what we don't know use C<apropos>:
 
 This tells us a whole lot about various functions and modules to do with
 Gaussians. Note that we can abbreviate C<help> and C<apropos>
-with 'C<?>' and 'C<??>' when using the C<pdl> or C<pdl2> shells.
+with 'C<?>' and 'C<??>' when using the C<pdl> shell.
 
 
 Let's fit a Gaussian:
