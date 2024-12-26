@@ -16,7 +16,7 @@ Most of the time you can forget about the fact that piddles are objects and trea
   $z = $x/$y;
   print sqrt($x+$y+$z);
 
-The only time the distinction becomes important is when creating piddles and using the `=' operator. 
+The only time the distinction becomes important is when creating piddles and using the `=' operator.
 
 =head2 Piddles are NOT Perl `arrays'
 
@@ -38,15 +38,30 @@ It is impossible to manipulate Perl `arrays' arithmetically as one would like. i
 
 can not be made to operate element by element.
 
-Perl `arrays' are really what are known in computer science as `lists' (and are represented internally by a list data structure). In fact if the PDL-Porters had their evil way they would ban the term `array' from all of the standard Perl documentation and books. This is why the term `piddle' was invented for use in PDL for what we think really are `true arrays'.
+Perl `arrays' store Perl scalars (C<SV>s), each of which is a
+separate piece of data.
 
-Perl lists are intrinsically one-dimensional. You can have `lists of lists' but this is not the same thing as true multi-dimensional arrays. Honest.
+Perl arrays are intrinsically one-dimensional. You can have `arrays of arrays' but this is not the same thing as true multi-dimensional arrays. Honest.
 
-Perl lists consume a lot of memory. At least 20 bytes per number, of which only a few are for the actual value. This is because Perl lists are flexible, and can contains text strings as well as numbers. This flexibility requires an internal complex data structure which contains extra information such as a place holder for the number, a place holder for the text and pointers forward and back along the list.
+Perl arrays consume a lot of memory. At least 20 bytes per number,
+of which only a few are for the actual value. This is because Perl
+arrays are flexible, and can contain text strings as well as
+numbers. This flexibility requires an internal complex data structure
+which contains extra information such as a place holder for the
+number, a place holder for the text and the overhead of the array
+data structure itself.
 
-Perl lists are scattered about memory. The list data structure means consecutive numbers are not stored in a neat block of consecutive memory addresses as C and FORTRAN programmers are used to. This makes it difficult to pass the arrays to low-level C and FORTRAN routines for processing -- the numbers must be collected together -a process known as `packing' -- processed and unpacked back into lists. If you have `lists of lists' then it gets even worse.
+Perl arrays are scattered about memory. The array data structure
+means consecutive numbers are not stored in a neat block of consecutive
+memory addresses as C and FORTRAN programmers are used to. This
+makes it difficult to pass the arrays to low-level C and FORTRAN
+routines for processing -- the numbers must be collected together
+-a process known as `packing' -- processed and unpacked back into
+arrays. If you have `arrays of arrays' then it gets even worse.
 
-Perl lists do not support the range of data types that piddles do (byte arrays, integer arrays, single precision, double precision, etc.)
+Perl arrays do not support the range of data types that piddles do (byte arrays, integer arrays, single precision, double precision, etc.)
 
-That is why PDL does not use Perl lists. Just to be clear from now on we'll always refer to PDL numeric data arrays as `piddles' and Perl-style number/text arrays as `lists'. 
+That is why PDL does not use Perl arrays. Just to be clear from now
+on we'll always refer to PDL numeric data arrays as `piddles' and
+Perl-style number/text arrays as `arrays'.
 
