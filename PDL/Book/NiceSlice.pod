@@ -807,7 +807,7 @@ finding such places and making use of these vectorized features is the
 key to using an array-oriented high level language like PDL
 successfully.  This is what the programmer new to PDL and used to
 low-level programming has to learn: avoid explicit loops where possible
-and try to use automatically performed B<thread loops> instead.
+and try to use automatically performed B<broadcast loops> instead.
 
 There is yet another benefit that comes with the broadcasting approach.  By
 looking at places where broadcasting can be efficiently used you are also
@@ -1235,14 +1235,14 @@ with such a simple example it comes in very handy when looking at more
 complex threaded code.
 
 But before we try our understanding on such an example we look once
-again at the way extra dims have to match in a thread loop.  In the
+again at the way extra dims have to match in a broadcast loop.  In the
 previous example, we had to find out about the size of C<$c>'s first
 dimension (using C<getdim(0)>) to make a dummy dimension that would
 fit C<$c>'s extradims in the threaded multiplication.  Since similar
 situations occur very often when writing threaded PDL code the matching
 rules for extra dimensions allow a dimension size of 1 to match any
 other dimension size: it is the B<elastic> dimension size in a sense
-that it grows in a thread loop as required.  As in the thread loop the
+that it grows in a broadcast loop as required.  As in the broadcast loop the
 corresponding extra dimension is marched through all its positions (e.g.
 C<slice(":,($i)") $i=0..n-1>) the elastic dimension just uses its one
 and only position 0 repeatedly ( C<slice(":,(0)") $i=0..n-1>).
@@ -1276,5 +1276,5 @@ expression does what you want it to do.  However, as you get more
 experience with broadcasting we strongly suspect that you don't need this
 any more; you will rather develop a much better "feeling" how to write
 down the right combination of dimension manipulations to achieve the
-desired result in a thread loop.
+desired result in a broadcast loop.
 

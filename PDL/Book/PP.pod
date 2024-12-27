@@ -633,12 +633,12 @@ and that gives this output:
 Oops! You can see that PDL considers the first argument to the number of
 columns, not the number of rows! I'll let you fix that in an exercise.
 
-=head3 Threadloops
+=head3 Broadcastloops
 
-PDL::PP also has the C<threadloop> construct, which lets you declare the
+PDL::PP also has the C<broadcastloop> construct, which lets you declare the
 code over which PDL should thread, and the code that should come before
-and after the thread loop. Here's a simple example demonstrating the
-C<threadloop> construct in conjunction with the C<loop> construct:
+and after the broadcast loop. Here's a simple example demonstrating the
+C<broadcastloop> construct in conjunction with the C<loop> construct:
 
 =for listing my-print-rows
 
@@ -662,7 +662,7 @@ C<threadloop> construct in conjunction with the C<loop> construct:
      Code => q{
          printf("About to start printing rows\n");
          int row_counter = 0;
-         threadloop %{
+         broadcastloop %{
              printf("  Row %3d: ", row_counter);
              loop(n) %{
                  printf("%f, ", $in());
@@ -689,31 +689,31 @@ A snippet of that output looks like this:
    Row  19: 57.000000, 58.000000, 59.000000, 
  All done!
 
-There are two important aspects to remember about threadloops. First, you
-must not put anything between the C<threadloop> and the C<%{> except
+There are two important aspects to remember about broadcastloops. First, you
+must not put anything between the C<broadcastloop> and the C<%{> except
 white space. For example:
 
  /* ok */
- threadloop %{
+ broadcastloop %{
  
  /* ok */
- threadloop
+ broadcastloop
      %{
  
  /* BAD */
- threadloop /* outer loop */ %{
+ broadcastloop /* outer loop */ %{
 
 As you can see, the parser for the PDL PreProcessor is not terribly
 sophisticated. It's mostly a pile of regular expressions, and 99% of the time, it
 does exactly what you need.
 
 Another potential area of confusion can arise if you have something that
-looks like a threadloop in your code, but you've commented it out:
+looks like a broadcastloop in your code, but you've commented it out:
 
  ...
  #if 0  /* skip this for now */
  
- threadloop %{
+ broadcastloop %{
 	 printf("  Row %3d: ", row_counter);
 	 loop(n) %{
 		 printf("%f, ", $in());
@@ -725,29 +725,29 @@ looks like a threadloop in your code, but you've commented it out:
  #endif /* skipped block of code */
  ...
 
-The problem is that if you do not indicate where the threadloop is supposed to
-go, PDL wraps all your code in the threadloop logic. However, if PDL sees what
-looks like a threadloop block, it assumes that you want to be more precise about
-where the threadloop logic goes. In fact, it even inserts the threadloop logic
+The problem is that if you do not indicate where the broadcastloop is supposed to
+go, PDL wraps all your code in the broadcastloop logic. However, if PDL sees what
+looks like a broadcastloop block, it assumes that you want to be more precise about
+where the broadcastloop logic goes. In fact, it even inserts the broadcastloop logic
 where you indicated it was to go, but this will eventually get discarded by the
 C preprocessor thanks to the C<#if 0> block. This means that the code that
-contains the C<loop(n)> block, below the C<#endif>, does not have the threadloop
+contains the C<loop(n)> block, below the C<#endif>, does not have the broadcastloop
 logic that it needs to do its job, and you will get erroneous results.
 
 The easiest fix for this? In addition to commenting out the blocks, put
-something (anything) between the text C<threadloop> and the percent block
+something (anything) between the text C<broadcastloop> and the percent block
 C<%{>. As already discussed, this will always prevent PDL from identifying
-the threadloop, which is what you need it to temporarily do in this case.
+the broadcastloop, which is what you need it to temporarily do in this case.
 
-It may seem that threadloops are bad things to be avoided, but threadloops
+It may seem that broadcastloops are bad things to be avoided, but broadcastloops
 are particularly useful if you are writing a function that needs
 access to a system resource that is costly to allocate with each iteration. For
-that sort of operation, you allocate it before entering the threadloop and
+that sort of operation, you allocate it before entering the broadcastloop and
 de-allocate it after leaving:
 
      Code => q{
          /* allocate system resource */
-         threadloop %{
+         broadcastloop %{
              /* use system resource */
          %}
          /* Free system resource */
@@ -797,7 +797,7 @@ the discussion that follows.
      Pars => 't_series(n); step(); [o] derivative(n)',
      Code => q{
          int N = $SIZE(n);
-         threadloop %{
+         broadcastloop %{
              /* Derivative for i = 0 */
              $derivative(n => 0)
                  = ($t_series(n => 1) - $t_series(n => 0))
@@ -892,7 +892,7 @@ So now you know.
 
 =back
 
-In the above section I have explained how to use C<loop> and C<threadloop>
+In the above section I have explained how to use C<loop> and C<broadcastloop>
 to control how PDL::PP presents data to your code, and to control which
 sections of code PDL::PP broadcasts over. I have also shown you how to access
 specific memory locations when you have vector representations of your data.
@@ -970,7 +970,7 @@ was preparing this text:
      Code => q{
          printf("About to start printing rows\n");
          int row_counter = 0;
-         threadloop %{
+         broadcastloop %{
              printf("  Row %3d: ", row_counter);
              loop(n) %{
                  printf("%f, ", $in())
@@ -1042,7 +1042,7 @@ it about line numbers and things will be reported incorrectly.)
           * Thanks to pp_line_numbers */
          printf("About to start printing rows\n");
          int row_counter = 0;
-         threadloop %{
+         broadcastloop %{
              printf("  Row %3d: ", row_counter);
              loop(n) %{
                  printf("%f, ", $in())
@@ -1134,7 +1134,7 @@ foolproof:
      Pars => 'in()',
      Code => pp_line_numbers(__LINE__, q{
          printf("This ndarray contains:\n");
-         threadloop %{
+         broadcastloop %{
              /* grr, not working
              printf("  %f\r", $in());
              */
@@ -1197,7 +1197,7 @@ programmers for cutting out blocks of code:
      Pars => 'in()',
      Code => pp_line_numbers(__LINE__, q{
          printf("This ndarray contains:\n");
-         threadloop %{
+         broadcastloop %{
            #if 0
              printf("  %f\r", $in());
            #endif
@@ -1443,7 +1443,7 @@ The key is to use C<clump(-1)>:
      Pars => 'input(n); [o] output(n)',
      Code => q{
          double cumulative_sum;
-         threadloop %{
+         broadcastloop %{
              cumulative_sum = 0.0;
              loop (n) %{
                  cumulative_sum += $input();
@@ -1459,7 +1459,7 @@ The key is to use C<clump(-1)>:
      Pars => 'input(); [o] output()',
      Code => q{
          double cumulative_sum = 0.0;
-         threadloop %{
+         broadcastloop %{
              cumulative_sum += $input();
              $output() = cumulative_sum;
          %}
