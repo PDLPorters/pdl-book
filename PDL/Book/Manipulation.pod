@@ -469,7 +469,7 @@ conditions apply.
 
 B<Output Dimensionality>
 
-C<range> threads over both C<$index> and C<$source>. The returned 
+C<range> broadcasts over both C<$index> and C<$source>. The returned 
 dimension list is stacked up like this:
 
   (index thread dims), (index dims (size)), (source thread dims)

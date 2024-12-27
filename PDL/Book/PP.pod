@@ -894,7 +894,7 @@ So now you know.
 
 In the above section I have explained how to use C<loop> and C<threadloop>
 to control how PDL::PP presents data to your code, and to control which
-sections of code PDL::PP threads over. I have also shown you how to access
+sections of code PDL::PP broadcasts over. I have also shown you how to access
 specific memory locations when you have vector representations of your data.
 
 =head3 Exercise Set 2
