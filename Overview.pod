@@ -71,7 +71,7 @@ learn some simple threading, and output their results to files or plots.
 
 =item Where to find help
 
-=item L<PDL::Book::Piddle|PDL::Book::Piddle> What is a PDL object?
+=item L<PDL::Book::NDArray> What is a PDL object?
 
 =item L<PDL::Book::Creating|PDL::Book::Creating> Basic Operations to make PDLs
 

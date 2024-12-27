@@ -6,7 +6,7 @@
 
 =item L<PDL::Book::FirstSteps|PDL::Book::FirstSteps> Trying out PDL for the first time.
 
-=item L<PDL::Book::Piddle|PDL::Book::Piddle> What is a PDL object?
+=item L<PDL::Book::NDArray> What is a PDL object?
 
 =item L<PDL::Book::Creating|PDL::Book::Creating> Basic Operations to make PDLs
 

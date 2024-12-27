@@ -369,7 +369,7 @@ With C<printout_sum>, what if you replace C<$b> with a two-dimensional
 piddle that is thread-compatible with C<$a>? Try to guess the order of the
 output that you'll get before running the example. Did you guess correctly?
 
-=item 3. Orthogonal Piddles
+=item 3. Orthogonal NDArrays
 
 What if C<$a> has dimensions M and C<$b> has dimensions (1, N) with
 C<printout_sum>? What about C<my_sum_and_diff>?
@@ -1331,7 +1331,7 @@ Once that's installed, you should be ready to work with the examples.
      },
  );
 
-=item 3. Orthogonal Piddles
+=item 3. Orthogonal NDArrays
 
 =for listing exercise-orthogonal
 

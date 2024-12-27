@@ -1028,7 +1028,7 @@ dimensions.  At the top we write C< inner > 's signature and at the
 bottom the C< slice > expressions that show the subslices involved in
 each elementary operation:
 
-    Piddles $im $conv $grey
+    NDArrays $im $conv $grey
     Signature a(n); b(n); [o]c()
     Dims (3)[500,300] (3)[] ()[500,300]
     Slices ":,($i),($j)" ":" "($i)($j)"
