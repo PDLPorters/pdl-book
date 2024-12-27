@@ -5,7 +5,7 @@ PDL::PP, you can quickly and easily implement new "primitive" compiled
 C-language PDL functions that follow the PDL threading rules, without
 having to write tedious loops or glue code.  You can write simple
 computations with zero or more active dimensions (see
-L<PDL::Book::Threading>), write functions that contain a mix of Perl
+L<PDL::Book::Broadcasting>), write functions that contain a mix of Perl
 and compiled code, and/or generate output PDLs that remain linked to
 the source PDL in trivial or nontrivial ways.
 
@@ -363,7 +363,7 @@ these exercises are in Appendix B.
 Working with C<printout_sum>, replace C<$b> with a B<slice> from some other
 ndarray. Does it do what you expect?
 
-=item 2. Threading
+=item 2. Broadcasting
 
 With C<printout_sum>, what if you replace C<$b> with a two-dimensional
 ndarray that is thread-compatible with C<$a>? Try to guess the order of the
@@ -907,7 +907,7 @@ I noted above that my code for the matrix multiplication is incorrect and I
 explained why. Changing nothing more than the C<Pars> section, fix this code
 so that it performs proper matrix multiplication.
 
-=item 2. Threading Engine Tricks
+=item 2. Broadcasting Engine Tricks
 
 The function C<my_sumover> uses a C<loop> construct, so it only operates on
 individual rows. What if you wanted to perform the sum an entire matrix?
@@ -1302,7 +1302,7 @@ Once that's installed, you should be ready to work with the examples.
      },
  );
 
-=item 2. Threading
+=item 2. Broadcasting
 
 =for listing exercise-threading
 
@@ -1413,7 +1413,7 @@ Note that you will have to make sure the dimensions of the input ndarrays match 
  my $left = sequence(2,4)->transpose;
  my $right = sequence(4,5)->transpose;
 
-=item 2. Threading Engine Tricks
+=item 2. Broadcasting Engine Tricks
 
 The key is to use C<clump(-1)>:
 

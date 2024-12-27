@@ -79,7 +79,7 @@ learn some simple threading, and output their results to files or plots.
 
 =item L<PDL::Book::Functions|PDL::Book::Functions> Writing your own functions for PDL
 
-=item L<PDL::Book::Threading|PDL::Book::Threading> Threading and Getting rid of FOR loops
+=item L<PDL::Book::Broadcasting> Broadcasting and Getting rid of FOR loops
 
 =item L<PDL::Book::PGPLOT|PDL::Book::PGPLOT> Graphics with PGPLOT B<done>
 

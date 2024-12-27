@@ -1284,7 +1284,7 @@ And the resultant figure is shown below:
 
 
 
-=head2 Threading in PDL::Graphics::PGPLOT
+=head2 Broadcasting in PDL::Graphics::PGPLOT
 
 The plot commands do not always lend themselves to easy threading
 because it can sometimes be difficult to know what the user intends to

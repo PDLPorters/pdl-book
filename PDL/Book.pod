@@ -14,7 +14,7 @@
 
 =item L<PDL::Book::Functions|PDL::Book::Functions> Writing your own functions for PDL
 
-=item L<PDL::Book::Threading|PDL::Book::Threading> (NOT YET) Threading and Getting rid of FOR loops
+=item L<PDL::Book::Broadcasting> (NOT YET) Broadcasting and Getting rid of FOR loops
 
 =item L<PDL::Book::PGPLOT|PDL::Book::PGPLOT> Graphics with PGPLOT
 
@@ -50,7 +50,7 @@ the capability to produce three dimensional plots in TriD.
 The power of PDL is in the ability to carry out threading (known as
 broadcasting in Python) over N-dimensional PDLs. When you code with
 threading you eliminate the multiple FOR loops that are the source of
-many slow-downs in code. Reading Threading and Functions will get you up
+many slow-downs in code. Reading Broadcasting and Functions will get you up
 to speed and in the right mind-set.
 
 If you require the speed of C routines in your PDL code, there is also

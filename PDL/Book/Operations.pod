@@ -9,7 +9,7 @@ Because PDLs are multidimensional constructs, the notion of
 I<operator> is generalized from scalars. Each operator has a number 
 of I<active dimensions> that are required to do its job, and 
 additional dimensions are simply looped over (or, more precisely, 
-I<threaded over>; see[sec:Dimensionality-and-Threading]). Most 
+I<threaded over>; see[sec:Dimensionality-and-Broadcasting]). Most 
 simple arithmetic operators have zero active dimensions (they act 
 on points). Collapse operators have one active dimension (they 
 summarize data over a single dimension, returning a PDL that has 
@@ -260,7 +260,7 @@ together.
 
 You can extend a PDL along the 0 dimension with C<append>. All other 
 dimensions must agree, thread-wise, between the original PDL and 
-what you are appending to it (Remember the threading rules from [sub:Threading-rules]
+what you are appending to it (Remember the threading rules from [sub:Broadcasting-rules]
 ?). So if you say:
 
   $two_panel = append $image_left, $image_right;

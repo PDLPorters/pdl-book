@@ -5,7 +5,7 @@ also
 conversion for PDF reading is:
 pod2pdf NiceSlice.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --output-file NiceSlice.pdf
 
-=head1 Slicing, Dicing and Threading dims with PDL
+=head1 Slicing, Dicing and Broadcasting dims with PDL
 
 Fundamental to any vectorized data language such as PDL is the ability
 to manipulate subsets of data in convenient ways.  PDL provides the
@@ -530,12 +530,12 @@ interplay with those slicing and dicing routines that you have just
 become familiar with (C<slice>, C<xchg>, C<mv>, etc).  But
 first things first: what is PDL threading?
 
-=head3 Threading
+=head3 Broadcasting
 
-B<Threading> already has been working under the hood in many examples
+B<Broadcasting> already has been working under the hood in many examples
 we have encountered in previous sections.  It allows for fast processing
 of large amounts of data in a scripting language (such as C<perl>).
-And just to be sure, PDL B<Threading> is B<not> the same as threading
+And just to be sure, PDL B<Broadcasting> is B<not> the same as threading
 in the computer science sense or in the perl sense.  Both concepts
 are related but more about that later.
 
@@ -1062,7 +1062,7 @@ Remember that the slice notation at the bottom does not mean that you
 have to generate all these slices yourself.  It rather tells you which
 subslices are used in a elementary operation.  It is a way to keep track
 what is going on behind the scenes when PDL threading is at work.
-Threading makes it possible that we can call the grayscale conversion
+Broadcasting makes it possible that we can call the grayscale conversion
 with ndarrays representing just one RGB pixel (shape C<[3]>), a
 line of RGB pixels (shape C<[3,n]>), RGB images (shape C<[3,m,n]>),
 volumes of RGB data (shape C<[3,m,n,o]>), etc.

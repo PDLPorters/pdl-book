@@ -1302,7 +1302,7 @@ And the resultant figure is shown below:
 
 =for O<PGPLOTFigs/ColorTables2.8.png>
 
-=head1 Threading in PDL::Graphics::PGPLOT
+=head1 Broadcasting in PDL::Graphics::PGPLOT
 
 The plot commands do not always lend themselves to easy threading
 because it can sometimes be difficult to know what the user intends to

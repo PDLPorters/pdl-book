@@ -202,8 +202,8 @@ shapes. Because C<$c> started out as a 3x4-PDL, the threading engine
 duplicates C<$a> (which is a 3-PDL) for each row of C<$c>. The C<.=> 
 operator is called threaded assignment, because it causes its 
 right-hand argument to be expanded and vectorized exactly as any 
-other operand would. Threading is explained in detail in Section
-[sec:Dimensionality-and-Threading]
+other operand would. Broadcasting is explained in detail in Section
+[sec:Dimensionality-and-Broadcasting]
 .
 
 =head3 Importing data directly from memory: C<get_dataref>
@@ -535,12 +535,12 @@ operator in Perl 5.
   [100 101 102 103 104]
 
 
-=head2 Threading
+=head2 Broadcasting
 
 Array languages like PDL perform basic operations by looping over 
 an entire array, applying a simple operation to each element, 
 row, or column of the array. This process is called B<threading>. 
-Threading is accomplished by the threading engine, which matches 
+Broadcasting is accomplished by the threading engine, which matches 
 up the sizes of different variables and ensures that they "fit". 
 The threading engine is based on constructs from linear algebra 
 (but is slightly more forgiving than most math professors). 
@@ -565,7 +565,7 @@ they don't actually transpose the data in memory - only
 rearrange PDL's internal metadata that explain how the block of 
 memory is to be used. 
 
-=head3 Threading rules
+=head3 Broadcasting rules
 
 PDL operators that act on two or more operands require the thread 
 dimensions of each operand to match up. The threading engine 
