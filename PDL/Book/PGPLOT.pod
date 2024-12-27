@@ -1286,7 +1286,7 @@ And the resultant figure is shown below:
 
 =head2 Broadcasting in PDL::Graphics::PGPLOT
 
-The plot commands do not always lend themselves to easy threading
+The plot commands do not always lend themselves to easy broadcasting
 because it can sometimes be difficult to know what the user intends to
 do when (say) an array of images is passed to the C<imag> command. Are
 they to be displayed in several plot panels, are they to be plotted on
@@ -1296,7 +1296,7 @@ these if there are less options than for instance, lines to draw (a
 common occurrence if you wanted to draw a B<lot> of lines).
 
 That said the C<PDL::Graphics::PGPLOT> interface does have limited
-support for threading in the C<line> and C<points> functions. These call
+support for broadcasting in the C<line> and C<points> functions. These call
 the C<tline> and C<tpoints> internally, and work just like C<line> and
 C<points> except that they expect the input I<y>-ndarray to be 2D, with
 each line in the array plotted against the I<x>-ndarray. 

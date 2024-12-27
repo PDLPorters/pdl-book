@@ -2,7 +2,7 @@
 
 The PDL PreProcessor, or PDL::PP, is PDL's secret weapon. With
 PDL::PP, you can quickly and easily implement new "primitive" compiled
-C-language PDL functions that follow the PDL threading rules, without
+C-language PDL functions that follow the PDL broadcasting rules, without
 having to write tedious loops or glue code.  You can write simple
 computations with zero or more active dimensions (see
 L<PDL::Book::Broadcasting>), write functions that contain a mix of Perl
@@ -40,7 +40,7 @@ extension (.xs file). The latter gets expanded to C code and compiled
 to produce XSUBs that ultimately end up as methods in the PDL package.
 
 C<pp_def> accepts a collection of parameters that describe both the 
-way the new method should interact with the threading engine (e.g.
+way the new method should interact with the broadcasting engine (e.g.
 its dimensional signature and which data types it should support natively),
 and also the code for the core of the method.
 
@@ -418,7 +418,7 @@ have a parameter list like C<'input(); [o] output()'>, you are telling PDL::PP
 that you want it to present the data from the input and output ndarrays as
 scalars. The code you specify in the C<Code> key gets wrapped by a couple of
 C C<for> loops that loop through higher dimensions, something that we call
-I<threading>. There are many calculations you cannot do with this simplistic
+I<broadcasting>. There are many calculations you cannot do with this simplistic
 representation of the data, such as write a Fourier Transform, matrix-matrix
 multiplication, or a cumulative sum. For these, you need PDL::PP to represent
 your data as vectors or matrices.
@@ -587,7 +587,7 @@ my first guess at this function looked like this:
  );
 
 "Wait," you say, "That's it? It's that simple?" Yep. Once you figure out the
-relationship of the dimension sizes, the threading engine just Does What You
+relationship of the dimension sizes, the broadcasting engine just Does What You
 Mean. (As you'll see, I got the dimensions wrong, but it'll be a quick fix.)
 You can run that with this Perl code:
 
@@ -1304,7 +1304,7 @@ Once that's installed, you should be ready to work with the examples.
 
 =item 2. Broadcasting
 
-=for listing exercise-threading
+=for listing exercise-broadcasting
 
  use strict;
  use warnings;

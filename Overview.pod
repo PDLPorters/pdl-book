@@ -65,7 +65,7 @@ html output valid XHTML.
 
 A book should give an introduction to PDL, running through the basic
 fratures with enough detail so that the user can do basic operations,
-learn some simple threading, and output their results to files or plots.
+learn some simple broadcasting, and output their results to files or plots.
 
 =over
 
@@ -103,7 +103,7 @@ about some function, idea or methodology of PDL.
 
 =over
 
-=item Demonstrating threading with the Game of Life
+=item Demonstrating broadcasting with the Game of Life
 
 =item Making your PGPLOT output look pretty
 

@@ -25,7 +25,7 @@ Most arithmetic operators behave exactly as one would expect
 within Perl, except threaded over the entire PDL. If you supply 
 both a PDL and a Perl scalar to any of the two-parameter 
 operators (like multiplication), the scalar is promoted to a PDL, 
-so the result is a PDL with appropriate threading.
+so the result is a PDL with appropriate broadcasting.
 
 =for html  <img width=400 src="Operations/operator-precedence-table.png">
 
@@ -106,7 +106,7 @@ to true boolean values (0 or 1).
 
 
 The simplest operators have no active dimensions, simply 
-threading over their arguments and returning a PDL with the same 
+broadcasting over their arguments and returning a PDL with the same 
 shape. Collapse operators (also called "reduce" operators in the 
 documentation) have one active dimension, and remove it -- 
 collapsing an N-dimensional PDL into an (C<N-1>)-dimensional PDL. 
@@ -139,7 +139,7 @@ double-precision floats will lose six orders of magnitude of
 precision, for the same reason, so that the result will have at 
 most (13 - 6) seven orders of magnitude of precision. Tree 
 accumulation is more precise, and may one day be introduced to 
-the threading engine if there is sufficient demand. You might be 
+the broadcasting engine if there is sufficient demand. You might be 
 the person to demand and/or implement it...
 
 =head3 Arithmetic collapse: C<prodover> and C<sumover>
@@ -260,7 +260,7 @@ together.
 
 You can extend a PDL along the 0 dimension with C<append>. All other 
 dimensions must agree, thread-wise, between the original PDL and 
-what you are appending to it (Remember the threading rules from [sub:Broadcasting-rules]
+what you are appending to it (Remember the broadcasting rules from [sub:Broadcasting-rules]
 ?). So if you say:
 
   $two_panel = append $image_left, $image_right;

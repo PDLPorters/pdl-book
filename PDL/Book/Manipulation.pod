@@ -116,7 +116,7 @@ One minor problem is that C<$red_simple_xy> may contain multiple
 entries for a single star, if that star has more than one pixel 
 brighter than the threshold. One solution is to find only local 
 maxima in the image. You can use range to extract the region 
-around each pixel in the entire image, and then use the threading 
+around each pixel in the entire image, and then use the broadcasting 
 engine to find which pixels are local maxima:
 
 
@@ -364,7 +364,7 @@ for C<interpND>, which is discussed in Chapter [cha:Basic-mathematics].
 
 The most general selection operator in PDL is C<range>, which 
 selects an arbitrary collection of subfields from the original 
-PDL and returns them collated in a form suitable for threading. 
+PDL and returns them collated in a form suitable for broadcasting. 
 It is useful for interpolation, convolution, averaging, marking 
 arbitrary locations in an original data set, or performing local 
 operations at a set of arbitrary locations in a data set. C<range> 

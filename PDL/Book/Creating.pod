@@ -198,7 +198,7 @@ C<$c> remains a separate variable, whose elements happen to have
 received values from the corresponding elements of C<$a>. 
 
 But that's not all! C<$b> and C<$c> end up with completely different 
-shapes. Because C<$c> started out as a 3x4-PDL, the threading engine 
+shapes. Because C<$c> started out as a 3x4-PDL, the broadcasting engine 
 duplicates C<$a> (which is a 3-PDL) for each row of C<$c>. The C<.=> 
 operator is called threaded assignment, because it causes its 
 right-hand argument to be expanded and vectorized exactly as any 
@@ -286,7 +286,7 @@ that C<< sum($x - pdl( $x->unpdl )) >> equals 0.  E.g.,
 Be careful with C<at>, as you almost never want to use it - it is 
 tedious for anything nontrivial, and extremely slow! Particularly 
 if you find yourself placing an C<at> call inside a C<for> loop, you 
-should probably stop and think about how to use threading for 
+should probably stop and think about how to use broadcasting for 
 your problem - see below.
 
 =head2 Data Types and Contexts
@@ -539,17 +539,17 @@ operator in Perl 5.
 
 Array languages like PDL perform basic operations by looping over 
 an entire array, applying a simple operation to each element, 
-row, or column of the array. This process is called B<threading>. 
-Broadcasting is accomplished by the threading engine, which matches 
+row, or column of the array. This process is called B<broadcasting>. 
+Broadcasting is accomplished by the broadcasting engine, which matches 
 up the sizes of different variables and ensures that they "fit". 
-The threading engine is based on constructs from linear algebra 
+The broadcasting engine is based on constructs from linear algebra 
 (but is slightly more forgiving than most math professors). 
 
 Most operations act on the first few dimensions of a PDL. These 
 first dimensions are active dimensions and any dimensions after 
 that are called thread dimensions. The active dimensions must 
 match any requirements of the operator, and the thread dimensions 
-are automatically looped over by the threading engine. The 
+are automatically looped over by the broadcasting engine. The 
 operator sets the number of active and thread dimensions. A given 
 operator may have 0 active dimensions (e.g. addition, +), 1 
 active dimension (e.g. reduce operators like C<sumover> and vector 
@@ -568,7 +568,7 @@ memory is to be used.
 =head3 Broadcasting rules
 
 PDL operators that act on two or more operands require the thread 
-dimensions of each operand to match up. The threading engine 
+dimensions of each operand to match up. The broadcasting engine 
 follows these rules for each dim (starting with the 0 dim and 
 iterating through to the highest dim in either operand):
 
@@ -633,10 +633,10 @@ C<print pdl([1,2],[3,4]) * 3> prints the string C<[ [3 6] [9 12] ]>.
 
 =back
 
-=head3 Controlling threading and dimension order: xchg, mv, reorder, flat, clump, and reshape
+=head3 Controlling broadcasting and dimension order: xchg, mv, reorder, flat, clump, and reshape
 
 Because rearranging the dim list of a PDL (i.e. transposing it) is 
-the way to control the threading engine, PDL has many operators 
+the way to control the broadcasting engine, PDL has many operators 
 that are devoted to rearranging dim lists. Here are six of them:
 
 B<transpose - matrix transposition>
@@ -710,7 +710,7 @@ things may happen!
 =head3 Dummy Dimensions
 
 Dummy dimensions are bookkeeping dimensions that act to the 
-threading engine like complete dimensions but in fact repeat the 
+broadcasting engine like complete dimensions but in fact repeat the 
 same data in each position in the new dimension. A dummy 
 dimension is simply a convenient bookkeeping convention; no extra 
 memory is allocated for it. You create dummy dimensions with the 

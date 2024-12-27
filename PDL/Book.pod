@@ -47,9 +47,9 @@ producing two dimensional plots either in a computer window or as
 written file formats (PostScript, PNG, JPEG and more), and we also have
 the capability to produce three dimensional plots in TriD.
 
-The power of PDL is in the ability to carry out threading (known as
-broadcasting in Python) over N-dimensional PDLs. When you code with
-threading you eliminate the multiple FOR loops that are the source of
+The power of PDL is in the ability to carry out broadcasting
+over N-dimensional PDLs. When you code with
+broadcasting you eliminate the multiple FOR loops that are the source of
 many slow-downs in code. Reading Broadcasting and Functions will get you up
 to speed and in the right mind-set.
 

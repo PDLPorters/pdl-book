@@ -185,8 +185,8 @@ original ndarray is handled automatically.
 C<slice> has some advanced syntactical features which allow dimensions
 to be inserted or removed (this comes in quite useful when passing 2D
 arrays to functions expecting 1D arguments and vice versa, this comes in
-extremely useful when using PDL's advanced B<threading> features (see
-I<PDL threading and the signature> later.
+extremely useful when using PDL's advanced B<broadcasting> features (see
+I<PDL broadcasting and the signature> later.
 
 If a dimension is of size unity it can be removed using C<()>: 
 
@@ -202,7 +202,7 @@ This can even be used to insert more than one element along the dimension:
 
     $t = $z(:,*3,:); # Dims now 100x3x30
 
-This sort of thing is very useful for advanced threading trickery.
+This sort of thing is very useful for advanced broadcasting trickery.
 
 =head3 PDL's Method notation
 
@@ -366,7 +366,7 @@ Uncannily this is almost exactly how the C<sum> function is implemented in PDL.
 
 =head2 Adding dimensions with C<dummy>
 
-After our first look at threading in Chapter 2 we know how to add a
+After our first look at broadcasting in Chapter 2 we know how to add a
 vector to rows of an image:
 
     pdl> print $a = pdl([1,0,0],[1,1,0],[1,1,1]);
@@ -417,7 +417,7 @@ want:
      [4 4 4]
     ]
 
-Because of the threading rules the unit dimension makes C<$b>
+Because of the broadcasting rules the unit dimension makes C<$b>
 implicitly repeat along axis 0.  i.e.  it is as if C<<$b->dummy(0)>>
 B<looked> like:
 
@@ -513,29 +513,29 @@ You can of course use C<where> too for any number of dimensions:
     $cube .= 0;
     $tmp .= 1;
 
-=head2 PDL threading and signatures
+=head2 PDL broadcasting and signatures
 
 Slicing and indexing arbitrary subsets of data is certainly a
 fundamental aspect of any array processing language and PDL is no
 exception (as you can tell from the preceding examples).  In PDL those
 functions might be even more important since they are absolutely vital
-in using PDL B<threading> , the fast (and automagic) vectorized
+in using PDL B<broadcasting> , the fast (and automagic) vectorized
 iteration of "elementary operations" over arbitrary slices of
-multidimensional data.  First we have to explain what we mean by B<threading>
-in the context of PDL, especially since the term B<threading>
+multidimensional data.  First we have to explain what we mean by B<broadcasting>
+in the context of PDL, especially since the term B<broadcasting>
 already has a distinct meaning in computer science that only
 partly agrees with its usage within PDL.  In the following we will
-explain the general use of PDL threading and highlight the close
+explain the general use of PDL broadcasting and highlight the close
 interplay with those slicing and dicing routines that you have just
 become familiar with (C<slice>, C<xchg>, C<mv>, etc).  But
-first things first: what is PDL threading?
+first things first: what is PDL broadcasting?
 
 =head3 Broadcasting
 
 B<Broadcasting> already has been working under the hood in many examples
 we have encountered in previous sections.  It allows for fast processing
 of large amounts of data in a scripting language (such as C<perl>).
-And just to be sure, PDL B<Broadcasting> is B<not> the same as threading
+And just to be sure, PDL B<Broadcasting> is B<not> the same as broadcasting
 in the computer science sense or in the perl sense.  Both concepts
 are related but more about that later.
 
@@ -566,7 +566,7 @@ that generates the following output:
 
   Since is important to keep track of the dimensions
   of ndarrays when using (and especially when
-  introducing) B<PDL threading> we quickly define a
+  introducing) B<PDL broadcasting> we quickly define a
   shorthand command (a method) that lets us print
   the dimensions of ndarrays nicely formatted as
   needed:
@@ -637,7 +637,7 @@ many more complicated operations can be assembled from the iteration of
 an elementary operation (that is if you keep reading this chapter).
 Those elementary operations that ship with the basic PDL distribution
 make the building blocks for your more complicated real world
-applications; threading just makes sure it will all happen quickly
+applications; broadcasting just makes sure it will all happen quickly
 enough and without too much syntactical effort from your side (you still
 will have to get your head round the idea). So let's expand our example
 a little further and postpone the why and how for a small while.
@@ -697,14 +697,14 @@ multidimensional ndarrays.  Sometimes the dimensions of the input ndarrays
 involved need to be manipulated so that iteration happens as desired
 (e.g.  over the intended subslices) and the result has the intended
 dimensionality.  Formulating your problem at hand in a way that makes
-use of threading rather than resorting to nested C<for>-loops at the
+use of broadcasting rather than resorting to nested C<for>-loops at the
 perl level can make the difference between a script that is executed
 faster than you can type and one that is crawling along and giving you
 plenty of time to have your long overdue lunch break.
 
-=head3 Why threading and why call it B<threading> ?
+=head3 Why broadcasting and why call it B<broadcasting> ?
 
-So what are the advantages of relying on threading to perform things you
+So what are the advantages of relying on broadcasting to perform things you
 can achieve in perl also with explicit C<for>-loops and the C<slice>
 command? There are several (very good) reasons.  The more you use PDL
 for your daily work the quicker you will appreciate this.
@@ -717,17 +717,17 @@ several previous data language implementations, most notably C<Yorick>
 Similar concepts are also implemented in APL and J, although well hidden
 by a wealth of terminology and notation very different from that of most
 other conventional computer languages .  What we think distinguishes PDL
-from these previous languages is the consistent support of threading
+from these previous languages is the consistent support of broadcasting
 throughout PDL, the tight integration with the PDL preprocessor (dealt
 with in a separate chapter) and the conceptual interplay with the
 dimension manipulation routines.
 
-The first and most important reason to use B<PDL threading> is simply
-B<speed> .  The alternative to threading are loops at the perl level.
+The first and most important reason to use B<PDL broadcasting> is simply
+B<speed> .  The alternative to broadcasting are loops at the perl level.
 That is certainly a viable alternative, however, if we rewrite our
 maximum routine along these lines a quick benchmark test will prove our
 point.  First of all, here is the code that does the equivalent of C<maximum>
-on 2D input without using threading 
+on 2D input without using broadcasting 
 
     sub mymax {
        # we only cover the case of 2D input
@@ -745,7 +745,7 @@ We have written it so that C<mymax> can just deal with 2D input
 ndarrays.  A routine for the general n-dimensional case would have been
 more involved .  Note that we explicitly have to create an output ndarray
 of the desired type and size.  By comparison, the corresponding
-threading routine is much more concise:
+broadcasting routine is much more concise:
 
     sub mythreadmax {
        my ($pdl) = @_;
@@ -774,15 +774,15 @@ If we run this script it generates
  PDL thread: 4 wclk secs (2.48 usr + 0.64 sys = 3.12 CPU) @ 12802.88/s (n=40009) 
  Perl loops: 3 wclk secs (1.80 usr + 1.23 sys = 3.03 CPU) @    12.86/s (n=39)
 
-That proves our point: while the example using threading is executed at
+That proves our point: while the example using broadcasting is executed at
 a rate of nearly 13,000 per second using explicit loops has brought down
 the speed to less than 13/second, a very significant difference.
 
-Obviously, the difference between threading and explicit looping depends somewhat
+Obviously, the difference between broadcasting and explicit looping depends somewhat
 on the nature of the elementary operation and the ndarrays in question.
 The difference becomes most striking the more elementary operations are
 involved and the faster an individual elementary operation can be
-performed.  The advantage of threading will level off as the time for
+performed.  The advantage of broadcasting will level off as the time for
 performing the elementary operation becomes comparable or even greater
 than that required to execute the explicit looping code.
 
@@ -794,14 +794,14 @@ all the code is much less concise and also less general.
 
 With the requirement to deal with all dimensions, loop limits, etc
 yourself you increase the probability of introducing errors into your
-code.  When using threading, PDL checks all dimensions for you, makes
+code.  When using broadcasting, PDL checks all dimensions for you, makes
 sure it loops over the correct indices internally and keeps you from
 having to do the bookkeeping: after all, B<that> is what computers are good at.
 
-Even though PDL threading makes your life much easier in one respect by
+Even though PDL broadcasting makes your life much easier in one respect by
 taking care of some of the "messy" details it leaves you with another
 task: you have to find the places in your algorithm/problem where
-threading can effectively be used and help to make for speedy execution
+broadcasting can effectively be used and help to make for speedy execution
 even when using an (almost inevitably slower) scripting language.  But
 finding such places and making use of these vectorized features is the
 key to using an array-oriented high level language like PDL
@@ -809,8 +809,8 @@ successfully.  This is what the programmer new to PDL and used to
 low-level programming has to learn: avoid explicit loops where possible
 and try to use automatically performed B<thread loops> instead.
 
-There is yet another benefit that comes with the threading approach.  By
-looking at places where threading can be efficiently used you are also
+There is yet another benefit that comes with the broadcasting approach.  By
+looking at places where broadcasting can be efficiently used you are also
 rethinking your problem in a way so that it can be very effectively
 parallelized! The keen reader has probably already observed that those
 internal automatic loops of elementary operations over subslices do not
@@ -838,12 +838,12 @@ C<pdldoc PDL::ParallelCPU> from the command line.
 
 =head3 The general case: PDL functions and their signature
 
-Having made the case for PDL threading let's study its own messy
-details.  PDL threading is a powerful tool.  And as usual you have to
-pay a price for power: complexity.  The general rules for PDL threading
+Having made the case for PDL broadcasting let's study its own messy
+details.  PDL broadcasting is a powerful tool.  And as usual you have to
+pay a price for power: complexity.  The general rules for PDL broadcasting
 can be confusing at first.  But there is hope: you can first study the
 more simple cases and work up to more difficult examples as you go.  So
-let's continue our tour of threading.
+let's continue our tour of broadcasting.
 
 The first question arises naturally: how can one find out about the
 dimension of subslices in a elementary operation of a function in PDL?
@@ -961,7 +961,7 @@ interpretations:
 
 The dimensions in parentheses suggest that these are used in the
 elementary operation (mimicking the signature syntax); in the context of
-threading we call these the B<elementary dimensions> .  The following
+broadcasting we call these the B<elementary dimensions> .  The following
 group of dimensions in rectangular brackets are the B<extra dimensions>.
 Conversely, given the elementary/extra dims notation we can easily
 obtain the shape of the underlying ndarray by appending the extradims to
@@ -1027,7 +1027,7 @@ yellow/orange on an RGB display:
     print "$i \backslash n";
     202
 
-Now threading makes extending this example to a whole RGB image very straightforward:
+Now broadcasting makes extending this example to a whole RGB image very straightforward:
 
     use PDL::IO::Pic; # IO for popular image formats
     $im = rpic 'pdllogo.jpg'; # a colour image from the book dataset
@@ -1039,8 +1039,8 @@ Now threading makes extending this example to a whole RGB image very straightfor
 The code needs no modification! Let us analyze what is going on.  We
 know that C<$conv> has just the required number of dimensions (namely
 one of size 3).  So this argument doesn't require PDL to perform
-threading.  However, the first argument C<$im> has two B<extra dimensions>
-(shape C<[500,300]>).  In this case threading
+broadcasting.  However, the first argument C<$im> has two B<extra dimensions>
+(shape C<[500,300]>).  In this case broadcasting
 works (as you would probably expect) by iterating the inner product over
 the combination of all 1D subslices of C<$im> with the one and only
 subslice of C<$conv> creating a resulting ndarray (the grayscale image)
@@ -1061,7 +1061,7 @@ each elementary operation:
 Remember that the slice notation at the bottom does not mean that you
 have to generate all these slices yourself.  It rather tells you which
 subslices are used in a elementary operation.  It is a way to keep track
-what is going on behind the scenes when PDL threading is at work.
+what is going on behind the scenes when PDL broadcasting is at work.
 Broadcasting makes it possible that we can call the grayscale conversion
 with ndarrays representing just one RGB pixel (shape C<[3]>), a
 line of RGB pixels (shape C<[3,n]>), RGB images (shape C<[3,m,n]>),
@@ -1077,7 +1077,7 @@ also does some type conversion to complete it:
     }
 
 
-=head3 You can write your own threading routines
+=head3 You can write your own broadcasting routines
 
 Did you notice? By writing this little routine we have created a new
 function with its own signature that will thread as appropriate.  It has
@@ -1101,10 +1101,10 @@ B<must> be three.  You get the idea.
 What we have just seen is worth keeping in mind! By using PDL functions
 in our own subroutines we can make new functions with the ability to
 thread over subslices.  Obviously, this is useful.  We will come back to
-this feature when we talk about other ways of defining threading
+this feature when we talk about other ways of defining broadcasting
 functions using PDL::PP below.
 
-=head3 Matching threading dimensions
+=head3 Matching broadcasting dimensions
 
 
 After this small digression, back to the subject at hand: what happens
@@ -1177,7 +1177,7 @@ or expressed in slices (with NiceSlice syntax):
 
     $result(($i),($j)) = $c(($i),($j)) * $d(($j)) $i=0..2, $j=0..1
 
-How do we achieve that by threading?
+How do we achieve that by broadcasting?
 
     $result = $c*$d
 
@@ -1271,9 +1271,9 @@ and that means
 and that is exactly the definition of the matrix product as we explained
 above! Our bit of formalism has sort of "proved" it.  You see that the
 slice and dimension matching formalism we developed can really be
-helpful when you try to verify that your complicated threading
+helpful when you try to verify that your complicated broadcasting
 expression does what you want it to do.  However, as you get more
-experience with threading we strongly suspect that you don't need this
+experience with broadcasting we strongly suspect that you don't need this
 any more; you will rather develop a much better "feeling" how to write
 down the right combination of dimension manipulations to achieve the
 desired result in a thread loop.
