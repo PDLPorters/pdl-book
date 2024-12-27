@@ -366,7 +366,7 @@ ndarray. Does it do what you expect?
 =item 2. Broadcasting
 
 With C<printout_sum>, what if you replace C<$b> with a two-dimensional
-ndarray that is thread-compatible with C<$a>? Try to guess the order of the
+ndarray that is broadcast-compatible with C<$a>? Try to guess the order of the
 output that you'll get before running the example. Did you guess correctly?
 
 =item 3. Orthogonal NDArrays
@@ -636,7 +636,7 @@ columns, not the number of rows! I'll let you fix that in an exercise.
 =head3 Broadcastloops
 
 PDL::PP also has the C<broadcastloop> construct, which lets you declare the
-code over which PDL should thread, and the code that should come before
+code over which PDL should broadcast, and the code that should come before
 and after the broadcast loop. Here's a simple example demonstrating the
 C<broadcastloop> construct in conjunction with the C<loop> construct:
 

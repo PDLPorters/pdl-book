@@ -604,7 +604,7 @@ this B<elementary operation> is automatically iterated over all
 one-dimensional subslices of the input ndarray
 
 And, most importantly, this automatic iteration (we call it the
-B<threadloop>) is implemented as fast optimized C loops.  As a
+B<broadcastloop>) is implemented as fast optimized C loops.  As a
 convention, these subslices are by default taken along the first
 dimensions of the input ndarray.  In our current example the subslices
 are one-dimensional and therefore taken along the first dimension.  All
@@ -747,7 +747,7 @@ more involved .  Note that we explicitly have to create an output ndarray
 of the desired type and size.  By comparison, the corresponding
 broadcasting routine is much more concise:
 
-    sub mythreadmax {
+    sub mybroadcastmax {
        my ($pdl) = @_;
        return $pdl->maximum;
     }
@@ -755,7 +755,7 @@ broadcasting routine is much more concise:
 In fact, we only wrapped C<maximum> in another subroutine to have the
 same calling overhead as C<mymax> .  We are trying to be fair (even
 though we are biased).  So let's compare the performance of C<mymax>
-versus C<mythreadmax> .  How?  Remember that we are using perl, after
+versus C<mybroadcastmax> .  How?  Remember that we are using perl, after
 all, and that there is (almost) always a module that does just what you
 need.  Here and now, that would be C<Benchmark>.
 
@@ -766,12 +766,12 @@ Our benchmarking script looks like this
     $a = sequence(10,300);
     timethese(0, { # run each for at least 3 CPU secs
                 'Perl loops' => '$pl = mymax $a;',
-                'PDL thread' => '$pt = mythreadmax $a;',
+                'PDL broadcast' => '$pt = mybroadcastmax $a;',
     });
 
 If we run this script it generates
 
- PDL thread: 4 wclk secs (2.48 usr + 0.64 sys = 3.12 CPU) @ 12802.88/s (n=40009) 
+ PDL broadcast: 4 wclk secs (2.48 usr + 0.64 sys = 3.12 CPU) @ 12802.88/s (n=40009) 
  Perl loops: 3 wclk secs (1.80 usr + 1.23 sys = 3.03 CPU) @    12.86/s (n=39)
 
 That proves our point: while the example using broadcasting is executed at
@@ -816,7 +816,7 @@ parallelized! The keen reader has probably already observed that those
 internal automatic loops of elementary operations over subslices do not
 have to be performed sequentially.  In fact, as of PDL-2.4.10, there
 is a new capability where PDL now support automatic parallelization
-of the PDL threadloops via POSIX threads:
+of the PDL broadcastloops via POSIX threads:
 
    use Benchmark qw(:hireswallclock);
    use PDL;
@@ -906,7 +906,7 @@ zero-dimensional (a scalar).
 If ndarrays that are supplied as runtime arguments to a function have
 more dimensions than specified for their respective formal arguments in
 the signature then these dimensions are treated by PDL as B<extra dimensions>
-and lead to the operation being B<threaded> over the
+and lead to the operation being B<broadcasted> over the
 appropriate subslices, just what we have seen in the simple examples
 above.
 
@@ -1032,7 +1032,7 @@ Now broadcasting makes extending this example to a whole RGB image very straight
     use PDL::IO::Pic; # IO for popular image formats
     $im = rpic 'pdllogo.jpg'; # a colour image from the book dataset
     $gray = inner($im->pdim('COLOR'),$conv);
-       # threaded inner product over all pixels
+       # broadcasted inner product over all pixels
     $gb = $gray->byte; # back to byte type
     COLOR Byte D [3,500,300]
 
@@ -1080,8 +1080,8 @@ also does some type conversion to complete it:
 =head3 You can write your own broadcasting routines
 
 Did you notice? By writing this little routine we have created a new
-function with its own signature that will thread as appropriate.  It has
-B<inherited> the ability to thread from C<inner>.  So what is the
+function with its own signature that will broadcast as appropriate.  It has
+B<inherited> the ability to broadcast from C<inner>.  So what is the
 signature of C<rgbtogr>? It is nowhere written explicitly and we can't
 use the C<sig> function to find out about it
 
@@ -1100,7 +1100,7 @@ additionally, the size of the first dimension (named suggestively C<tri>)
 B<must> be three.  You get the idea.  
 What we have just seen is worth keeping in mind! By using PDL functions
 in our own subroutines we can make new functions with the ability to
-thread over subslices.  Obviously, this is useful.  We will come back to
+broadcast over subslices.  Obviously, this is useful.  We will come back to
 this feature when we talk about other ways of defining broadcasting
 functions using PDL::PP below.
 
@@ -1189,7 +1189,7 @@ this let us actually execute the command.  The slightly obscure error
 message is something like this
 
     PDL: PDL::Ops::mult(a,b,c): Parameter 'b'
-    PDL: Mismatched implicit thread dimension 0: should be 3, is 2
+    PDL: Mismatched implicit broadcast dimension 0: should be 3, is 2
     Caught at file (eval 344), line 4, pkg main
 
 This is PDL's way to tell you that the extra dimensions don't match.
@@ -1209,7 +1209,7 @@ by inserting a dummy dimension of size C<<$c->getdim(0)>> as dimension
      [4 4 4]
     ]
 
-Using this trick we have a our threaded multiplication do what we want.
+Using this trick we have a our broadcasted multiplication do what we want.
 And now the extra dimensions B<match>(!):
 
     $result = $c * $d->dummy(0,$c->getdim(0));
@@ -1232,21 +1232,21 @@ ndarray C<$d> .  So we finally arrive at
 
 While this kind of analysis seems probably not justified when dealing
 with such a simple example it comes in very handy when looking at more
-complex threaded code.
+complex broadcasted code.
 
 But before we try our understanding on such an example we look once
 again at the way extra dims have to match in a broadcast loop.  In the
 previous example, we had to find out about the size of C<$c>'s first
 dimension (using C<getdim(0)>) to make a dummy dimension that would
-fit C<$c>'s extradims in the threaded multiplication.  Since similar
-situations occur very often when writing threaded PDL code the matching
+fit C<$c>'s extradims in the broadcasted multiplication.  Since similar
+situations occur very often when writing broadcasted PDL code the matching
 rules for extra dimensions allow a dimension size of 1 to match any
 other dimension size: it is the B<elastic> dimension size in a sense
 that it grows in a broadcast loop as required.  As in the broadcast loop the
 corresponding extra dimension is marched through all its positions (e.g.
 C<slice(":,($i)") $i=0..n-1>) the elastic dimension just uses its one
 and only position 0 repeatedly ( C<slice(":,(0)") $i=0..n-1>).
-Therefore, an equivalent and more concise way to write the threaded
+Therefore, an equivalent and more concise way to write the broadcasted
 multiplications makes use of this and the fact that a dummy dimension
 of size 1 is created by default if the second argument is omitted (see
 C<help dummy>)

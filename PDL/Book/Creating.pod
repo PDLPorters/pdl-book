@@ -172,7 +172,7 @@ way to stuff a bunch of values from Perl variables into a PDL.
 =head3 Assignment with C<.=>
 
 PDL distinguishes between two kinds of assignment: I<global assignment>
-(the usual C<=> operator) and I<threaded (computed) assignment> (the
+(the usual C<=> operator) and I<broadcasted (computed) assignment> (the
 C<.=> operator).
 
 PDLs are best thought of as something like perl refs or C 
@@ -180,7 +180,7 @@ pointers: the variable points to the location in memory where the
 data reside. That makes array indexing and slicing 
 straightforward, since you can hold a slice of a larger array in 
 a related variable, without expensive memory copies. The global C<=>
-operator is used to set the value of the pointer. The threaded C<.=> 
+operator is used to set the value of the pointer. The broadcasted C<.=> 
 operator is used to set the value of the data that are contained 
 in the PDL. The two operators work quite differently. For 
 example:
@@ -200,7 +200,7 @@ received values from the corresponding elements of C<$a>.
 But that's not all! C<$b> and C<$c> end up with completely different 
 shapes. Because C<$c> started out as a 3x4-PDL, the broadcasting engine 
 duplicates C<$a> (which is a 3-PDL) for each row of C<$c>. The C<.=> 
-operator is called threaded assignment, because it causes its 
+operator is called broadcasted assignment, because it causes its 
 right-hand argument to be expanded and vectorized exactly as any 
 other operand would. Broadcasting is explained in detail in Section
 [sec:Dimensionality-and-Broadcasting]
@@ -547,10 +547,10 @@ The broadcasting engine is based on constructs from linear algebra
 
 Most operations act on the first few dimensions of a PDL. These 
 first dimensions are active dimensions and any dimensions after 
-that are called thread dimensions. The active dimensions must 
-match any requirements of the operator, and the thread dimensions 
+that are called broadcast dimensions. The active dimensions must 
+match any requirements of the operator, and the broadcast dimensions 
 are automatically looped over by the broadcasting engine. The 
-operator sets the number of active and thread dimensions. A given 
+operator sets the number of active and broadcast dimensions. A given 
 operator may have 0 active dimensions (e.g. addition, +), 1 
 active dimension (e.g. reduce operators like C<sumover> and vector 
 operators like C<cross>), 2 active dimensions (e.g. matrix 
@@ -559,7 +559,7 @@ multiplication), or even more.
 You can rearrange the way that an operator acts on a PDL by 
 rearranging the dim list of that PDL, to bring dims down into the 
 active position(s) for an operation or to bring them up to be 
-threaded over. These rearrangements are a generalization of 
+broadcasted over. These rearrangements are a generalization of 
 I<matrix transposition>, though in general they are quite fast as 
 they don't actually transpose the data in memory - only 
 rearrange PDL's internal metadata that explain how the block of 
@@ -567,7 +567,7 @@ memory is to be used.
 
 =head3 Broadcasting rules
 
-PDL operators that act on two or more operands require the thread 
+PDL operators that act on two or more operands require the broadcast 
 dimensions of each operand to match up. The broadcasting engine 
 follows these rules for each dim (starting with the 0 dim and 
 iterating through to the highest dim in either operand):
@@ -645,7 +645,7 @@ C<< $at=$a->transpose >> will yield the transpose of a matrix C<$a> (that
 is, with the 0 and 1 dims exchanged); you can use 
 C<< $a->inplace->transpose >> to change the variable itself. Of course, 
 if C<$a> has more than two dims, it is treated as a collection of 
-matrices (the other dims are threaded over).
+matrices (the other dims are broadcasted over).
 
 B<xchg - generalized transposition>
 

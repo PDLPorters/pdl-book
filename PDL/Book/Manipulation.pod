@@ -97,7 +97,7 @@ example,
 
 will amplify the tail of the brightness distribution around each 
 star: the C<mv(0,3)> shifts the color-plane index out of the active 
-dimension at the beginning of the dim list, to a thread dimension 
+dimension at the beginning of the dim list, to a broadcast dimension 
 at the end, making an 11x11x3xn array. The C<rvals> routine creates 
 an 11x11 PDL whose elements contain distance (in pixels) from the 
 center of the image, so the region around each star is amplified 
@@ -373,7 +373,7 @@ location can refer not only to a scalar but also to an C<N>-D
 rectangular subfield of the original source array. This is handy, 
 for example, for vectorizing some types of image processing: it 
 is possible to "stack up" subregions of a large data set for 
-threaded processing by a vectorized algorithm.
+broadcasted processing by a vectorized algorithm.
 
 You call range with a source PDL and an index, just like C<indexND> 
 -- but two optional arguments can follow -- a I<size array>, and a 
@@ -472,11 +472,11 @@ B<Output Dimensionality>
 C<range> broadcasts over both C<$index> and C<$source>. The returned 
 dimension list is stacked up like this:
 
-  (index thread dims), (index dims (size)), (source thread dims)
+  (index broadcast dims), (index dims (size)), (source broadcast dims)
 
-The first few dims of the output correspond to the thread dims of 
+The first few dims of the output correspond to the broadcast dims of 
 C<$index> (beyond the 0 dim). They allow you to pick out individual 
-ranges from a large, threaded collection, so that the output 
+ranges from a large, broadcasted collection, so that the output 
 normally has the same dimensionality as the C<$index>, but collapsed 
 by one dimension.
 
@@ -489,9 +489,9 @@ C<"(2,1)">.
 
 The last few dims of the output correspond to extra dims of 
 C<$source> beyond the number of dims indexed by C<$index>. These dims 
-act like ordinary thread dims, because adding more dims to 
+act like ordinary broadcast dims, because adding more dims to 
 C<$source> just tacks extra dims on the end of the output. Each 
-source thread dim ranges over the entire corresponding dim of 
+source broadcast dim ranges over the entire corresponding dim of 
 C<$source>.
 
 B<Examples>
@@ -610,7 +610,7 @@ the expression is true. If the source expression has more than
 one dimension, then it is B<flattened> to one dimension first using 
 C<flat> ([sub:Rearranging-a-dim]) so that it can be indexed with a 
 single number. Note that this may or may not be a useful way to 
-address thread dimensions, depending on your application. You can 
+address broadcast dimensions, depending on your application. You can 
 use the returned index list either in C<index> or in a C<NiceSlice> 
 expression, to get access to the elements. For example:
 
