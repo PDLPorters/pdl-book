@@ -27,7 +27,7 @@ The basic methods available:
 
   new, close ->  create and finalize plot objects
   xyplot, stripplots ->   2D plotting
-  shadeplot ->   `topographical' 3D data representation
+  shadeplot ->   "topographical" 3D data representation
   histogram ->   plot distribution of 1D data
   bargraph ->    plot distribution of categorical data
   text ->   annotate plots
@@ -359,7 +359,7 @@ Notes:
 
    --  Curve clipping - the first plot sets the plotting boundaries
         and later plots fall outside of those boundaries
-   --  Changing `current' color - the first plot sets the `current'
+   --  Changing "current" color - the first plot sets the "current"
         color and the second does not specify a color
    --  PLplots has a discrete color limit of 16, including foreground and background color.
 
@@ -620,7 +620,7 @@ PLplot has three distinct measurements for your plot at any point:
 
     -- the plotting surface's dimensions
     -- the viewport's relative extent
-    -- the `natural' coordinates within the viewport
+    -- the "natural" coordinates within the viewport
 
 =head2 Surface dimensions
 

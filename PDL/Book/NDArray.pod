@@ -7,9 +7,9 @@ pod2pdf NDArray.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --outp
 
 =head1 What is an NDArray?
 
-PDL uses Perl `objects' to hold PDL data, called an ndarray. An
-`object' is like a user-defined data-type and is a very powerful
-feature of Perl, PDL creates its own class of `PDL' objects to
+PDL uses Perl "objects" to hold PDL data, called an ndarray. An
+"object" is like a user-defined data-type and is a very powerful
+feature of Perl, PDL creates its own class of "PDL" objects to
 store ndarrays. These look like ordinary Perl variables such as $x,
 $Foo, $MyData, etc.
 
@@ -20,32 +20,32 @@ Most of the time you can forget about the fact that ndarrays are objects and tre
   $z = $x/$y;
   print sqrt($x+$y+$z);
 
-The only time the distinction becomes important is when creating ndarrays and using the `=' operator.
+The only time the distinction becomes important is when creating ndarrays and using the "=" operator.
 
-=head2 NDArrays are NOT Perl `arrays'
+=head2 NDArrays are NOT Perl "arrays"
 
 It is now time to answer a question which has probably been nagging at the back of your mind for a while.
 
-Why bother with ndarrays? Why not just use normal Perl `arrays'?
+Why bother with ndarrays? Why not just use normal Perl "arrays"?
 
-By Perl `arrays' we of course mean entities like @x and @Data z which one would normally create and manipulate like this:
+By Perl "arrays" we of course mean entities like @x and @Data z which one would normally create and manipulate like this:
 
    @x = (1,2,3);
    push @x, 42;
    $y = pop @x;
 
-So why don't we just use Perl `arrays'? Several very good reasons:
+So why don't we just use Perl "arrays"? Several very good reasons:
 
-It is impossible to manipulate Perl `arrays' arithmetically as one would like. i.e.:
+It is impossible to manipulate Perl "arrays" arithmetically as one would like. i.e.:
 
   @y = @x * 2;  # Wrong!
 
 can not be made to operate element by element.
 
-Perl `arrays' store Perl scalars (C<SV>s), each of which is a
+Perl "arrays" store Perl scalars (C<SV>s), each of which is a
 separate piece of data.
 
-Perl arrays are intrinsically one-dimensional. You can have `arrays of arrays' but this is not the same thing as true multi-dimensional arrays. Honest.
+Perl arrays are intrinsically one-dimensional. You can have "arrays of arrays" but this is not the same thing as true multi-dimensional arrays. Honest.
 
 Perl arrays consume a lot of memory. At least 20 bytes per number,
 of which only a few are for the actual value. This is because Perl
@@ -60,12 +60,12 @@ means consecutive numbers are not stored in a neat block of consecutive
 memory addresses as C and FORTRAN programmers are used to. This
 makes it difficult to pass the arrays to low-level C and FORTRAN
 routines for processing -- the numbers must be collected together
--a process known as `packing' -- processed and unpacked back into
-arrays. If you have `arrays of arrays' then it gets even worse.
+-a process known as "packing" -- processed and unpacked back into
+arrays. If you have "arrays of arrays" then it gets even worse.
 
 Perl arrays do not support the range of data types that ndarrays do (byte arrays, integer arrays, single precision, double precision, etc.)
 
 That is why PDL does not use Perl arrays. Just to be clear from now
-on we'll always refer to PDL numeric data arrays as `ndarrays' and
-Perl-style number/text arrays as `arrays'.
+on we'll always refer to PDL numeric data arrays as "ndarrays" and
+Perl-style number/text arrays as "arrays".
 
