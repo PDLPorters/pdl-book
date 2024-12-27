@@ -454,8 +454,8 @@ about what we don't know use C<apropos>:
   PDL::Fit::Gaussian ...
   				Module: routines for fitting gaussians
   PDL::Gaussian   Module: Gaussian distributions.
-  fitgauss1d      Fit 1D Gassian to data ndarray
-  fitgauss1dr     Fit 1D Gassian to radial data ndarray
+  fitgauss1d      Fit 1D Gaussian to data ndarray
+  fitgauss1dr     Fit 1D Gaussian to radial data ndarray
   gefa            Factor a matrix using Gaussian elimination.
   grandom         Constructor which returns ndarray of Gaussian random numbers
   ndtri           The value for which the area under the Gaussian probability density function (integrated from minus
