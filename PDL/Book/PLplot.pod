@@ -155,7 +155,7 @@ to B<PDL::Graphics::PLplot>
          -- option FILE must give the output file's name
   For output to a memory buffer:
          -- option DEV must be set to mem or memcairo
-         --option MEM must be passed a piddle where the results will be plot
+         --option MEM must be passed an ndarray where the results will be plotted
 
 
 =head2 Outputting postscript
@@ -170,8 +170,8 @@ to B<PDL::Graphics::PLplot>
 =head2 Tools for plotting points
 
 You can plot lines, symbols, or both by using the PLOTTYPE
-option. You specify error bars in x and y by passing a scalar or a
-piddle with those errors to XERRORBAR and YERRORBAR.
+option. You specify error bars in x and y by passing a scalar or an
+ndarray with those errors to XERRORBAR and YERRORBAR.
 
    -- PLOTTYPE => LINE plots data as lines (default)
    -- PLOTTYPE => POINTS plots data as points
@@ -226,14 +226,14 @@ To set the symbol type and size, use the SYMBOL and SYMBOLSIZE options.
 
 Depending on what you want, there are at least five ways to plot multiple curves.
 
-    -- plot a multidimensional piddle
+    -- plot a multidimensional ndarray
     -- call xyplot multiple times
     -- use stripplots
     -- specify SUBPAGES in the constructor
     -- create insets using the VIEWPORT option
 
 
-=head3 Plotting multiple curves with a multi-dimensional piddle
+=head3 Plotting multiple curves with a multi-dimensional ndarray
 
    #!/usr/bin/perl
    use strict;
@@ -272,7 +272,7 @@ Depending on what you want, there are at least five ways to plot multiple curves
 
 Use color to differentiate different data sets:
 
-   -- For multidimensional piddles, plot as POINTS and use the
+   -- For multidimensional ndarrays, plot as POINTS and use the
       COLORMAP and PALETTE options.
    -- For multiple calls to xyplot, use POINTS, COLORMAP, and
       PALETTE, or use COLOR option.
@@ -337,7 +337,7 @@ A multi-colored multi-curve plot
 
 =head3 Plotting multiple curves with differently colored calls to C<xyplot>
 
-An alternative to plotting a multi-dimensional piddle, you can plot multiple
+An alternative to plotting a multi-dimensional ndarray, you can plot multiple
 curves by multiple calls to xyplot, specifying  a different color for each plot.
 
 Legal colors are:
@@ -670,7 +670,7 @@ of space.
    
      # x runs from 0 to 10, y from -8 to 8:
      BOX => [0, 10, -8, 8]
-     # piddles have the minmax method:
+     # ndarrays have the minmax method:
      BOX => [$x pdl->minmax, $y pdl->minmax]
 
 When plotting using the specified box, a data point near (0, -8)
@@ -995,7 +995,7 @@ For multiple plots on the same viewport, set the box with the first call to xypl
    my $pl = PLplot->new(
        DEV => 'pscairo',
        FILE => 'shadeplot3.eps');
-   # Define z = sin(x) + cos(y), a 2D piddle:
+   # Define z = sin(x) + cos(y), a 2D ndarray:
    my $x=zeroes(51)->xlinvals(-10, 10);
    my $y=zeroes(51)->xlinvals(1, 7);
    my $z=sin($x) + cos($y->transpose);

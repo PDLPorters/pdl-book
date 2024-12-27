@@ -165,8 +165,8 @@ variables> (C<$a, $x, $y, $MyData>, etc.).  PDL data arrays are special arrays
 which use a more efficient, compact storage than standard perl arrays (C<@a,
 @x, ...>) and are much faster to access for numerical computations. To avoid
 confusion it is convenient to introduce a special name for them, we call them
-I<piddles> (short for 'PDL variables') to distinguish them from ordinary Perl
-'arrays', which are in fact really lists.  We'll say more about this later.
+I<ndarrays> (short for 'n-dimensional array') to distinguish them from ordinary Perl
+'arrays'.  We'll say more about this later.
 
 Before we start seriously playing around with M51 it is worth noting that we
 can also say:
@@ -246,14 +246,14 @@ Figure: The 'flatfield' image showing the detector sensitivity of the raw data.
 Well that's a lot better.  But think what we have
 just done. Both C<$a>  and C<$flat> are I<images>, with 512 pixels by
 512 pixels. B<The divide operator 'C</>' has been applied over all
-262144 data values in the piddles C<$a>  and C<$flat>.> And it was
+262144 data values in the ndarrays C<$a>  and C<$flat>.> And it was
 pretty fast too - these are what are known as I<vectorized>
 operations. In PDL each of these is implemented by heavily optimized
 C code, which is what makes PDL very efficient for procession of
 large chunks of data. If you did the same operation using normal
-perl arrays rather than piddles it would be about ten to twenty times slower
+perl arrays rather than ndarrays it would be about ten to twenty times slower
 (and use ten times more memory). In fact we can
-do whatever arithmetic operations we like on image piddles:
+do whatever arithmetic operations we like on image ndarrays:
 
 =for html <p> <img width="400" alt="" src="firststeps/sepia/crop/whirl-flattened.png"/></p>
 
@@ -265,8 +265,8 @@ Figure: The M51 image corrected for the flatfield.
   pdl> $funny = log(($gal/300)**2 - $gal/100  + 4); 
   pdl> imag $funny; # Surprise!
 
-Or on 1-D line piddles. On on 3-D cubic piddles. In fact piddles can support an infinite
-number of dimensions (though your computers memory won't). 
+Or on 1-D line ndarrays. On on 3-D cubic ndarrays. In fact ndarrays can support an infinite
+number of dimensions (though your computer's memory won't). 
 
 B<This the key to PDL: the ability to process large chunks of data at once.>
 
@@ -454,10 +454,10 @@ about what we don't know use C<apropos>:
   PDL::Fit::Gaussian ...
   				Module: routines for fitting gaussians
   PDL::Gaussian   Module: Gaussian distributions.
-  fitgauss1d      Fit 1D Gassian to data piddle
-  fitgauss1dr     Fit 1D Gassian to radial data piddle
+  fitgauss1d      Fit 1D Gassian to data ndarray
+  fitgauss1dr     Fit 1D Gassian to radial data ndarray
   gefa            Factor a matrix using Gaussian elimination.
-  grandom         Constructor which returns piddle of Gaussian random numbers
+  grandom         Constructor which returns ndarray of Gaussian random numbers
   ndtri           The value for which the area under the Gaussian probability density function (integrated from minus
   				infinity) is equal to the argument (cf erfi). Works inplace.
 
@@ -488,7 +488,7 @@ functional form.
 
 
 Note the use of a new function, C<sequence(N)>, which 
-generates a new piddle with N values ranging 0..(N-1).
+generates a new ndarray with N values ranging 0..(N-1).
 We are simply using this to generate the horizontal axis values
 for the plot.  Now let's overlay it on the previous plot.
 

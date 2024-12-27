@@ -36,7 +36,7 @@ them out in a comma separated list.
 You can define the functions in any part of your Perl script, even after
 the point in the program that you started using the function. The input
 variables to the function are passed through the C<@_> array, and we can
-put any set of piddles into the function. The function also has local
+put any set of ndarrays into the function. The function also has local
 scope, so variables inside the routine are not seen by anything calling
 that function. Remember, though, that the variables I<outside> the
 function B<can> be seen inside the function! It's good practice to have

@@ -439,7 +439,7 @@ the range call (this is the same behavior as slice).
 
 =item *
 
-B<1> or C<"t"> C<"truncate> - Values outside the original piddle get the 
+B<1> or C<"t"> C<"truncate> - Values outside the original ndarray get the 
 special value BAD if you've got bad value support compiled into 
 your PDL and set the badflag for the source PDL; or 0 if you 
 haven't (you must set the badflag if you want BADs for 
@@ -458,7 +458,7 @@ point instead to the nearest allowed value within the PDL.
 B<3> or C<"p"> C<"periodic> - Periodic boundary conditions apply: the 
 numbers in C<$index> are applied, strict-modulo the corresponding 
 dimensions of C<$source>. This is equivalent to duplicating the 
-C<$source> piddle throughout C<N>-D space. 
+C<$source> ndarray throughout C<N>-D space. 
 
 =item *
 

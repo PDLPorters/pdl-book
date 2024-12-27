@@ -426,7 +426,7 @@ C<^^>.
 String context is what you get if you use a PDL as a string. The PDL
 gets converted to a human-readable string suitable for printing. The
 new C<pdl()> string input capability allows one to convert printed
-piddles back into the original object.  The feature includes support
+ndarrays back into the original object.  The feature includes support
 for MATLAB-style C<[ ; ]> syntax as well.
 
 Because string conversion is intended for use with C<print>, PDLs

@@ -84,7 +84,7 @@ positive and negative.
 
     pdl> $x=zeroes(100)->xlinvals(-5, 5)
 
-This creates a 100 element piddle starting at -5 and ending at 5. We can
+This creates a 100 element ndarray starting at -5 and ending at 5. We can
 then very easily draw a parabola:
 
 
@@ -300,7 +300,7 @@ table:
     3   Green       7   Yellow
 
 However there is a much more flexible mechanism to deal with colour. The
-colour can be set as a 3 or 4 element anonymous array (or piddle) which
+colour can be set as a 3 or 4 element anonymous array (or ndarray) which
 gives the RGB colours. If the array has four elements the first element
 is taken to be the colour index to change. For normal work you might
 want to simply use a 3 element array with R, G and B values and let the
@@ -356,7 +356,7 @@ C<Angle> to set the angle that the hatch lines will make
 with the horizontal, C<Separation> to set the spacing of the hatch lines
 in units of 1% of C<min(height,width)> of the view surface, and C<Phase>
 to set the offset the hatching.  Alternatively this can be specified as
-a 1x3 piddle C<< $hatch=pdl[$angle, $sep, $phase] >>.
+a 1x3 ndarray C<< $hatch=pdl[$angle, $sep, $phase] >>.
 
     $opt = {Filltype => 'Hatched', Hatching => {Angle=>30, Separation=>4}};
 
@@ -412,7 +412,7 @@ place two plots above each other with no space between them you could do
 
 The plot symbol to use, with the default being 17 which gives a small
 filled circle. This is an option for C<points> and C<errb> at the
-moment, but could be used for others too. It is either given a piddle
+moment, but could be used for others too. It is either given an ndarray
 with the same number of elements as the plot variable, a name (or
 number) specifying the symbol to use according to the following
 (recognized name in capital letters):
@@ -641,8 +641,8 @@ through the plots:
 
 The string C<Triangle> is equivalent to symbol number 7 and in general
 symbols will have to be accessed using the numerical system, but there
-are textual equivalents for many commonly used symbols (see L</"Options in plot commands">). The C<points> command does also accept a
-piddle as the symbol value, in which case it should have the same length
+are textual equivalents for many commonly used symbols (see L</"Options in plot commands">). The C<points> command does also accept an
+ndarray as the symbol value, in which case it should have the same length
 as C<$x> and C<$y> and each point will be plotted with the corresponding
 symbol value.
 
@@ -748,7 +748,7 @@ PGPLOT was originally designed for astronomy and as such it has good
 support for the display of 2D-data. In PDL this support has been
 simplified and there is now only one command for image display, C<imag>
 , which internally chooses between different PGPLOT display commands.
-The simplest use of C<imag> is to let it act on a 2D piddle so:
+The simplest use of C<imag> is to let it act on a 2D ndarray so:
 
 
     pdl> $a = rvals(50,50, {Center => [ 25, 25]}); 
@@ -913,8 +913,8 @@ argument.
 That might be all you need, but most likely you would like to specify
 contour levels, label contours and maybe draw them in different colours.
 
-You use the option C<Contours> to give the wanted contour levels as a
-piddle and C<Labels> to give an anonymous array of strings for labels as
+You use the option C<Contours> to give the wanted contour levels as an
+ndarray and C<Labels> to give an anonymous array of strings for labels as
 shown in the example below:
 
     use PDL; use PDL::Graphics::PGPLOT; 
@@ -1239,7 +1239,7 @@ And finally the data in the tables can be accessed with this function
 which takes as arguments the name of the colour table, and optionally a
 scalar determining if the colour table is to be reversed and the name of
 an intensity ramp (default is a linear intensity ramp). The function
-returns four piddles with intensity and RGB values which can immediately
+returns four ndarrays with intensity and RGB values which can immediately
 be passed to C<ctab>. 
 
 =back
@@ -1298,8 +1298,8 @@ common occurrence if you wanted to draw a B<lot> of lines).
 That said the C<PDL::Graphics::PGPLOT> interface does have limited
 support for threading in the C<line> and C<points> functions. These call
 the C<tline> and C<tpoints> internally, and work just like C<line> and
-C<points> except that they expect the input I<y>-piddle to be 2D, with
-each line in the array plotted against the I<x>-piddle. 
+C<points> except that they expect the input I<y>-ndarray to be 2D, with
+each line in the array plotted against the I<x>-ndarray. 
 
 The way the options are treated is the most interesting. To set options
 for a set of lines, give an anonymous array as argument to that option
@@ -1495,7 +1495,7 @@ is because the state now remembers the explicit C<env> statement that
 you had made and uses that to set the limits. 
 
 Finally you must remember that the reference is not to a variable name,
-but to a piddle which exists separately from the variable. Thus you
+but to an ndarray which exists separately from the variable. Thus you
 cannot change your data at a whim, so the following change will change
 the data back to where we started 
 
@@ -1731,7 +1731,7 @@ inconvenient when dealing with PDL.
 Full documentation for the PGPLOT functions can be found at Tim
 Pearson's WWW page: C<http://astro.caltech.edu/~tjp/pgplot/> . This is
 not the place to discuss the details of PGPLOT, but it is interesting to
-learn how to access these routines from PDL with piddles as arguments. 
+learn how to access these routines from PDL with ndarrays as arguments. 
 
 Typical PGPLOT drawing functions take as arguments the number of points
 and references to perl arrays to give x and y coordinates, thus:
@@ -1743,10 +1743,10 @@ and references to perl arrays to give x and y coordinates, thus:
 will plot three points with the x and y values indicates and using
 plotting symbol 4 (circle).
 
-The complication for PDL users is that piddles are not perl arrays and
+The complication for PDL users is that ndarrays are not perl arrays and
 hence have to be converted to array references before they can be passed
 to a PGPLOT function. This is achieved with the C<get_dataref> command
-which returns a reference to the data in a piddle. Thus the example
+which returns a reference to the data in an ndarray. Thus the example
 above would be written:
 
     $x = pdl(1,2,3);

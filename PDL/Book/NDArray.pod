@@ -7,22 +7,26 @@ pod2pdf NDArray.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --outp
 
 =head1 What is an NDArray?
 
-PDL uses Perl `objects' to hold PDL data, affectionately called a piddle. An `object' is like a user-defined data-type and is a very powerful feature of Perl, PDL creates it's own class of `PDL' objects to store piddles. These look like ordinary Perl variables such as $x, $Foo, $MyData, etc.
+PDL uses Perl `objects' to hold PDL data, called an ndarray. An
+`object' is like a user-defined data-type and is a very powerful
+feature of Perl, PDL creates its own class of `PDL' objects to
+store ndarrays. These look like ordinary Perl variables such as $x,
+$Foo, $MyData, etc.
 
-Most of the time you can forget about the fact that piddles are objects and treat them like ordinary variables:
+Most of the time you can forget about the fact that ndarrays are objects and treat them like ordinary variables:
 
   $x = rfits 'file.fits';
   $y = rvals($x);
   $z = $x/$y;
   print sqrt($x+$y+$z);
 
-The only time the distinction becomes important is when creating piddles and using the `=' operator.
+The only time the distinction becomes important is when creating ndarrays and using the `=' operator.
 
 =head2 NDArrays are NOT Perl `arrays'
 
 It is now time to answer a question which has probably been nagging at the back of your mind for a while.
 
-Why bother with piddles? Why not just use normal Perl `arrays'?
+Why bother with ndarrays? Why not just use normal Perl `arrays'?
 
 By Perl `arrays' we of course mean entities like @x and @Data z which one would normally create and manipulate like this:
 
@@ -59,9 +63,9 @@ routines for processing -- the numbers must be collected together
 -a process known as `packing' -- processed and unpacked back into
 arrays. If you have `arrays of arrays' then it gets even worse.
 
-Perl arrays do not support the range of data types that piddles do (byte arrays, integer arrays, single precision, double precision, etc.)
+Perl arrays do not support the range of data types that ndarrays do (byte arrays, integer arrays, single precision, double precision, etc.)
 
 That is why PDL does not use Perl arrays. Just to be clear from now
-on we'll always refer to PDL numeric data arrays as `piddles' and
+on we'll always refer to PDL numeric data arrays as `ndarrays' and
 Perl-style number/text arrays as `arrays'.
 

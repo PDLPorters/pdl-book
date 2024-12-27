@@ -24,10 +24,10 @@ image.
 
 This sort of abstraction is extremely powerful as it allows for very
 concise and clear code.  We'll start by looking at the simplest
-operations to extract simple slices of piddles, and look at increasingly
+operations to extract simple slices of ndarrays, and look at increasingly
 more complex kinds of slices.
 
-=head2 Finding piddle dimensions.  
+=head2 Finding ndarray dimensions.  
 
 PDL data arrays can take arbitrary sizes and dimensions.  Finding the
 current dimensions is straight-forward with the C<dims> function which
@@ -37,18 +37,18 @@ returns a list:
     print dims($data);
     ($nx, $ny, $nz) = dims($data);
 
-The number of elements in a piddle is equally easy: 
+The number of elements in an ndarray is equally easy: 
 
     print nelem($data); 
 
 =head2 The C<slice> function - regular subsets along axes
 
-Earlier we saw how to extract a rectangular subset of a
-piddle: 
+Earlier we saw how to extract a rectangular subset of an
+ndarray: 
 
     $section = $gal(337:357,178:198);
 
-The piddle C<$gal> was a 2D image, we used array syntax (compliments
+The ndarray C<$gal> was a 2D image, we used array syntax (compliments
 of C<PDL::NiceSlice>) to extract a contiguous subset ranging from
 pixel 337 to 357 along the first dimension, and 178 through 198 along
 the second.  Behind the scenes, this is implemented by the C<slice>
@@ -87,7 +87,7 @@ C<-N> to refer to the last elements:
 One can also specify a step in the slice using the form C< A:B:C > where
 C< C > is the step.  Here is an example: 
 
-    perldl> $x = sequence(24); # Create a piddle of increasing value
+    perldl> $x = sequence(24); # Create an ndarray of increasing value
     perldl> print $x
     [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23]
     perldl> print $x(16:22:2)
@@ -155,7 +155,7 @@ simple operations on slices to be optimised - i.e.  a temporary internal
 copy of the slice need not be made.  Of course sometimes - for example
 when passing to an external subroutine - this optimisation is not
 possible.  But the book-keeping of propagating the changes back to the
-original piddle is handled automatically.  
+original ndarray is handled automatically.  
 
 =head3 Advanced slice syntax
 
@@ -189,7 +189,7 @@ commonly seen in PDL code and is very handy.  While at first unfamilar
 to C and FORTRAN users it is not rocket science, PDL users will quickly
 become used to it.
 
-As we mentioned in Chapter 2 piddles are implemented as Perl objects.
+As we mentioned in Chapter 2 ndarrays are implemented as Perl objects.
 Objects can have their own personal functions, known as methods.  The
 difference between a method and a function is that a method can only be
 used on the class of object it belongs too.  And methods have a new
@@ -222,7 +222,7 @@ for C<PDL::NiceSlice> for details.
 As well as take regular slices along axes via the C< slice > function,
 another common requirement is to take B< irregular slices > , by which
 we mean a list of arbitrary coordinates.  This operation is referred to
-in PDL as B< dicing > a piddle.  
+in PDL as B< dicing > an ndarray.  
 
 The C< dice_axis > function performs a dice along a specified axis: 
 
@@ -231,7 +231,7 @@ The C< dice_axis > function performs a dice along a specified axis:
     $b .= 42; # Alters columns [3,7,9];
     print $b;
 
-For a 2D piddle dicing along axis 0 selects columns, dicing along axis 1
+For a 2D ndarray dicing along axis 0 selects columns, dicing along axis 1
 selects rows.  In general in N-dimensions dicing along a given axis
 reduces the number of elements along that axis, but the number of
 dimensions remains unchanged.  The C< dice > function allows all axes to
@@ -241,7 +241,7 @@ be specified at once:
     print dims dice $z,[2,3,5],[10,11,12],[30..35,39,40];
 
 The list of axes in the dice can be specified using Perl's ` C< [] > '
-list reference notation or using a 1D piddle:
+list reference notation or using a 1D ndarray:
 
     $z = sequence 10,20;
     $dice = long(random(10)*10); # Select random columns
@@ -260,8 +260,8 @@ C<xchg> simply swaps two dimensions:
 
 This is a simple matrix transpose.  The method C<< $z->transpose >> and
 the equivalent operator C<~$z> also do this, though they
-also make a copy (i.e. return a new piddle) not a slice and can operate
-on 1D piddles (i.e. convert a row vector into a column vector).
+also make a copy (i.e. return a new ndarray) not a slice and can operate
+on 1D ndarrays (i.e. convert a row vector into a column vector).
 Somethimes this is what you want.  C<xchg> works like C<slice> and
 C<dice> - changes affect the original.  Also C<xchg> generalises to
 N-dimensions: 
@@ -289,7 +289,7 @@ We've now seen a whole slew of functions for changing the ordering of
 dimensions.  It is now time to look at some more complicated operations.
 The first of these is something we have already seen in Chapter 1.  This
 is the C<clump> function for combining dimensions together.  Suppose
-we have a 3-D datacube piddle:
+we have a 3-D datacube ndarray:
 
     perldl> $a = xvals(5,3,2);
     perldl> print $a;
@@ -421,7 +421,7 @@ and C< where>
 Our look at advanced slicing concludes with a look at completely general
 subsets, specified using arbitrary conditions.
 
-Let's make a piddle of real numbers from 0 to 1:
+Let's make an ndarray of real numbers from 0 to 1:
 
     perldl> print $a = sequence(10)/10;
     [0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
@@ -434,13 +434,13 @@ and above 0.9:
     [1 1 1 0 0 0 0 0 0 1]
 
 We'll use this as an example of an arbitrary condtion.  Using C< which >
-we can return a piddle containing the positions of the elements which
+we can return an ndarray containing the positions of the elements which
 match the condition:
 
     perldl> $idx = which($a<0.25 | $a>0.85); print $idx;
     [0 1 2 9]
 
-i.e.  elements 0..2 and 9 in the original piddle are the ones we want.
+i.e.  elements 0..2 and 9 in the original ndarray are the ones we want.
 We can select these using the C< index > function:
 
     perldl> print $a->index($idx);
@@ -518,7 +518,7 @@ more about that later.
 =head3 A simple example
 
 As a starting point, we look at one of the PDL projection operators
-(they make N-1 dimensional piddles from N dim input piddles).  So we
+(they make N-1 dimensional ndarrays from N dim input ndarrays).  So we
 need some data to try our code on.  This time, we use the image of a
 tiny fluorescent bead that was recorded with a fluorescent microscope: 
 
@@ -530,8 +530,8 @@ The following code snippet calculates the maxima of all rows of this image C< $i
     $max = $im->maximum;
 
 We rewrite this example slightly so that we can see the dimensions of
-the piddles involved using a little helper routine (see box) to print
-out the shape of piddles in the course of computations:
+the ndarrays involved using a little helper routine (see box) to print
+out the shape of ndarrays in the course of computations:
 
 ($max = $im->pdim('Input')->maximum)->pdim('Result');
 
@@ -559,10 +559,10 @@ that generates the following output:
     height_special "none"
     status open
 
-Since is important to keep track of the dimensions of piddles when using
+Since is important to keep track of the dimensions of ndarrays when using
 (and especially when introducing) B< PDL threading > we quickly define a
 shorthand command (a method) that lets us print the dimensions of
-piddles nicely formatted as needed: 
+ndarrays nicely formatted as needed: 
 
     { package PDL;
     sub pdim { # pretty print type+dimensions and
@@ -586,8 +586,8 @@ piddles nicely formatted as needed:
     }}
 
 Two observations: note how we temporarily switched into the package PDL
-so that pdim can be used as a method on piddles and we made the function
-return the piddle argument so that it can be seamlessly integrated into
+so that pdim can be used as a method on ndarrays and we made the function
+return the ndarray argument so that it can be seamlessly integrated into
 method invocation chains:
 
     $a->pdim("Dims")->maximum;
@@ -595,23 +595,23 @@ method invocation chains:
 A small utility routine
 
 So let's dissect what has happened.  If you look at the documentation of
-C< maximum > it says This function reduces the dimensionality of a
-piddle by one by taking the maximum along the 1st dimension.
+C< maximum > it says This function reduces the dimensionality of an
+ndarray by one by taking the maximum along the 1st dimension.
 
 In this respect C< maximum > behaves quite differently from C< max > .
 C< max > will always return a scalar with a value equal to that of the
-largest element of a (possibly multidimensional) piddle.  C< maximum > ,
+largest element of a (possibly multidimensional) ndarray.  C< maximum > ,
 however, is by definition an operation that takes the maximum only over
-a one-dimensional vector.  If the input piddle is of higher dimension
+a one-dimensional vector.  If the input ndarray is of higher dimension
 this B< elementary operation > is automatically iterated over all
-one-dimensional subslices of the input piddle
+one-dimensional subslices of the input ndarray
 
 And, most imporatantly, this automatic iteration (we call it the B<
 threadloop >) is implemented as fast optimized C loops.  As a
 convention, these subslices are by default taken along the first
-dimensions of the input piddle.  In our current example the subslices
+dimensions of the input ndarray.  In our current example the subslices
 are one-dimensional and therefore taken along the first dimension.  All
-results are placed in an appropriately sized output piddle of N-1
+results are placed in an appropriately sized output ndarray of N-1
 dimension s, one value for each subslice on which the operation was
 performed.
 
@@ -630,7 +630,7 @@ Now it should be no surprise that
      [104 109 114 119 124 129 134 139 144 149]
     ]
 
-As expected the above command sequence creates a 2D piddle (size
+As expected the above command sequence creates a 2D ndarray (size
 C<[10,3]>) of maxima of all rows of the original volume data.
 
 =head3 Why bother?
@@ -652,36 +652,36 @@ dimension but rather along the second (the column maxima).  However, we
 just heard that C< maximum > works by definition on the first dimension.
 How can we make it do the same thing on the second dimension? Here is
 where the dimension manipulation routines come in handy: we use a to
-make a piddle in which the original second dimension has been moved to
+make an ndarray in which the original second dimension has been moved to
 first place.  Guess how that is done: yes, using C<xchg> we get what
 we want 
 
 If you check C<pdim>'s output you see how the originally second
 dimension of size 10 has been moved to the first dimension (step 1->2)
 and, accordingly, maximum now does its work on all the columns of the
-original input piddle C<$im3d> (step 3).
+original input ndarray C<$im3d> (step 3).
 
 Again PDL has automatically iterated the elementary functionality of
 maximum (calculate the maximum of a one-dimensional vector) over all
-subslices of the data and created an appropriately sized piddle (here of
+subslices of the data and created an appropriately sized ndarray (here of
 shape C<[5,3]>) to hold the resulting elements.
 
 This general scheme works for most PDL functions.  For example, let's
-say you have a stack of images (represented by a 3D piddle) and you want
+say you have a stack of images (represented by a 3D ndarray) and you want
 to convolve each image with the same kernel.  That's easy.  Make sure
-the image dimensions (x and y) are the leading dimension in your piddle:
+the image dimensions (x and y) are the leading dimension in your ndarray:
 
     $convolved = $stack->conv2d($kernel);
 
 And if your image stack is organized differently, e.g.  the leading
-dimension is the z dimension, say in a [8,256,256] shaped piddle just
+dimension is the z dimension, say in a [8,256,256] shaped ndarray just
 use C< mv > to obtain the desired result:
 
     $convolved = $stack->mv(0,2)->conv2d($kernel);
 
 These (admittedly simple) examples show the general principle: an
 elementary operation is iterated over subslices of one or several
-multidimensional piddles.  Sometimes the dimensions of the input piddles
+multidimensional ndarrays.  Sometimes the dimensions of the input ndarrays
 involved need to be manipulated so that iteration happens as desired
 (e.g.  over the intended subslices) and the result has the intended
 dimensionality.  Formulating your problem at hand in a way that makes
@@ -730,8 +730,8 @@ maximum > on 2D input without using threading
     }
 
 We have written it so that C< mymax > can just deal with 2D input
-piddles.  A routine for the general n-dimensional case would have been
-more involved .  Note that we explicitly have to create an output piddle
+ndarrays.  A routine for the general n-dimensional case would have been
+more involved .  Note that we explicitly have to create an output ndarray
 of the desired type and size.  By comparison, the corresponding
 threading routine is much more concise:
 
@@ -766,7 +766,7 @@ That proves our point: while the example using threading is executed at
 a rate of nearly 13,000 per second using explicit loops has brought down
 the speed to less than 13/s, a very significant difference.  Obviously,
 the difference between threading and explicit looping depends somewhat
-on the nature of the elementary operation and the piddles in question.
+on the nature of the elementary operation and the ndarrays in question.
 The difference becomes most striking the more elementary operations are
 involved and the faster an individual elementary operation can be
 performed.  The advantage of threading will level off as the time for
@@ -776,7 +776,7 @@ than that required to execute the explicit looping code.
 Another distinct advantage becomes apparent when comparing the code
 required to implement the equivalent of the C< maximum > functionality
 explicitly in perl code.  We have to write extra code to create the
-right size ouput piddle, explicitly handle dimension sizes, etc.  All in
+right size ouput ndarray, explicitly handle dimension sizes, etc.  All in
 all the code is much less concise and also less general.
 
 With the requirement to deal with all dimensions, loop limits, etc
@@ -877,7 +877,7 @@ the usual way that can be written symbolically as:
 
 or equivalently, using the method notation:
 
-    output_arg_list = input_piddle_1->function(rest_of_arg_list)
+    output_arg_list = input_ndarray_1->function(rest_of_arg_list)
 
 The other important information supplied by the signature is the
 dimensionality of each of these arguments in an elementary operation.
@@ -888,23 +888,23 @@ dimension has a B< named > size in a signature, in this example C< n > .
 C< c() > has an empty list of dimension sizes: it is declared to be
 zero-dimensional (a scalar).
 
-If piddles that are supplied as runtime arguments to a function have
+If ndarrays that are supplied as runtime arguments to a function have
 more dimensions than specified for their respective formal arguments in
 the signature then these dimensions are treated by PDL as B< extra
 dimensions > and lead to the operation being B< threaded > over the
 appropriate subslices, just what we have seen in the simple examples
 above.
 
-As mentioned before a higher dimensional piddle can be viewed as an
+As mentioned before a higher dimensional ndarray can be viewed as an
 array (again B< not > in the perl array sense) of lower dimensional
 subslices.  Anybody who has ever worked with matrix algebra will be
 familiar with the concept.  For some of the following examples it will
 be useful to illustrate this concept in somewhat more detail.  Let's
-make a piddle first, a simple 3D piddle:
+make an ndarray first, a simple 3D ndarray:
 
     $pdl = sequence(3,4,5);
 
-A boring piddle, you say? Yes, boring, but simple enough to clearly see
+A boring ndarray, you say? Yes, boring, but simple enough to clearly see
 what is going on in the following.  First we look at it as a 3D array of
 0D subslices.  Since we know the syntax of the C< slice > method already
 we can write down all 0D subslices, no problem:
@@ -932,10 +932,10 @@ And similarly, as a C< [ > 5 C< ] > array of 2D subslices
 
 You see how we just insert a ':' for each complete dimension we include
 in the subslice.  In fig.  XXX the situation is illustrated graphically
-for a 2D piddle.  Depending on the dimensions involved in an elementary
+for a 2D ndarray.  Depending on the dimensions involved in an elementary
 operation we therefore often group the dimensions (what we call the B<
-shape >) of a piddle in a form that suggests the interpretation as an
-array of subslices.  For example, given our 3D piddle above that has a
+shape >) of an ndarray in a form that suggests the interpretation as an
+array of subslices.  For example, given our 3D ndarray above that has a
 shape C< [ > 3,4,5 C< ] > we have the following different
 interpretations:
 
@@ -950,19 +950,19 @@ elementary operation (mimicking the signature syntax); in the context of
 threading we call these the B< elementary dimensions > .  The following
 group of dimensions in rectangular brackets are the B< extra dimensions
 > .  Conversely, given the elementary/extra dims notation we can easily
-obtain the shape of the underlying piddle by appending the extradims to
+obtain the shape of the underlying ndarray by appending the extradims to
 the elementary dims.  For example, a C< [ > 3,6,1 C< ] > array of 2D
 subslices (3,4) 
 
     (3,4)[3,6,1]
 
-identifies our piddle's shape as C< [ > 3,4,3,6,1 C< ] >
+identifies our ndarray's shape as C< [ > 3,4,3,6,1 C< ] >
 
 Alright, the principles are simple.  But nothing is better than a few
 examples.  Again a typical imaging processing task is our starting
 point.  We want to convert a colour image to greyscale.  The input image
 is represented as a two-dimensional array of triples of RGB colour
-coordinates, or in other words, a piddle of shape C< [3,n,m] > .
+coordinates, or in other words, an ndarray of shape C< [3,n,m] > .
 Without delving too deeply into the details of digital colour
 representation it suffices to note that commonly a grey value B< i >
 corresponding to a colour represented by a triple of red, green and blue
@@ -1017,13 +1017,13 @@ threading.  However, the first argument C< $im > has two B< extra
 dimensions > (shape C< [ > 500,300 C< ] >).  In this case threading
 works (as you would probably expect) by iterating the inner product over
 the combination of all 1D subslices of C< $im > with the one and only
-subslice of C< $conv > creating a resulting piddle (the greyscale image)
+subslice of C< $conv > creating a resulting ndarray (the greyscale image)
 that is made up of all results of these elementary operations: a 500x300
-array of scalars, or in other words, a 2D piddle of shape C< [ > 500,300
+array of scalars, or in other words, a 2D ndarray of shape C< [ > 500,300
 C< ] > .
 
 We can more concisely express what we have said in words above in our
-new way to split piddle arguments in elementary dimensions and extra
+new way to split ndarray arguments in elementary dimensions and extra
 dimensions.  At the top we write C< inner > 's signature and at the
 bottom the C< slice > expressions that show the subslices involved in
 each elementary operation:
@@ -1038,7 +1038,7 @@ have to generate all these slices yourself.  It rather tells you which
 subslices are used in a elementary operation.  It is a way to keep track
 what is going on behind the scenes when PDL threading is at work.
 Threading makes it possible that we can call the greyscale conversion
-with piddles representing just one RGB pixel (shape C< [ > 3 C< ] >), a
+with ndarrays representing just one RGB pixel (shape C< [ > 3 C< ] >), a
 line of RGB pixels (shape C< [ > 3,n C< ] >), RGB images (shape C< [ >
 3,m,n C< ] >), volumes of RGB data (shape C< [ > 3,m,n,o C< ] >), etc.
 All we have to do is wrap the code above into a small subroutine that
@@ -1062,7 +1062,7 @@ use the C<sig> function to find out about it
 
 C<sig> will only know about functions that were created using C<PDL::PP> or if we explicitly specified the signature in the PDL
 documentation but from the properties of C<inner> and the definition
-of C<rgbtogr> we can work it out.  As input it takes piddles with a
+of C<rgbtogr> we can work it out.  As input it takes ndarrays with a
 size of the first dimension of 3 and returns for each of the 1D
 subslices a 0D result (the greyvalue).  In other words, the signature is
 
@@ -1084,12 +1084,12 @@ functions using PDL::PP below.
 
 
 After this small digression, back to the subject at hand: what happens
-when both piddle arguments have extra dimensions? Well, the extra
+when both ndarray arguments have extra dimensions? Well, the extra
 dimensions have to match.  Otherwise we wouldn't know how to sensibly
 pair the subslices, right? So when do extra dimensions match? It is
 quite simple: corresponding extra dimensions have to have the same size
-in both piddle arguments.  Corresponding extra dimensions are those that
-occur in both piddles.  However, one piddle can have more extra
+in both ndarray arguments.  Corresponding extra dimensions are those that
+occur in both ndarrays.  However, one ndarray can have more extra
 dimensions than the other without causing a mismatch.  That sounds
 strange? Ok, here is an example.  We use one of the fundamental
 arithmetic operations in PDL, addition implemente d by the ' C< + > '
@@ -1100,9 +1100,9 @@ of ' C< + > ' comes as no surprise
     a(); b(); [o] c()
 
 two scalars are summed to yield a scalar result.  And when we use higher
-dimensional piddles in an addition this elementary operation is
+dimensional ndarrays in an addition this elementary operation is
 performed over all 0D subslices, as before.  So let's go through a few
-cases.  First make some simple piddles
+cases.  First make some simple ndarrays
 
     $a = pdl [1,2,3];
     $b = pdl [1,1,1];
@@ -1110,7 +1110,7 @@ cases.  First make some simple piddles
     $d = pdl [3,4];
     print $a + $b, "\n"; 
 
-No big deal.  Extradims for both piddles have shape C< [ > 3 C< ] >
+No big deal.  Extradims for both ndarrays have shape C< [ > 3 C< ] >
 obviously matching, resulting in
 
     [2 3 4]
@@ -1129,23 +1129,23 @@ what we intuitive ly expected anyway.
 
 C< $a > 's B< extradim > (s) has shape C< [ > 3 C< ] > , those of C< $c
 > shape C< [ > 3 2 C< ] > .  The B< corresponding > B< extradim > (s) in
-this case is just the first one for the piddles involved.  It is equal
-to 3 in both input piddles, so clearly matches.
+this case is just the first one for the ndarrays involved.  It is equal
+to 3 in both input ndarrays, so clearly matches.
 
     $a $c
     a(); b(); [o] c()
     ()[3] ()[3,2] ?????
 
 Now, here is something we have not explicitly discussed yet: what is the
-shape of the automatically created output piddle given the shape of the
-extradims of the input piddles involved? Well, the result is created so
-that it has as many extradims as that input B< piddle > (s) with the
+shape of the automatically created output ndarray given the shape of the
+extradims of the input ndarrays involved? Well, the result is created so
+that it has as many extradims as that input B< ndarray > (s) with the
 most extradims.  Additionally, the shape will match that of the input
-piddles.  In our current example that leaves us with a result with
+ndarrays.  In our current example that leaves us with a result with
 extradim shape C< [ > 3,2 C< ] > : [o] c() ()[3,2] Remembering that we
-obtain the shape of the output piddle by appending the shapes of the
+obtain the shape of the output ndarray by appending the shapes of the
 extradims to that of the elementary dimensions (here a scalar, i.e.  0D)
-that leaves us with a result piddle of shape C< [
+that leaves us with a result ndarray of shape C< [
 >
 3,2 C< ]
 >
@@ -1205,7 +1205,7 @@ But hang on, we want to verify (somewhat formally) that the right
 subslices of the original C< $d > are used in each elementary operation.
 That is easily achieved by noting that the slice "($i),($j)" of the
 dummied C< $d > is equivalent to the subslice "($j)" of the original 1D
-piddle C< $d > .  So we finally arrive at
+ndarray C< $d > .  So we finally arrive at
 
     $c $d $result
     "($i),(j)" "($j)" "($i),($j)"
@@ -1238,7 +1238,7 @@ C< help dummy >)
     (l)[1,m] (l)[n] ()[n,m]
     ":,(0),($j)" ":,($i)" "($i)($j)"
 
-Going back to the original piddles C<$A> and C<$B> we see that the slice
+Going back to the original ndarrays C<$A> and C<$B> we see that the slice
 expressions change to
 
     $A $B $AB

@@ -8,7 +8,7 @@ my $pl = PLplot->new(
        DEV => 'pscairo',
        FILE => 'shadeplot3.eps');
 
-# Define z = sin(x) + cos(y), a 2D piddle:
+# Define z = sin(x) + cos(y), a 2D ndarray:
 my $x=zeroes(51)->xlinvals(-10, 10);
 my $y=zeroes(51)->xlinvals(1, 7);
 my $z=sin($x) + cos($y->transpose);

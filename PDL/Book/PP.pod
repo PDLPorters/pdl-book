@@ -119,7 +119,7 @@ for a normal computational function (as opposed to a slice function, for
 which there is sadly no documentation) is the C<Pars> key and the C<Code>
 key.
 
-The C<Pars> key specifies the B<piddle> arguments for your function. It
+The C<Pars> key specifies the B<ndarray> arguments for your function. It
 accepts a simple Perl string with the argument names and dimensions, 
 delimited by semicolons. In the example I only use a single argument, but
 you can specify multiple input and output arguments, and you can even
@@ -133,7 +133,7 @@ am going to call PP code. This Perl string gets thoroughly transformed by
 PDL::PP and combined with other keys to produce the XS (and eventually C)
 code for your function. You can think of PP code as being regular C code 
 with a few special macros and notations. The first example already
-demonstrates one such notation: to access the value in a piddle, you must
+demonstrates one such notation: to access the value in an ndarray, you must
 prefix the name with a dollar-sign and you must postfix it with parentheses.
 In the next section we'll see just what sort of arguments you can put in
 those parentheses.
@@ -194,7 +194,7 @@ typo at compile time if you use C<q{ }>:
  },
 
 Also note that I do not recommend using the C<qq> quoting operator. Almost
-all the PDL::PP code strings delimit piddles using dollar-signs (like C<$a()>
+all the PDL::PP code strings delimit ndarrays using dollar-signs (like C<$a()>
 above) and you must escape each one of these unless you want Perl to
 interpolate a variable for you. Obviously C<qq> has its uses occasionally,
 but in general I recommend sticking almost exclusively with C<q>.
@@ -259,7 +259,7 @@ The differences between this and the previous example are not complicated
 but deserve some discussion. A cosmetic difference is that I have used a
 different name for the function, but a more substantial difference is that
 the function now takes two arguments, C<a()> and C<b()>, as specified by the
-C<Pars> key. The C<Code> block makes use of these two piddles, printing out
+C<Pars> key. The C<Code> block makes use of these two ndarrays, printing out
 the two and their sum. Notice that I access the value in C<a> with the
 expression C<$a()>, and the value in C<b> with C<$b()>. Also notice that I
 can use those values in an arithmetic expression.
@@ -269,11 +269,11 @@ can use those values in an arithmetic expression.
 The examples I have used have all demonstrated their behavior by printing
 out their results to STDOUT. If you are like me, you will be glad to know
 that you can use printfs throughout your PP code when it comes time to
-debug, but these functions would be far more useful if they returned piddles
+debug, but these functions would be far more useful if they returned ndarrays
 with the calculated results. Fortunately, PDL::PP functions are really just
 C functions in disguise, and ultimately the data are passed around in C
 arrays, essentially by reference. This means that you can modify incoming
-piddles in-place. For example, this function increments a piddle:
+ndarrays in-place. For example, this function increments an ndarray:
 
 =for listing dumb-increment
 
@@ -300,11 +300,11 @@ When I run that, I get this output:
  a is initially [0 1 2 3 4 5 6 7 8 9]
  a is now [1 2 3 4 5 6 7 8 9 10]
 
-If you want to modify a piddle in-place, PDL provides multiple
+If you want to modify an ndarray in-place, PDL provides multiple
 mechanisms for handling this, depending on what you are trying to
 accomplish. In particular, there are ways to handle the C<inplace> flag for
-a given piddle. But I'm getting a bit ahead of myself. Generally speaking,
-you shouldn't modify a piddle in-place: you should return a result instead.
+a given ndarray. But I'm getting a bit ahead of myself. Generally speaking,
+you shouldn't modify an ndarray in-place: you should return a result instead.
 To do this, you simply mark the argument in the C<Pars> key with the C<[o]>
 qualifier. Here, I show how to return two arguments:
 
@@ -344,7 +344,7 @@ For example, we could run the above pp-code with Perl code like this:
  # nothing here
 
 The functions defined using C<pp_def> actually allow for you to pass in
-the output piddles as arguments, but I'll explore that in one of the
+the output ndarrays as arguments, but I'll explore that in one of the
 exercises rather than boring you with more details.
 
 =head3 Exercise Set 1
@@ -352,7 +352,7 @@ exercises rather than boring you with more details.
 So far I have shown you how to write basic PP code that prints values to the
 screen or returns values. The great thing about PDL::PP is that this code
 actually allows for two different calling conventions, and it Does What You
-Mean when you give it all manner of piddles. Rather than bore you to death
+Mean when you give it all manner of ndarrays. Rather than bore you to death
 with more prose, I am going to give you a couple of exercises. Solutions to
 these exercises are in Appendix B.
 
@@ -361,12 +361,12 @@ these exercises are in Appendix B.
 =item 1. Slices
 
 Working with C<printout_sum>, replace C<$b> with a B<slice> from some other
-piddle. Does it do what you expect?
+ndarray. Does it do what you expect?
 
 =item 2. Threading
 
 With C<printout_sum>, what if you replace C<$b> with a two-dimensional
-piddle that is thread-compatible with C<$a>? Try to guess the order of the
+ndarray that is thread-compatible with C<$a>? Try to guess the order of the
 output that you'll get before running the example. Did you guess correctly?
 
 =item 3. Orthogonal NDArrays
@@ -376,7 +376,7 @@ C<printout_sum>? What about C<my_sum_and_diff>?
 
 =item 4. Varying Input Order
 
-The PP code that I present puts all the output piddles at the end of the
+The PP code that I present puts all the output ndarrays at the end of the
 C<Pars> section. What happens if you move them to the beginning of the
 section instead of the end?
 
@@ -385,7 +385,7 @@ section instead of the end?
 You can call C<pp_def>ined functions by supplying all the arguments to the
 function. For example, instead of calling C<my_sum_and_diff> like this:
 
- # No output piddles in function call
+ # No output ndarrays in function call
  my ($sum, $diff) = $left->my_sum_and_diff($right);
 
 you can call it like this:
@@ -403,19 +403,19 @@ capability, can you guess why PDL lets you do this?
 =head2 Higher Dimensional Functions
 
 So far I have shown how to write rudimentary functions that accept
-zero-dimensional piddles. In this section, I will explain how to write
+zero-dimensional ndarrays. In this section, I will explain how to write
 functions that accept higher-dimensional data.
 
 =head3 Specifying Dimensions and Using Explicit Looping
 
 Exercises 1.2 and 1.3 demonstrate that PDL::PP automatically loops over the
-values in a piddle for you. What if you want to do some sort of aggregate
-behavior, such as computing the sum of all the values in a piddle? This
+values in an ndarray for you. What if you want to do some sort of aggregate
+behavior, such as computing the sum of all the values in an ndarray? This
 requires more fine-grained control of the code over which PDL::PP loops.
 
 Our discussion begins by looking more closely at the C<Pars> key. When you
 have a parameter list like C<'input(); [o] output()'>, you are telling PDL::PP
-that you want it to present the data from the input and output piddles as
+that you want it to present the data from the input and output ndarrays as
 scalars. The code you specify in the C<Code> key gets wrapped by a couple of
 C C<for> loops that loop through higher dimensions, something that we call
 I<threading>. There are many calculations you cannot do with this simplistic
@@ -431,7 +431,7 @@ specify a I<dimension name> in the C<Pars> key, such as
 
  Pars => 'input(n); [o] sum()'
 
-Notice that I have put something within the parentheses of the input piddle,
+Notice that I have put something within the parentheses of the input ndarray,
 C<n>. That means that I want PDL::PP to represent the input as a vector with
 one dimension and I am going to refer to its (single) dimension by the name
 C<n>. Then, to access the third element of that vector, you would write
@@ -553,7 +553,7 @@ That gives the following output:
   and its sumover is [3 12 21 30 39]
 
 As the calculation on C<$a> shows, when you perform the calculation on a
-one-dimensional piddle, it returns a single result with the sum of all the
+one-dimensional ndarray, it returns a single result with the sum of all the
 elements. The calculation on C<$b> treats each row as a vector and performs
 the calculation on each row.
 
@@ -564,7 +564,7 @@ how to do matrix-matrix multiplication, right? No? Brush-up on
 L<http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
 would we write such an algorithm using PDL::PP? First, the C<Pars> section
 needs to indicate what sort of input and output
-piddles we want to handle. The length of the row of the first matrix has to
+ndarrays we want to handle. The length of the row of the first matrix has to
 be equal to the length of the column of the second matrix. The output matrix
 will have as many rows as the second matrix, and as many columns as the first
 matrix. Second, we need to loop over the entire output dimensions. Altogether,
@@ -911,9 +911,9 @@ so that it performs proper matrix multiplication.
 
 The function C<my_sumover> uses a C<loop> construct, so it only operates on
 individual rows. What if you wanted to perform the sum an entire matrix?
-Using Perl level operations, find a way to manipulate the incoming piddle
+Using Perl level operations, find a way to manipulate the incoming ndarray
 so that you can call C<my_sumover> to get the sum over the entire matrix.
-Bonus points if the same technique works for higher dimensional piddles.
+Bonus points if the same technique works for higher dimensional ndarrays.
 
 =item 3. Cumulative Sum
 
@@ -926,7 +926,7 @@ to that point.
 =item 4. Full Cumulative Sum
 
 Take your code for C<my_cumulative_sum> and modify it so that it returns the
-cumulative sum over the entire piddle, regardless of the piddle's dimension.
+cumulative sum over the entire ndarray, regardless of the ndarray's dimension.
 Your resulting code should not have any C<loop> constructs.
 
 =back
@@ -1107,7 +1107,7 @@ When there is a logic bug in my code I find it helpful to reduce the
 complexity of the code and comment-out sections at a time until I get an
 output that makes sense.
 
-Here's an example. I am trying to print out the values in a piddle, but I
+Here's an example. I am trying to print out the values in an ndarray, but I
 have mistakenly used C<\r> instead of C<\n> in my C<printf> statement. 
 On some systems, nothing will get sent to F<STDOUT> because IO operations
 are buffered, and I am left with a function that appears to print nothing
@@ -1133,7 +1133,7 @@ foolproof:
  pp_def('my_printout',
      Pars => 'in()',
      Code => pp_line_numbers(__LINE__, q{
-         printf("This piddle contains:\n");
+         printf("This ndarray contains:\n");
          threadloop %{
              /* grr, not working
              printf("  %f\r", $in());
@@ -1196,7 +1196,7 @@ programmers for cutting out blocks of code:
  pp_def('my_printout',
      Pars => 'in()',
      Code => pp_line_numbers(__LINE__, q{
-         printf("This piddle contains:\n");
+         printf("This ndarray contains:\n");
          threadloop %{
            #if 0
              printf("  %f\r", $in());
@@ -1211,7 +1211,7 @@ C<#endif>, but the C preprocessor will get rid of it before it actually
 tries to compile the code. Now the code at least runs and printouts the
 expected dumb results:
 
- This piddle contains:
+ This ndarray contains:
    Here
    Here
    Here
@@ -1389,10 +1389,10 @@ You can call the function like this:
  $left->my_sum_and_diff($right, $sum, $diff);
 
 For the latter calling convention, the function returns nothing (rather than
-C<$sum> and C<$diff>). When you supply a null piddle (as in the middle
-example) or you call the function with the input piddles only (as in the
+C<$sum> and C<$diff>). When you supply a null ndarray (as in the middle
+example) or you call the function with the input ndarrays only (as in the
 first example), PDL will allocate memory for you. As demonstrated with the
-last example, you can supply a pre-allocated piddle, in which case PDL will
+last example, you can supply a pre-allocated ndarray, in which case PDL will
 B<not> allocate memory for you. This can improve performance when you
 repeatedly call the same function.
 
@@ -1408,7 +1408,7 @@ The corrected C<Pars> section should look like this:
 
  Pars => 'left(m,n); right(p,m); [o] output(p,n)',
 
-Note that you will have to make sure the dimensions of the input piddles match this new specification, e.g.:
+Note that you will have to make sure the dimensions of the input ndarrays match this new specification, e.g.:
 
  my $left = sequence(2,4)->transpose;
  my $right = sequence(4,5)->transpose;

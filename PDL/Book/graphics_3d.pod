@@ -110,14 +110,14 @@ with numbers, unfortunately. The second line
 
   pdl> $x = xlinvals(zeroes(30), 0, 7);
 
-creates a one-dimensional piddle with 30 elements that has linear 
+creates a one-dimensional ndarray with 30 elements that has linear 
 values from 0 to 7:
 
   pdl> p $x
   [0 0.24137931 0.48275862 0.72413793 0.96551724.....
 
 The C<xlinvals> and the corresponding C<ylinvals> and C<zlinvals> are 
-useful for exactly this purpose: creating piddles of equally 
+useful for exactly this purpose: creating ndarrays of equally 
 spaced values. The final line,
 
   pdl> imag3d [ sin($x) * sin($x->dummy(0)) ];
@@ -125,7 +125,7 @@ spaced values. The final line,
 is what draws the actual image. The expression inside, uses the 
 variable C<$x> for both the X and Y coordinates, via a clever use of 
 the dummy operation. (See chapter [chap_slice] for some 
-explanation).  This results in a 2-dimensional piddle with the 
+explanation).  This results in a 2-dimensional ndarray with the 
 values for the Z coordinate. So far you've already seen all this. 
 And the final part, C<imag3d [vals]> is the call that creates the 3D 
 plot and opens the new window for it. The brackets around the 
@@ -139,29 +139,29 @@ learn later on: otherwise there would be a bad ambiguity.
 
 We alluded in the introduction that allowing
 
-  pdl> imag3d $piddle;
+  pdl> imag3d $ndarray;
 
 could be ambiguous and should be written
 
-  pdl> imag3d [$piddle];
+  pdl> imag3d [$ndarray];
 
-if C<$piddle> is intended to be the Z axis values of a rectangular 
+if C<$ndarray> is intended to be the Z axis values of a rectangular 
 2D plot. Now is the time to find out why. The simple truth is 
 that
 
-  pdl> imag3d $piddle;
+  pdl> imag3d $ndarray;
 
 is in fact legal code---if and only if the first dimension of
-C<$piddle> has exactly three elements. As you probably have already guessed, 
+C<$ndarray> has exactly three elements. As you probably have already guessed, 
 these three elements are X, Y and Z. So what you can do is pass 
-C<$piddle> with shape C<[3,t,u]> which is the same as a 
+C<$ndarray> with shape C<[3,t,u]> which is the same as a 
 2-dimensional C<[t,u]> lattice with a 3-vector at each point. This 
-piddle will then be interpreted parametrically: the mesh will be 
+ndarray will then be interpreted parametrically: the mesh will be 
 drawn as a function of C<$t> and C<$u>.
 
 Let's have an example: a curve that is not possible to plot with 
 just Z axis values, say the surface of a torus, with colors 
-coming from somewhere. First, set up the piddles and the 
+coming from somewhere. First, set up the ndarrays and the 
 parameter variables:
 
    use PDL;
@@ -216,7 +216,7 @@ probably easier to do
    imag3d_ns [$x, $y, $z], [$r, $g, $b];
 
 which will produce the same results. Also, we could concatenate 
-the RGB piddles to form a single C<[3,60,20]> piddle that could be
+the RGB ndarrays to form a single C<[3,60,20]> ndarray that could be
 used without square brackets:
 
    $rgb = cat($r,$g,$b)->mv(-1,0);  # $rgb is [3,60,20]
@@ -224,7 +224,7 @@ used without square brackets:
 
 Now, since PDL does its best to make dimensions usable anywhere, 
 we can easily plot several parametrics of the same parameters at 
-once, if we pack all the surfaces into a piddle of shape C<[3,n_t,n_u,...]>
+once, if we pack all the surfaces into an ndarray of shape C<[3,n_t,n_u,...]>
 where the three periods in the end indicate the beginning of the 
 extra parameters.
 
@@ -425,14 +425,14 @@ iterates the standard Mandelbrot iteration formula
 where C<C> is the original point. Then it uses C<lclip> to keep the 
 numbers in a reasonable range and colors the points according to 
 the iteration when the point crossed the distance C<sqrt(2)> from 
-the origin. The piddle C<$a> is two-dimensional so just like for 
+the origin. The ndarray C<$a> is two-dimensional so just like for 
 coordinates, it is enclosed in an array ref. It is also possible 
 to use
 
    imag3gb [$r, $g, $b];
    imag3gb $colors;
 
-where the RGB piddles are two-dimensional and C<$colors> has three 
+where the RGB ndarrays are two-dimensional and C<$colors> has three 
 dimensions, the first of which is of length three.
 
 The command C<imagrgb3d> does the same but allows the user to place 
@@ -517,7 +517,7 @@ Y axis slightly distorted to form a parabola with the Z axis:
    }
 
 Note here that we can't use the += operator for C<$y> since below we 
-use the same piddle for the three coordinates (with a simple 
+use the same ndarray for the three coordinates (with a simple 
 dummy transformation). Now, we want to picture approximately 
 where the function crosses zero, but since there are two separate 
 zero surfaces we can't just use an algorithm that finds a zero and 
@@ -554,7 +554,7 @@ sigh between the points next to each other on X axis.
 
 B<NOTE>:  For PDL-2.4.9 and earlier, you'll need to use
 C<points3d [ whichND($df) ];> since previous to PDL-2.4.10
-C<whichND> returned a list of piddles in list context.  
+C<whichND> returned a list of ndarrays in list context.  
 That behavior is now deprecated.
 
 To do a more complete job, we need to compare the signs not only 
@@ -579,13 +579,13 @@ time leaving out the first element and adds it to the first.
 Finally, the dimensions are rotated for the next invocation.
 
 Choosing the shifts to be 1,2,4 is the key: this way after the 
-first round, the piddle contains values 0,1,2,3 after the second 
+first round, the ndarray contains values 0,1,2,3 after the second 
 it contains 0...15 and after the third, 0..255. None of the 
 shifts shift anything on top of each other so the plus operation 
 could be replaced with a bitwise or.
 
-So after the loop, we have a three-dimensional piddle with one 
-index less in each dimension, and each value in that piddle 
+So after the loop, we have a three-dimensional ndarray with one 
+index less in each dimension, and each value in that ndarray 
 contains in its 8 bits the 8 corners of a small cube. Finally, to 
 find whether the function crosses zero at that cube, we simply 
 check whether all the bits are equal, i.e. whether the number is 
