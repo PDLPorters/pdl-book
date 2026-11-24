@@ -1,0 +1,44 @@
+name: generate-pdf
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'PDL/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    # ubuntu-slim only uses 1 CPU and 5GB RAM, ubuntu-latest has 4 CPUs and 16GB RAM
+    runs-on: ubuntu-slim
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Setup Perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: "5.28"
+          # install-modules-with: cpanm # installs your cpanfile
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-extra-utils
+          cpanm --sudo -v --installdeps --notest --cpanfile cpanfile .
+
+      - name: Write POD as PDF and jam them together
+        run: |
+          ./make_chapters.pl
+          ./make_endpieces.pl
+          pdfjam -o PDL_Book.pdf FrontPage.pdf toc.pdf Chapter??.pdf
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: PDL-Book
+          path: PDL_Book.pdf
+          retention-days: 3
