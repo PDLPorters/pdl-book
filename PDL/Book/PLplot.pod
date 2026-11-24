@@ -11,13 +11,13 @@ The B<PDL::Graphics::PLplot> perl module, is an interface to the
 L<http://plplot.sourceforge.net> PLplot C library. It is a
 2d plotting library, but also does 1-D bargraphs and 3-D projection graphs.
 
-Many of the examples, discussed below, are from the
-PDL::Graphics-PLplot/t subdirectory, of the source module. These are
-written in the functional style, and are direct translations of the
+Many of the examples, discussed below, are from the F<t> directory of the
+L<PDL::Graphics::PLplot source|https://github.com/PDLPorters/pdl-graphics-plplot>.
+These are written in the functional style, and are direct translations of the
 examples which come with the B<PLplot C library> 
 
-The rest of the examples, are object-oreiented, derived from David
-Merten's slideshow on B<PDL::Graphics::PLplot>.  His very informative
+The rest of the examples are object-oriented, derived from David
+Merten's slideshow on B<PDL::Graphics::PLplot>. His very informative
 slideshow can be downloaded or viewed at
 L<http://www.slideshare.net/dcmertens/p-lplot-talk>
 
@@ -130,7 +130,7 @@ to B<PDL::Graphics::PLplot>
 
 
 
-=for html <p><a href="PLplot/w03.pl"> w03.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w03.pl"> w03.pl text source code</a></p><hr/>
 
 
 
@@ -155,7 +155,7 @@ to B<PDL::Graphics::PLplot>
          -- option FILE must give the output file's name
   For output to a memory buffer:
          -- option DEV must be set to mem or memcairo
-         --option MEM must be passed an ndarray where the results will be plotted
+         -- option MEM must be passed an ndarray where the results will be plotted
 
 
 =head2 Outputting postscript
@@ -181,7 +181,7 @@ ndarray with those errors to XERRORBAR and YERRORBAR.
 
 To set the symbol type and size, use the SYMBOL and SYMBOLSIZE options.
 
-  --  Symbol sizes are measured as multiples of the default size
+  -- Symbol sizes are measured as multiples of the default size
   -- Symbol sizes can be fractional, such as 0.7 or 4.5
   -- Symbols are identified by their number
  
@@ -218,7 +218,7 @@ To set the symbol type and size, use the SYMBOL and SYMBOLSIZE options.
 
 
 
-=for html <p><a href="PLplot/w04.pl"> w04.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w04.pl"> w04.pl text source code</a></p><hr/>
 
 
 
@@ -264,7 +264,7 @@ Depending on what you want, there are at least five ways to plot multiple curves
 
 
 
-=for html <p><a href="PLplot/w05.pl"> w05.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w05.pl"> w05.pl text source code</a></p><hr/>
 
 
 
@@ -331,7 +331,7 @@ A multi-colored multi-curve plot
 
 
 
-=for html <p><a href="PLplot/w06.pl"> w06.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w06.pl"> w06.pl text source code</a></p><hr/>
 
 
 
@@ -398,7 +398,7 @@ from the first set default color, always specify the colors in xyplot.
 
 
 
-=for html <p><a href="PLplot/w07.pl"> w07.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w07.pl"> w07.pl text source code</a></p><hr/>
 
 
 
@@ -478,7 +478,7 @@ use the C<xyplot BOX> option to prevent clipping.
 
 
 
-=for html <p><a href="PLplot/w09.pl"> w09.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w09.pl"> w09.pl text source code</a></p><hr/>
 
 
 
@@ -511,7 +511,7 @@ use the C<xyplot BOX> option to prevent clipping.
 
 
 
-=for html <p><a href="PLplot/w10.pl"> w10.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w10.pl"> w10.pl text source code</a></p><hr/>
 
 
 
@@ -519,10 +519,11 @@ use the C<xyplot BOX> option to prevent clipping.
 
 When you create your PLplot object, you can carve the canvas
 into immutable subpages.
-   my $pl = PDL::Graphics::PLplot->new(
+
+  my $pl = PDL::Graphics::PLplot->new(
          # ...
          , SUBPAGES => [$nx, $ny]
-     );
+    );
 
 For example:
 
@@ -559,7 +560,7 @@ For example:
 
 
 
-=for html <p><a href="PLplot/w11.pl"> w11.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w11.pl"> w11.pl text source code</a></p><hr/>
 
 
 
@@ -567,8 +568,8 @@ For example:
 
 =head3 Using Insets
 
-ometimes you want a small inset in one of the corners of your plot. If you
-ant to do this you should:
+Sometimes you want a small inset in one of the corners of your plot. If you
+want to do this you should:
 
   --  Specify the VIEWPORT
   --  Specify the BOX
@@ -610,7 +611,7 @@ ant to do this you should:
 
 
 
-=for html <p><a href="PLplot/w12.pl"> w12.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w12.pl"> w12.pl text source code</a></p><hr/>
 
 
 
@@ -633,7 +634,7 @@ be specified in the constructor (and cannot be changed later):
           # other options...
       );
 
-These are measured either in pixels or milimeters depending on
+These are measured either in pixels or millimeters depending on
 whether the underlying format is a raster or vector format.
 
 =head2 Viewport positioning
@@ -653,8 +654,8 @@ plotting and can be changed with each plotting function.
     # Vertically centered, horizontally offset
     VIEWPORT => [0.5, 0.7, 0.4, 0.6]
 
-Viewport values are fractions of the full page (or sub-page) width
-all four values should be a number between 0 and 1.
+Viewport values are fractions of the full page (or sub-page) width.
+All four values should be a number between 0 and 1.
 
 =head3 The clipping box
 
@@ -707,7 +708,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w13.pl"> w13.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w13.pl"> w13.pl text source code</a></p><hr/>
 
 
 
@@ -741,7 +742,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w14.pl"> w14.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w14.pl"> w14.pl text source code</a></p><hr/>
 
 
 
@@ -773,7 +774,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w15.pl"> w15.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w15.pl"> w15.pl text source code</a></p><hr/>
 
 
 
@@ -806,7 +807,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w16.pl"> w16.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w16.pl"> w16.pl text source code</a></p><hr/>
 
 
 
@@ -843,7 +844,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w17.pl"> w17.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w17.pl"> w17.pl text source code</a></p><hr/>
 
 
 
@@ -877,7 +878,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w18.pl"> w18.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w18.pl"> w18.pl text source code</a></p><hr/>
 
 
 
@@ -911,7 +912,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w19.pl"> w19.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w19.pl"> w19.pl text source code</a></p><hr/>
 
 
 
@@ -942,7 +943,7 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w20.pl"> w20.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w20.pl"> w20.pl text source code</a></p><hr/>
 
 
 
@@ -975,13 +976,13 @@ and plot titles are drawn outside the viewport.
 
 
 
-=for html <p><a href="PLplot/w21.pl"> w21.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w21.pl"> w21.pl text source code</a></p><hr/>
 
 
 
 =head3 Box and viewport summary
 
-For multiple plots on the same viewport, set the box with the first call to xyplot For non-overlapping plots (on different viewports), specify the box as necessary The viewport specifies the extent of the plotting region; tick labels, axis labels, and titles are drawn outside the viewport
+For multiple plots on the same viewport, set the box with the first call to xyplot. For non-overlapping plots (on different viewports), specify the box as necessary. The viewport specifies the extent of the plotting region; tick labels, axis labels, and titles are drawn outside the viewport.
 
 =head2 Other types of plot
 
@@ -1013,7 +1014,7 @@ For multiple plots on the same viewport, set the box with the first call to xypl
 
 
 
-=for html <p><a href="PLplot/w22.pl"> w22.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w22.pl"> w22.pl text source code</a></p><hr/>
 
 
 
@@ -1041,7 +1042,7 @@ For multiple plots on the same viewport, set the box with the first call to xypl
 
 
 
-=for html <p><a href="PLplot/w23.pl"> w23.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w23.pl"> w23.pl text source code</a></p><hr/>
 
 
 
@@ -1078,7 +1079,7 @@ For multiple plots on the same viewport, set the box with the first call to xypl
 
 
 
-=for html <p><a href="PLplot/w24.pl"> w24.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w24.pl"> w24.pl text source code</a></p><hr/>
 
 
 
@@ -1110,7 +1111,7 @@ For multiple plots on the same viewport, set the box with the first call to xypl
 
 
 
-=for html <p><a href="PLplot/w25.pl"> w25.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w25.pl"> w25.pl text source code</a></p><hr/>
 
 
 
@@ -1145,7 +1146,7 @@ For multiple plots on the same viewport, set the box with the first call to xypl
 
 
 
-=for html <p><a href="PLplot/w26.pl"> w26.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w26.pl"> w26.pl text source code</a></p><hr/>
 
 
 
@@ -1175,22 +1176,29 @@ For multiple plots on the same viewport, set the box with the first call to xypl
          MAXBARLABELS => 10
      );
 
-$pl->close;
+   $pl->close;
 
 =for html <p><img width="400" alt="" src="PLplot/w27.pl.800.png"/></p>
 
 
 
-=for html <p><a href="PLplot/w27.pl"> w27.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w27.pl"> w27.pl text source code</a></p><hr/>
 
 
 
 =head2 Using the MEM device 
 
 Use the MEM device to:
-  --  load an image and plot over that image
-  --  plot to a custom windowing device
-  --  animated plots
+
+=over
+
+=item --  load an image and plot over that image
+
+=item --  plot to a custom windowing device
+
+=item --  animated plots
+
+=back
 
 The way the MEM device works, is that it needs an
 RGB or RGBA (RGB with alpha transparency) buffer
@@ -1261,7 +1269,7 @@ mem is for plain RGB. memcairo can handle transparency values.
 
 
 
-=for html <p><a href="PLplot/w29.pl"> w29.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w29.pl"> w29.pl text source code</a></p><hr/>
 
 
 
@@ -1278,7 +1286,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x01.pl"> x01.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x01.pl"> x01.pl text source code</a></p><hr/>
 
 
 
@@ -1288,7 +1296,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x02.pl"> x02.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x02.pl"> x02.pl text source code</a></p><hr/>
 
 
 
@@ -1300,7 +1308,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x03.pl"> x03.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x03.pl"> x03.pl text source code</a></p><hr/>
 
 
 
@@ -1310,7 +1318,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x04.pl"> x04.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x04.pl"> x04.pl text source code</a></p><hr/>
 
 
 
@@ -1322,7 +1330,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x05.pl"> x05.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x05.pl"> x05.pl text source code</a></p><hr/>
 
 
 
@@ -1332,7 +1340,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x06.pl"> x06.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x06.pl"> x06.pl text source code</a></p><hr/>
 
 
 
@@ -1344,7 +1352,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x07.pl"> x07.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x07.pl"> x07.pl text source code</a></p><hr/>
 
 
 
@@ -1354,7 +1362,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x08.pl"> x08.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x08.pl"> x08.pl text source code</a></p><hr/>
 
 
 
@@ -1366,7 +1374,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x09.pl"> x09.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x09.pl"> x09.pl text source code</a></p><hr/>
 
 
 
@@ -1376,7 +1384,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x10.pl"> x10.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x10.pl"> x10.pl text source code</a></p><hr/>
 
 
 
@@ -1388,7 +1396,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x11.pl"> x11.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x11.pl"> x11.pl text source code</a></p><hr/>
 
 
 
@@ -1398,19 +1406,19 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x12.pl"> x12.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x12.pl"> x12.pl text source code</a></p><hr/>
 
 
 
 =ff
 
-=head3 simple pie chart x13
+=head3 Simple pie chart x13
 
 =for html <p><img width="400" alt="" src="PLplot/x13.pl.800.png"/></p>
 
 
 
-=for html <p><a href="PLplot/x13.pl"> x13.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x13.pl"> x13.pl text source code</a></p><hr/>
 
 
 
@@ -1420,7 +1428,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x15.pl"> x15.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x15.pl"> x15.pl text source code</a></p><hr/>
 
 
 
@@ -1432,7 +1440,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x16.pl"> x16.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x16.pl"> x16.pl text source code</a></p><hr/>
 
 
 
@@ -1442,7 +1450,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x17.pl"> x17.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x17.pl"> x17.pl text source code</a></p><hr/>
 
 
 
@@ -1454,7 +1462,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x18.pl"> x18.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x18.pl"> x18.pl text source code</a></p><hr/>
 
 
 
@@ -1464,7 +1472,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x19.pl"> x19.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x19.pl"> x19.pl text source code</a></p><hr/>
 
 
 
@@ -1476,7 +1484,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x21.pl"> x21.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x21.pl"> x21.pl text source code</a></p><hr/>
 
 
 
@@ -1486,7 +1494,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x22.pl"> x22.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x22.pl"> x22.pl text source code</a></p><hr/>
 
 
 
@@ -1498,7 +1506,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x23.pl"> x23.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x23.pl"> x23.pl text source code</a></p><hr/>
 
 
 
@@ -1508,7 +1516,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x24.pl"> x24.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x24.pl"> x24.pl text source code</a></p><hr/>
 
 
 
@@ -1520,7 +1528,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x25.pl"> x25.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x25.pl"> x25.pl text source code</a></p><hr/>
 
 
 
@@ -1530,7 +1538,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x26.pl"> x26.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x26.pl"> x26.pl text source code</a></p><hr/>
 
 
 
@@ -1542,7 +1550,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x27.pl"> x27.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x27.pl"> x27.pl text source code</a></p><hr/>
 
 
 
@@ -1552,7 +1560,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x28.pl"> x28.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x28.pl"> x28.pl text source code</a></p><hr/>
 
 
 
@@ -1564,7 +1572,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x29.pl"> x29.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x29.pl"> x29.pl text source code</a></p><hr/>
 
 
 
@@ -1574,7 +1582,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x30.pl"> x30.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x30.pl"> x30.pl text source code</a></p><hr/>
 
 
 
@@ -1586,7 +1594,7 @@ library examples.
 
 
 
-=for html <p><a href="PLplot/x33.pl"> x33.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/x33.pl"> x33.pl text source code</a></p><hr/>
 
 
 
@@ -1646,20 +1654,20 @@ letters, etc. Unicode is supported.
 
 
 
-=for html <p><a href="PLplot/w30.pl"> w30.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w30.pl"> w30.pl text source code</a></p><hr/>
 
 
 
 =head3 psfrag
 
-For LATEX typsetting, post-process eps images with psfrag.
+For LaTeX typesetting, post-process eps images with psfrag.
 
-   --  replaces simple strings with any valid LATEX text.
+   --  replaces simple strings with any valid LaTeX text.
    --  ensures consistent fonts for both images and documents
    --  Do not use the pscairo device. Use ps or psc.
 
 
-=head2 annotations and TEXTPOSITION 
+=head2 Annotations and TEXTPOSITION
 
 To add text to a plot, use the text method, specifying the
 TEXTPOSITION option. The TEXTPOSITION takes either four or
@@ -1733,7 +1741,7 @@ the right edge
 
 
 
-=for html <p><a href="PLplot/w31.pl"> w31.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w31.pl"> w31.pl text source code</a></p><hr/>
 
 
 
@@ -1771,7 +1779,7 @@ the right edge
 
 
 
-=for html <p><a href="PLplot/w32.pl"> w32.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w32.pl"> w32.pl text source code</a></p><hr/>
 
 
 
@@ -1812,13 +1820,13 @@ If possible, use color keys instead of constructing legends by hand.
    $legend_y -= 0.2;
   }
 
-$pl->close;
+  $pl->close;
 
 =for html <p><img width="400" alt="" src="PLplot/w33.pl.800.png"/></p>
 
 
 
-=for html <p><a href="PLplot/w33.pl"> w33.pl text source code</a></p><hr/>
+=for html <p><a href="PLplot/work/w33.pl"> w33.pl text source code</a></p><hr/>
 
 
 

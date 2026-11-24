@@ -561,7 +561,7 @@ the calculation on each row.
 
 Let's look at another example, matrix-matrix multiplication. (You remember
 how to do matrix-matrix multiplication, right? No? Brush-up on
-L<http://en.wikipedia.org/wiki/Matrix_multiplication>.) How
+L<https://en.wikipedia.org/wiki/Matrix_multiplication> .) How
 would we write such an algorithm using PDL::PP? First, the C<Pars> section
 needs to indicate what sort of input and output
 ndarrays we want to handle. The length of the row of the first matrix has to
@@ -761,7 +761,7 @@ once each time the function is invoked.
 To put this all together, I am going to consider writing a PDL::PP function
 that computes the first numerical derivative of a time series. You can read
 about finite difference formulas here:
-L<http://en.wikipedia.org/wiki/Numerical_differentiation>. Normally, finite
+L<https://en.wikipedia.org/wiki/Numerical_differentiation> . Normally, finite
 difference formulas result in a numerical derivative with one less point
 than the original time series. Since I have not discussed how to
 set a return dimension with a calculated size, I'm going to use a slightly
@@ -842,7 +842,7 @@ haven't discussed yet. Let's run through each point in turn.
 
 =item point 1, a sub-optimal example
 
-The code within this loop does C<not> actually compute results for all indices
+The code within this loop does B<not> actually compute results for all indices
 from zero to N-1. As such, I should use a for loop that starts from 1 and
 runs to N-2. I dislike it when bad examples are used for pedagogical reasons,
 but that's what I'm going to do here. Sorry.
@@ -866,7 +866,7 @@ When we C<loop> over C<n>, it saves you keystrokes in your memory access by
 making it unnecessary to specify C<n>. This is exploited when I say
 C<$derivative()> without specifying a value for C<n>. However, we can
 override that value for C<n> within the loop by explicitly specifying it,
-which is what I do with C<$t_series(n => n-2)>.
+which is what I do with C<< $t_series(n => n-2) >>.
 
 =item point 5: which n?
 
@@ -944,7 +944,7 @@ PDL::PP includes a brand new function in PDL 2.4.10 called C<pp_line_numbers>.
 This function takes two arguments: a number and a string. The number should
 indicate the actual line in your Perl source file at which the string starts,
 and the function causes C<#line> directives to be inserted into the string.
-This is C<ENORMOUSLY> helpful when you have a syntax error. Without it, the
+This is B<ENORMOUSLY> helpful when you have a syntax error. Without it, the
 syntax error is reported as coming from a given line in your XS file, but
 with it the error is reported as coming from your own source file.
 
@@ -1092,9 +1092,7 @@ C<pp_line_numbers> call.
 
 =item Wart: /* */ doesn't always work; use #if 0
 
-Note: This issue has been addressed in the git copy of PDL as of April 23, 2012.
-It will make its way onto CPAN with the release of PDL v2.4.11, slated for
-spring or summer of 2012.
+Note: This issue has been addressed with the release of PDL v2.4.11 (May 2012).
 
 Until the latest fixes, some of XS code that PDL::PP generates includes
 C-style comments indicating what they do. This is useful when you find
@@ -1264,7 +1262,7 @@ Once that's installed, you should be ready to work with the examples.
 
 =head2 Appendix B: Solutions to Exercises
 
-=head3 Excercise Set 1
+=head3 Exercise Set 1
 
 =over
 

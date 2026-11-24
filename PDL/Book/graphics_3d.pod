@@ -339,8 +339,8 @@ to each other.
    $y = -2 * ones($nc);
    $z = 20 * ones($nc) + 0.02 * xvals($nc);
    $sigma = 10; $r = 28; $b = 8.0/3.0;
-   for (-$nstart..$n-1) {
-      if($_ >= 0) {
+   for (-$nstart .. $n-1) {
+      if ($_ >= 0) {
          $xs(($_)) .= $x;
          $ys(($_)) .= $y;
          $zs(($_)) .= $z;
@@ -464,7 +464,7 @@ plot all the iterations on top of each other).
    use PDL::Graphics::TriD;
    $k = ones(3,3) / 9;
    $a = 20;
-   $b = $a*(random(2,2)-0.5);
+   $b = $a * (random(2,2) - 0.5);
    hold3d(); # Set the coordinate system: XXX hack!!! FIX TriD
    line3d pdl([[0, 0, 0,], [0, 0, 10]]);
    for (0..4) {
@@ -550,7 +550,7 @@ distorted, just as ordered.
 This is not yet a good picture: there 
 is a hole in the point set where the surface is parallel to the X 
 axis, naturally, since there there is no difference between the 
-sigh between the points next to each other on X axis.
+points next to each other on X axis.
 
 B<NOTE>:  For PDL-2.4.9 and earlier, you'll need to use
 C<points3d [ whichND($df) ];> since previous to PDL-2.4.10
@@ -563,9 +563,9 @@ wonderful invention by Robin Williams:
 
    $a = $sign;
    foreach (1,2,4) {
-      $t=($a(0:-2)<<$_);
-      $t+=$a(1:-1);
-      $a=$t->mv(0,2);
+      $t  = ($a(0:-2)<<$_);
+      $t += $a(1:-1);
+      $a  = $t->mv(0,2);
    }
    points3d [whichND(($a != 0) & ($a != 255))];
 

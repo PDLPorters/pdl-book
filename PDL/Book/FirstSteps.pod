@@ -44,7 +44,7 @@ This should do it (perhaps prefixed with 'sudo'):
 
   myhost% cpan PDL::Graphics::Simple
 
-For interactive use PDL comes with a program called C<perldl>. This allows
+For interactive use PDL comes with a program called C<perldl>. This is a REPL which allows
 you to type raw PDL (and perl) commands and see the result right away. It
 also allows command line recall and editing (via the arrow keys) on most
 systems.
@@ -144,6 +144,9 @@ L<http://sourceforge.net/projects/pdl/files/PDL/PDL%20Book%20Example%20Data%20Se
 and we'll assume you are running any of these examples in the same
 directory as you have downloaded the input data files.
 
+=for comment
+move sourceforge to github/ PDL-SampleData/files and copy across flatfield fixed_gal and fake_star
+
 We'll be playing with an image of the famous spiral galaxy discovered by
 Charles Messier, known to astronomers as M51 and commonly as the Whirlpool
 Galaxy. This is a 'nearby' galaxy, a mere 25 million light years from Earth.
@@ -168,7 +171,7 @@ confusion it is convenient to introduce a special name for them, we call them
 I<ndarrays> (short for 'n-dimensional array') to distinguish them from ordinary Perl
 'arrays'.  We'll say more about this later.
 
-Before we start seriously playing around with M51 it is worth noting that we
+Before we start seriously playing around with M51, it is worth noting that we
 can also say:
 
   pdl> $a = rfits "m51_raw.fits";
@@ -176,7 +179,7 @@ can also say:
 Note we have now left off the brackets on the C<rfits> function. Perl is rather
 simpler than C and allows one to omit the brackets on a function all together.
 It assumes all the items in a list are function arguments and can be pretty
-convenient. If you are calling more than one function it is however better to
+convenient. If you are calling more than one function however, it is better to
 use some brackets so the meaning is clear. For the rules on this 'list
 operator' syntax see the Perl syntax documentation.  From now on we'll mostly
 use the list operator syntax for conciseness
@@ -249,7 +252,7 @@ just done. Both C<$a>  and C<$flat> are I<images>, with 512 pixels by
 262144 data values in the ndarrays C<$a>  and C<$flat>.> And it was
 pretty fast too - these are what are known as I<vectorized>
 operations. In PDL each of these is implemented by heavily optimized
-C code, which is what makes PDL very efficient for procession of
+C code, which is what makes PDL very efficient for processing
 large chunks of data. If you did the same operation using normal
 perl arrays rather than ndarrays it would be about ten to twenty times slower
 (and use ten times more memory). In fact we can
@@ -513,7 +516,7 @@ easy:
   pdl> wfits $fit2d, 'fake_star.fits'; # Save our work
 
 
-But the figure below is a
+But the figure below is a bit
 boring. So far we have been using simple 2D graphics from the
 C<PDL::Graphics::Simple> library. In fact PDL has more
 than one graphics library (some see this as a flaw, some
@@ -534,7 +537,7 @@ Figure: Two different views of the 2D simulated Point Spread Function.
    pdl> use PDL::Graphics::TriD; # Load the 3D graphics module
    pdl> imag3d [$fit2d];
 
-If you do this on your computer you should be able to look at the graphic from
+If you do this on your computer, you should be able to look at the graphic from
 different sides by simply dragging in the plot window with the mouse! You can
 also zoom in and out with the right mouse button.  Note that C<imag3d> has it's
 a rather different syntax for processing it's arguments - for very good reasons
@@ -567,6 +570,8 @@ plan to do something evil to it. To do this we could use the alternative form:
 Now a new version of C<$newsection>  is created which has nothing to 
 do with the original C<$gal>. In fact there is more than one way to do
 this as we will see in later chapters.
+
+=for comment should we not be using my declarations in example code?
 
 Just to amuse ourselves, lets write a short script to cover M51 with dozens of fake
 stars of random brightnesses:

@@ -119,6 +119,9 @@ an N-dimensional array. C<ndcoords> and C<range> together can be used
 to chop up an image into manageable tiles; see Section [sub:Range]
 , below.
 
+=for comment
+first of a number of missing latex Section and Chapter links. search on [sub:Label]
+
 =head2 Specialty constructors
 
 PDL contains two important internal constructors, 
@@ -146,13 +149,13 @@ going to stuff your own values into the new PDL anyway.
 
 =head2 Getting values into and out of PDLs
 
-Unless you can get data in and out of your PDLs they won't do you 
+Unless you can get data in and out of your PDLs, they won't do you
 much good. Most large blocks of data are handled by direct file 
 I/O (Chapter [cha:File-I/O]), but you will also want to get 
 normal Perl values into and out of your PDLs. Here are the basic 
 ways to get data into your PDLs (from perl, other PDLs, or random 
 chunks of memory), and back out again (into perl, into random 
-chunks of memory, or into ASCII). For displaying your data you 
+chunks of memory, or into ASCII). For displaying your data you
 will want to look at Chapter [cha:Graphics].
 
 =head3 Construction: slurping Perl arrays
@@ -348,7 +351,7 @@ numeric value - is slightly different than a PDL with one element.
 B<List values> (often called "arrays" by the general Perl
 community) are collections of scalars that are indexed by number.
 Unlike normal arrays or PDLs, perl lists are expanded automatically as
-needed, so you can address any element whether it exists or no. List
+needed, so you can address any element whether it exists or not. List
 elements can contain any perl scalar value.
 
 =item *
@@ -382,12 +385,12 @@ appear wherever you can put a Perl scalar.
 =head3 PDL Data Types
 
 
-PDLs are strongly typed: when you create a PDL, it gets a 
-particular representation and stays that way. The basic types are 
-familiar to C programmers: byte, short, unsigned short, long, 
-long long, float, and double. You can compile 64-bit support into 
-your copy of PDL, and have access to wide doubles and other such 
-exotica. Complex numbers are supported as a subclass of PDL; see 
+PDLs are strongly typed: when you create a PDL, it gets a
+particular representation and stays that way. The basic types are
+familiar to C programmers: byte, short, unsigned short, long,
+long long, float, and double. You can compile 64-bit support into
+your copy of PDL, and have access to wide doubles and other such
+exotica. Complex numbers are supported as a subclass of PDL; see
 PDL::Complex in the main PDL documentation.
 
 PDL types are automatically converted as necessary within 
@@ -423,7 +426,7 @@ than boolean, context - so you can do elementwise Boolean
 arithmetic with C<&>, C<|>, and C<^> - but not with C<&&>, C<||>, and
 C<^^>.
 
-String context is what you get if you use a PDL as a string. The PDL
+B<String context> is what you get if you use a PDL as a string. The PDL
 gets converted to a human-readable string suitable for printing. The
 new C<pdl()> string input capability allows one to convert printed
 ndarrays back into the original object.  The feature includes support
@@ -764,6 +767,10 @@ small PDLs - but it can be quite convenient as well. PDL keeps
 the copying flag false by default on most new PDLs, but if you 
 set it to true (using the hdrcpy method, see below), then the 
 both the header and the copy flag will be copied to derived PDLs.
+
+=for comment
+Anchor tags for Astro::FITS::Header lack a target in the online version.
+Does the pod2html just need to be re-run?
 
 Convenient interfaces exist to use an L<Astro::FITS::Header> tied 
 hash instead of a normal Perl hash ref. L<Astro::FITS::Header> tied 

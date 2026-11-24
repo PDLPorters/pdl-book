@@ -114,7 +114,7 @@ high-level language, in this case it is called 'English'.
 
 While natural language understanding is still quite a long way off,
 high-level computer languages are currently proliferating. Examples
-include Perl, TCL, JAVAscriptm, Visual Basic, Python, and many more.
+include Perl, TCL, JavaScript, Visual Basic, Python, and many more.
 Such systems have also been developed for data processing. Worthy of
 note are commercial software such as C<IDL> ('Interactive Data Language' from
 Exelis L<http://www.exelisvis.com>), C<MATLAB> (from The
@@ -169,9 +169,9 @@ often the subject of major papers themselves with the software being
 freely available on the Internet. Such software is commonly written in C
 or FORTRAN to allow general use.
 
-Why aren't they working at a higher level? As we explained above this
+Why aren't they working at a higher level? As we explained above, this
 would allow faster creation and make the software more portable and more
-easily customizable. Well in our view one of the reasons this has not
+easily customizable. Well in our view, one of the reasons this has not
 happened is because of the lack of a suitable free high-level
 data-centric language, with powerful enough facilities. 
 
@@ -185,8 +185,8 @@ have often been hindered in sharing our code by collaborators having
 lack of access to software.
 
 Moreover scientific work often involves extensive innovations and
-modifications to old ways of doing things. For software as well as being
-freely available it is critical to have access to the source code to
+modifications to old ways of doing things. For software, as well as being
+freely available, it is critical to have access to the source code to
 permit easy customization.
 
 Finally there I<is> also the issue of cost. Equivalent commercial
@@ -267,7 +267,7 @@ The language must be very easy to use, with a reasonably familiar syntax
 to new users. To some extent this item and the previous one are
 contradictory. For example the Python language, which is admirable
 for it's sophisticated and clean Object-Oriented model, meets all
-the above requirements. Indeed their is already a numerical extension
+the above requirements. Indeed there is already a numerical extension
 - NumPy (L<http://numpy.scipy.org/>). However in our 
 view the syntax is a bit too strange for
 new users. We prefer a language where simple code can still achieve useful

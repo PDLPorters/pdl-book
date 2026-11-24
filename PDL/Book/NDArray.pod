@@ -9,7 +9,7 @@ pod2pdf NDArray.pod --icon-scale 0.25 --title "PDL Book" --icon logo2.png --outp
 
 PDL uses Perl "objects" to hold PDL data, called an ndarray. An
 "object" is like a user-defined data-type and is a very powerful
-feature of Perl, PDL creates its own class of "PDL" objects to
+feature of Perl. PDL creates its own class of "PDL" objects to
 store ndarrays. These look like ordinary Perl variables such as $x,
 $Foo, $MyData, etc.
 
@@ -28,7 +28,7 @@ It is now time to answer a question which has probably been nagging at the back 
 
 Why bother with ndarrays? Why not just use normal Perl "arrays"?
 
-By Perl "arrays" we of course mean entities like @x and @Data z which one would normally create and manipulate like this:
+By Perl "arrays" we of course mean entities like @x and @Data which one would normally create and manipulate like this:
 
    @x = (1,2,3);
    push @x, 42;

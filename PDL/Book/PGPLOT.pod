@@ -103,7 +103,7 @@ instead we call the C<hold> function to stop that from happening:
 
 We can then continue plotting, now using symbols instead of a line:
 
-    pdl> points $x, exp(-$x*$x/2), {Symbol => 'Plus'};
+    pdl> points $x, exp(-$x*$x/2), {Symbol => 'Plus'}
 
 Again, note that the function C<points> function plots symbols instead
 of lines. PGPLOT has a large array of symbols, normally accessed using
@@ -115,7 +115,7 @@ will overplot the existing ones and since we do not want that anymore,
 we therefore have to C<release> the device to the next set of plot
 commands:
 
-    pdl> release;
+    pdl> release
 
 As a second example we will show how you can create plots with error
 bars. We will just carry on so the previous plot will be erased (enjoy
@@ -136,7 +136,7 @@ which sets the X-axis to go from 0 to 1 and the Y-axis from 22 to 26.
 
 That is really all that is needed before plotting the error bars: 
 
-    pdl> errb $x, $v, $dv,  {Symbol => 'Square'};
+    pdl> errb $x, $y, $dy,  {Symbol => 'Square'}
 
 And here we go! It almost looks like science. Of course in real life
 error-bars might not be symmetric (although you often wish they were),
@@ -178,7 +178,7 @@ But first, how do you specify an option? If you read through the
 walk-through above you have probably already realized that they are set
 as keys in a hash: 
 
-    line x, y {Colour => 3}
+    line $x, $y, {Colour => 3}
 
 However due to the way they are implemented in the code (using the
 C<PDL::Options> package) the hash is more flexible than normal Perl
@@ -187,7 +187,7 @@ synonyms defined so that for instance C<Color> and C<Colour> are both
 accepted to avoid bad feelings on one side of the Atlantic. Finally
 most, if not all, options can be shortened so that C<Lines> will be
 interpreted as C<LineStyle>. This is mostly useful when working on the
-C<perldl> command line however as it is error-prone in scripts (imagine
+C<perldl> command line, however it is error-prone in scripts (imagine
 that someone later implemented a C<Lines> option which did something
 totally different, like draw 10 parallel lines, yeah, quite likely). 
 
@@ -210,7 +210,7 @@ reflect any changes if they take place.
 
 This option allows you to set the
 arrow shape, and optionally size for arrows for the C<vect> routine. The
-arrow shape is specified as a hash with the key C<FS> to set fill style,
+arrow shape is specified as a hash with the key C<FS> to set fill style.
 
 =item C<Angle> 
 
@@ -231,7 +231,7 @@ C<pgsah> . The equivalent to the above is
     pdl> $opt = {Arrow => pdl([1, 60, 0.3, 5])};
 
 For the latter the arguments must be in the given order, and if any are
-not given the default values of 1, 45, 0.3 and 1.0 respectively will be
+not given, the default values of 1, 45, 0.3 and 1.0 respectively will be
 used. 
 
 =item C<Arrowsize> 
@@ -265,7 +265,7 @@ number, or by a name as in the following table
 
 
 The reason why this command is accepted by most commands is that when a
-command is called before a plot area is set up it will implicitly call
+command is called before a plot area is set up, it will implicitly call
 C<env> which interprets this option. 
 
 =item C<AxisColour>
@@ -320,7 +320,7 @@ C<_set_colour>.
 Set the fill type to be used by C<poly>, C<circle>, C<ellipse> and
 C<rectangle>. The fill can either be specified using numbers or name,
 according to the following table, where the recognized name is shown in
-capitals-it is case-insensitive, but the whole name must be specified.
+capitals; it is case-insensitive, but the whole name must be specified.
 
     1   Solid
     2   Outline
@@ -403,7 +403,7 @@ Set the line width. It is specified as a integer multiple of 0.13 mm.
 The position of the plot on the page relative to the view surface in
 normalized coordinates as an anonymous array. The array should contain
 the lower and upper X-limits and then the lower and upper Y-limits. To
-place two plots above each other with no space between them you could do 
+place two plots above each other with no space between them, you could do
 
     $win->env(0, 1, 0, 1, {PlotPosition => [0.1, 0.5, 0.1, 0.5]});
     $win->env(5, 9, 0, 8, {PlotPosition => [0.1, 0.5, 0.5, 0.9]});
@@ -488,7 +488,7 @@ method outlined in the next section.
 
 You might not be happy with the default settings for the various options
 and want to set a different value permanently instead of specifying it
-with every call to C<dev> , C<env> or some other command. There is some
+with every call to C<dev>, C<env> or some other command. There is some
 support for this, but it is limited in that it is not case-insensitive
 nor does it have synonyms (except for colour/color) so the options
 B<must> be written as above. (You will be notified if you did something
@@ -512,7 +512,7 @@ border and other options can be conveniently be specified in this way.
 
 The first step for the budding plot maker is to set up the drawing area.
 This involves selecting what device you want to create the plots on and
-then setting the region you want to plot in . 
+then setting the region you want to plot in.
 
 The destination for your plot commands is set with the C<dev> command,
 and with different arguments to C<dev> you can send plots to various
@@ -593,8 +593,8 @@ and Y as input:
 =for comment convert ex_env1.pdf -rotate 90 -resize 300x ex_env2.png
 
 sets up a plotting area with both axes going from 0 to 1. If a
-logarithmic axis is desired this can be achieved by passing an option to
-the env command, we can also use this to set the axis labels:
+logarithmic axis is desired, this can be achieved by passing an option to
+the env command. We can also use this to set the axis labels:
 
     env(1, 1000, 0, 1, {Axis => 'LOGX', Xtitle => 'X-axis', Ytitle => 'Y-axis'});
 
@@ -606,7 +606,7 @@ Further information on the C<Axis> option can be found in L</"Options in plot co
 
 It is important to realize that when you call C<env> explicitly it
 automatically holds the plot for you, so subsequent plot commands will
-plot on top of the plotting area, and if you want to make a new plot you
+plot on top of the plotting area. If you want to make a new plot, you
 need either to call C<env> again or call C<release> explicitly. 
 
 =back
@@ -614,7 +614,7 @@ need either to call C<env> again or call C<release> explicitly.
 =head2 Drawing lines and plotting points
 
 The most important commands in the graphics package are probably the
-line drawing and point plotting commands C<line> and C<points> . The
+line drawing and point plotting commands C<line> and C<points>. The
 most basic command is C<points> which plots particular symbols at given
 x and y values:
 
@@ -649,13 +649,13 @@ symbol value.
 =head2 Plotting error-bars 
 
 Closely related to C<points> is the routine for plotting symbols with
-error-bars, C<errb> . This can be called in a variety of ways to allow
+error-bars, C<errb>. This can be called in a variety of ways to allow
 for various ways of giving errorbars and whether horizontal or vertical
 errorbars are required. A typical call is:
 
-    pdl> env(0, 5, -2, 30) 
-    pdl> $x=sequence(10)/2.0; $y=$x*$x 
-    pdl> $dy = sqrt($x+1); 
+    pdl> env(0, 5, -2, 30)
+    pdl> $x = sequence(10)/2.0; $y = $x*$x
+    pdl> $dy = sqrt($x+1)
     pdl> errb $x, $y, $dy, { Symbol => 'Square' }
 
 =for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_errb.8.png"/></p>
@@ -669,11 +669,11 @@ possible to get asymmetric error-bars by giving the upper and lower
 limits of the error bars separately for the X and Y variables as in the
 following example:
 
-    pdl> $x2 = pdl(1.5, 2.3, 4.7) 
-    pdl> $y2 = pdl(10, 22, 0) 
-    pdl> $dx = $x2->zeroes(); # No X-errors 
-    pdl> $yu= pdl(12,29,1)-$y2 
-    pdl> $yl= $y2 - pdl(7, 20, -2) 
+    pdl> $x2 = pdl(1.5, 2.3, 4.7)
+    pdl> $y2 = pdl(10, 22, 0)
+    pdl> $dx = $x2->zeroes(); # No X-errors
+    pdl> $yu = pdl(12, 29, 1) - $y2
+    pdl> $yl = $y2 - pdl(7, 20, -2)
     pdl> errb $x2, $y2, $dx, $dx, $yl, $yu, {Symbol => 'Triangle'}
 
 =for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_errb2.8.png"/></p>
@@ -712,7 +712,7 @@ I<x(i+1)> with the value I<y(i)>.
 
 
 By default the routine assumes that the X-values are the start points of
-the bin, if instead your values are for the centers of the bins, you
+the bin. If instead your values are for the centers of the bins, you
 need to set the option C<Centre>/C<Center> to a true value. In addition
 the appearance of the lines can be modified using the same options as
 for the C<line> command.
@@ -725,11 +725,11 @@ fill). If you display this you should consider putting
 C<< FillStyle => 'Outline' >> in your C<.perldlrc> file as explained in 
 L</"Setting default values for options">, or you can set it explicitly as in the following example:
 
-    pdl> $x=zeroes(20)->xlinvals(-2,2);
-    pdl> $y=exp(-$x*$x); 
-    pdl> $xpoly = append($x->where($x <= 0), pdl(0)); 
-    pdl> $ypoly = append($y->where($x <= 0), pdl(0)); 
-    pdl> poly $xpoly, $ypoly, {FillType => 'Hatched'};
+    pdl> $x = zeroes(20)->xlinvals(-2,2)
+    pdl> $y = exp(-$x*$x)
+    pdl> $xpoly = append($x->where($x <= 0), pdl(0))
+    pdl> $ypoly = append($y->where($x <= 0), pdl(0))
+    pdl> poly $xpoly, $ypoly, {FillType => 'Hatched'}
 
 =for html <p> <img width="400" alt="" src="PGPLOTFigs/linepoly_ex.8.png"/></p>
 
@@ -746,13 +746,13 @@ and the discussion of C<FillType> in L</"Options in plot commands">.
 
 PGPLOT was originally designed for astronomy and as such it has good
 support for the display of 2D-data. In PDL this support has been
-simplified and there is now only one command for image display, C<imag>
-, which internally chooses between different PGPLOT display commands.
+simplified and there is now only one command for image display, C<imag>,
+which internally chooses between different PGPLOT display commands.
 The simplest use of C<imag> is to let it act on a 2D ndarray so:
 
 
-    pdl> $a = rvals(50,50, {Center => [ 25, 25]}); 
-    pdl> imag $a;
+    pdl> $a = rvals(50, 50, {Center => [25, 25]})
+    pdl> imag $a
 
 =for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_imag1.8.png"/></p>
 
@@ -792,13 +792,13 @@ and C<Sqrt>.
 You can also add a colour bar (colour wedge in PGPLOT parlance) to the
 image display. This is accomplished either using the C<draw_wedge> (see
 below) command directly or by setting the C<DrawWedge> option to true in
-your call to C<imag> . If you want to pass options to the C<draw_wedge>
+your call to C<imag>. If you want to pass options to the C<draw_wedge>
 command, you can do that with the C<Wedge> option. See below for
 further details.
 
 =head2 Transforms 
 
-Finally a very useful feature of PGPLOT that is relevant both to images
+Finally, a very useful feature of PGPLOT that is relevant both to images
 and also the contour plots (see below) is the concept of a transform
 matrix. This is a I<6> element vector, I<T(i)> which maps input
 pixels into display pixels so that pixel I<i,j> is mapped to:
@@ -842,7 +842,7 @@ It is often desirable to annotate an image with a colour wedge showing
 the range of values in the image. This is accomplished with the
 C<draw_wedge> function in PDL::Graphics::PGPLOT (but you can avoid
 calling this directly by setting the C<DrawWedge> option in your call to
-C<imag> , see above). This function should normally give a decent result
+C<imag>, see above). This function should normally give a decent result
 without the user setting any options except the C<Label> option which
 sets the annotation, but occasionally it is necessary to change its
 behavior and that is done by setting the following options:
@@ -887,7 +887,7 @@ The label used to annotate the wedge.
 
     dev '/xs', {WindowWidth => 6, Aspect => 1};
     $im = rfits('Frei/n4013lJ.fits');
-    $im += abs(min($im)-1);
+    $im += abs(min($im) - 1);
     $im = log10($im);
     imag($im, {PlotPosition => [0.1, 0.85, 0.175, 0.925], Min => 2.6, Max => 2.0 });
     draw_wedge({Wedge => {Width => 4, Label => 'Log Counts', Displacement => 1}});
@@ -921,7 +921,7 @@ shown in the example below:
     dev('/xs');
     $y = ylinvals(zeroes(100,100), -5, 5); 
     $x = xlinvals(zeroes(100,100), -5, 5);
-    $z = cos($x**2)+sin($y*2);
+    $z = cos($x**2) + sin($y*2);
     cont $z, {Contours => pdl(-1, 0, 1), Labels => ['-1', '0', '1']};
 
 =for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_cont2.8.png"/></p>
@@ -990,9 +990,9 @@ may or may not look like a circle depending on the aspect ratio of your
 display - see L</"Setting up the plot area">. The user specifies the
 radius and the x and y position of the center:
 
-    pdl> dev '/xs', {Aspect => 1, WindowWidth => 5} 
-    pdl> env 0, 10, 0, 10 
-    pdl> $radius=2; ($x, $y) = (4, 4) 
+    pdl> dev '/xs', {Aspect => 1, WindowWidth => 5}
+    pdl> env 0, 10, 0, 10
+    pdl> $radius = 2; ($x, $y) = (4, 4)
     pdl> circle $x, $y, $radius, {LineWidth => 3}
 
 =for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_circle1.8.png"/></p>
@@ -1100,7 +1100,7 @@ that set by the user via the C<CharSize> option).
     pdl> env(0, 4, 0, 15);
     pdl> line $x, $y1, {LineStyle => 'Dashed', Colour => 'Red'}
     pdl> line $x, $y2, {LineWidth => 3, Colour => 'Blue'}
-    pdl> legend ['sqrt(x)', 'x \backslash u2'], 0.5, 10,
+    pdl> legend ['sqrt(x)', 'x\u2'], 0.5, 10,
                     {LineStyle => ['Dashed', undef],
                     LineWidth => [undef, 3], Colour => ['Red', 'Blue'] }
                   # ,Width => 1.0 } makes x**2 legend disappear, why?
@@ -1165,7 +1165,7 @@ fit).
 =item C<TextFraction>
 
 The fraction of the box set aside for text. The default is 0.5 which
-usually is ok. Note that this option used to be called C<Fraction> ,
+usually is ok. Note that this option used to be called C<Fraction>,
 which still is available as a synonym. 
 
 =item C<TextShift>
@@ -1189,11 +1189,11 @@ synonym (more natural for the TeX-heads out there).
 
 =head2 Using colour
 
-PGPLOT has a two disjoint sets of colours. One set determines the colour
+PGPLOT has two disjoint sets of colours. One set determines the colour
 table used when displaying images and is initialized to a grayscale, and
 the other is a set of 15 colours used to colour all other plotting
 objects. The latter set is accessible through the C<Colour> option
-described in L</"Options in plot commands"> Here we will concentrate on
+described in L</"Options in plot commands">. Here we will concentrate on
 accessing the lookup-table for image display. 
 
 The command used to change the colour table is C<ctab>, which in its
@@ -1251,7 +1251,7 @@ Thus to set one of the colour tables in the C<PDL::Graphics::LUT>
 package, you do:
 
     pdl> use PDL::Graphics::LUT;
-    pdl> print "Available tables: ".join(', ', lut_names());
+    pdl> print "Available tables: " . join(', ', lut_names());
     Available tables: aips0, backgr, bgyrw, blue, blulut, color, green,
     heat, idl11, idl12, idl14, idl15, idl2, idl4, idl5, idl6, isophot, light,
     manycol, pastel, rainbow, rainbow1, rainbow2, rainbow3,
@@ -1269,13 +1269,13 @@ this script:
 
     use PDL::Graphics::PGPLOT;
     use PDL::Graphics::LUT;
-    dev("/xs",3,15);
-    foreach(lut_names()){
-        print"$_\n";
+    dev("/xs", 3, 15);
+    foreach ( lut_names() ) {
+        print "$_\n";
         ctab(lut_data($_));
         imag sequence(250,1);
-        text $_,20,-0.2,{CHARSIZE=>20,LINEWIDTH=>20,COLOUR=>0};
-        text $_,20,-0.2,{CHARSIZE=>20,LINEWIDTH=>1,COLOUR=>1};
+        text $_, 20, -0.2, {CHARSIZE=>20, LINEWIDTH=>20, COLOUR=>0};
+        text $_, 20, -0.2, {CHARSIZE=>20, LINEWIDTH=>1,  COLOUR=>1};
     }
 
 And the resultant figure is shown below:
@@ -1292,7 +1292,7 @@ do when (say) an array of images is passed to the C<imag> command. Are
 they to be displayed in several plot panels, are they to be plotted on
 top of each other, seamlessly plotted next to each other? But even more
 complex is the question of treatment of options and how to deal with
-these if there are less options than for instance, lines to draw (a
+these if there are fewer options than for instance, lines to draw (a
 common occurrence if you wanted to draw a B<lot> of lines).
 
 That said the C<PDL::Graphics::PGPLOT> interface does have limited
@@ -1305,11 +1305,11 @@ The way the options are treated is the most interesting. To set options
 for a set of lines, give an anonymous array as argument to that option
 with a value for each line. If you give more options than there are
 lines, the surplus is ignored. However if you give less, the options are
-repeated from the start. Although possibly a bit confusing this is very
+repeated from the start. Although possibly a bit confusing, this is very
 powerful because you can get a large number of combinations of colour
 and linestyle. For instance if you give 4 colours and 5 linestyles, you
 get a total of 20 distinct combinations and should you give 3 linewidths
-as well you will suddenly have 80 different styles to work with with
+as well, you will suddenly have 80 different styles to work with with
 very little typing. Note however that you need to make sure that the
 numbers you give are relatively prime - otherwise you will get much
 less possibility, just think of the situation where you have 4
@@ -1321,10 +1321,10 @@ sine curves with different frequencies. This is a simple example where
 we want to colour all even frequencies with red and all odd with blue
 and vary the line-styles as well:
 
-    pdl> $pi=4*atan2(1,1); 
-    pdl> $x=zeroes(50)->xlinvals(0, $pi) 
-    pdl> $freq = sequence(10) 
-    pdl> $y = sin($freq*transpose($x)) 
+    pdl> $pi = 4*atan2(1,1)
+    pdl> $x = zeroes(50)->xlinvals(0, $pi)
+    pdl> $freq = sequence(10)
+    pdl> $y = sin($freq * transpose($x))
     pdl> line $x, $y, {Colour => ['Red', 'Blue'], Linestyle=>[0,1,2,3,4,5]}
 
 =for html <p> <img width="400" alt="" src="PGPLOTFigs/ex_tline1.8.png"/></p>
@@ -1337,7 +1337,7 @@ Have you ever created a good-looking plot on the command line of
 an interactive data program, be it PDL, IDL, MATLAB, Octave or any other
 package, and wished that you could make a quick Postscript copy of it
 only to find that you need to redo all the commands? I certainly
-have. In the newer versions of PDL this
+have. In the newer versions of PDL, this
 is thankfully not the case anymore. These have a recording facility
 built in. However this is not enabled by default (for reasons described
 later in this section), you need to turn it on yourself. The way to do
@@ -1486,7 +1486,7 @@ limits?
     pdl> $x = sequence(10); $y = $x*$x
     pdl> env (0, 9, 0, 81)
     pdl> line $x, $y;
-    pdl> $s = retrievestate()
+    pdl> $s = retrieve_state()
     pdl> $x += 3; replay $s
 
 The result now should be as shown in Figure XXXXXXXX
@@ -1504,7 +1504,7 @@ the data back to where we started
 But the following will B<not> plot a parabola
 starting at I<x=5>: 
 
-    pdl> $x = sequence(10)+5.0; replay $s
+    pdl> $x = sequence(10) + 5.0; replay $s
 
 The reason for this is that the reference kept in the state object is to
 the actual B<data> in the previous I<$x>-object and not to the variable
@@ -1516,7 +1516,7 @@ way to do that? The answer is yes, but it looks rather ugly, so you
 might want to consider whether this is something you want to do 
 
     pdl> $x = sequence(10); $y = $x*$x
-    pdl> line $x, $y; $s=retrievestate()
+    pdl> line $x, $y; $s = retrieve_state()
     # Now let us transfer this to a sine plot
     pdl> $y -= $y; $y += sin($x)
     pdl> replay $s
@@ -1539,7 +1539,7 @@ saving and restoring plot commands the situation would change.
 Assume that you are developing a simulation. When you are testing the
 code (all written in PDL of course) you have to keep track of how some
 data changes at every time-step, but at the same time you want to look
-at time-averages. If you were to use what we discussed above you would
+at time-averages. If you were to use what we discussed above, you would
 probably want to display the time-steps in one panel and the
 time-averages in another panel in a plot window. The problem with this
 is of course that one panel is updated a lot more often than the other
@@ -1632,13 +1632,13 @@ interface and not discuss (again) the different commands since they are
 the same as we went through above, it is just a different way of calling
 them. 
 
-Opening a plot object and plotting a simple plot 
+=head3 Opening a plot object and plotting a simple plot
 
 To create a plot object we first need to C<use> the PDL::Graphics2D
 package - this is merely a shortcut for the true
 PDL::Graphics::PGPLOT::Window package, but why type more when it doesn't
 gain you anything? Then we create the object using the standard Perl
-notation C<PDL::Graphics2D->new()> : 
+notation C<< PDL::Graphics2D->new() >> :
 
     use PDL;
     # Note that we could also access this as
@@ -1652,7 +1652,7 @@ notation C<PDL::Graphics2D->new()> :
 
     # Create a simple plot
     $x = sequence(10);
-    $w->points($x, $x*$x, {Symbol => 'Triangle'};
+    $w->points($x, $x*$x, {Symbol => 'Triangle'});
 
 Note how we use the window object (C<$w>) when calling the C<points>
 routine - since we didn't C<use> the PDL::Graphics::PGPLOT package
@@ -1708,16 +1708,17 @@ would be a lot easier to use C<$xin>, but that wasn't what we tried to
 do after all. 
 
 This is of course a very simplified example, but it does provide a
-framework for a more comprehensive data explorer. From astronomy a
+framework for a more comprehensive data explorer. From astronomy, a
 typical example would be to plot scatter-plots for two variables and
 bringing up images of the objects by clicking at their data in the plot
 window. In other situations the data might be financial data for a set
 of companies and clicking on the points would bring up a comprehensive
-summary of that company. You are limited by your imagination!
+summary of that company. You are only limited by your imagination!
 
 The bottom line is that whatever your requirements are, the OO approach
 is probably better when you need more than one plot window, but when you
-only use one window, and particularly on the C<perldl> command line. 
+only use one window, and particularly on the C<perldl> command line,
+the standard method should suffice.
 
 =head2 Using PGPLOT commands directly
 
@@ -1729,7 +1730,7 @@ before you might prefer the interface, although it is rather
 inconvenient when dealing with PDL. 
 
 Full documentation for the PGPLOT functions can be found at Tim
-Pearson's WWW page: C<http://astro.caltech.edu/~tjp/pgplot/> . This is
+Pearson's WWW page: L<http://astro.caltech.edu/~tjp/pgplot/>. This is
 not the place to discuss the details of PGPLOT, but it is interesting to
 learn how to access these routines from PDL with ndarrays as arguments. 
 
@@ -1790,7 +1791,7 @@ distribution for an example.
 
 =back
 
-The bottom line is that as your plots get more and more complex you
+The bottom line is that as your plots get more and more complex, you
 might end up in a situation where you need the finer control offered by
 the C<PGPLOT> package, but for day-to-day use it is hoped that
 PDL::Graphics::PGPLOT will address most people's needs. And if doesn't

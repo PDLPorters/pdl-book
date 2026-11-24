@@ -60,7 +60,7 @@ ndarray:
 
     $section = $gal(337:357,178:198);
 
-The ndarray C<$gal> was a 2D image, we used array syntax (compliments
+The ndarray C<$gal> was a 2D image. We used array syntax (compliments
 of C<PDL::NiceSlice>) to extract a contiguous subset ranging from
 pixel 337 to 357 along the first dimension, and 178 through 198 along
 the second.  Behind the scenes, this is implemented by the C<slice>
@@ -186,7 +186,7 @@ C<slice> has some advanced syntactical features which allow dimensions
 to be inserted or removed (this comes in quite useful when passing 2D
 arrays to functions expecting 1D arguments and vice versa, this comes in
 extremely useful when using PDL's advanced B<broadcasting> features (see
-I<PDL broadcasting and the signature> later.
+I<PDL broadcasting and the signature> later).
 
 If a dimension is of size unity it can be removed using C<()>: 
 
@@ -209,18 +209,18 @@ This sort of thing is very useful for advanced broadcasting trickery.
 At this point we would like to introduce the varied notations for
 calling C<slice> and it's friends.  This is because it will be
 commonly seen in PDL code and is very handy.  While at first unfamiliar
-to C and FORTRAN users it is not rocket science, PDL users will quickly
+to C and FORTRAN users, it is not rocket science, PDL users will quickly
 become used to it.
 
-As we mentioned in Chapter 2 ndarrays are implemented as Perl objects.
+As we mentioned in Chapter 2, ndarrays are implemented as Perl objects.
 Objects can have their own personal functions, known as methods.  The
 difference between a method and a function is that a method can only be
 used on the class of object it belongs too.  And methods have a new
 notation for calling them.  This means names (which can get in short
 supply) can be re-used for different objects.  
 
-Many of PDL's functions are available as methods too, in fact once you
-started using the more advanced features you will find that many of them
+Many of PDL's functions are available as methods too. In fact once you
+start using the more advanced features you will find that many of them
 are only available as methods.  (PDL by default defines a lot of
 functions, which while useful do clutter Perl's namespace, at some point
 we had to stop!).  
@@ -254,8 +254,8 @@ The C<dice_axis> function performs a dice along a specified axis:
     $b .= 42; # Alters columns [3,7,9];
     print $b;
 
-For a 2D ndarray dicing along axis 0 selects columns, dicing along axis 1
-selects rows.  In general in N-dimensions dicing along a given axis
+For a 2D ndarray, dicing along axis 0 selects columns, dicing along axis 1
+selects rows.  In general in N-dimensions, dicing along a given axis
 reduces the number of elements along that axis, but the number of
 dimensions remains unchanged.  The C<dice> function allows all axes to
 be specified at once: 
@@ -291,7 +291,7 @@ C<xchg> generalizes to N-dimensions:
     $z = zeroes(3,4,5,6,7);
     $t = $z->xchg(1,3); # Dims now 3,6,5,4,7
 
-A different way of switching dimensions around is provided by C<$z->mv(A,B)>
+A different way of switching dimensions around is provided by C<< $z->mv(A,B) >>
 which just moves the axis C<A> to position C<B> :
 
     $z = zeroes(3,4,5,6,7);
@@ -303,7 +303,7 @@ Finally one can completely re-order dimensions:
     $t = $z->reorder(4,3,0,2,1); # Dims now 7,6,3,5,4
 
 Note C<reorder> is our first example of a pure PDL method - it does
-not exist as a function and can only be called using the C<<$z->reorder(...)>> syntax.
+not exist as a function and can only be called using the C<< $z->reorder(...) >> syntax.
 
 =head2 Combining dimensions with C<clump>
 
@@ -329,8 +329,8 @@ we have a 3-D datacube ndarray:
      ]
     ]
 
-We have seen before we can apply a 1-D function like C<sumover> to the
-rows - and using dimension manipulating functions to any of the axes.
+We have seen before that we can apply a 1-D function like C<sumover> to the
+rows - and using dimension manipulating functions - to any of the axes.
 
 But say we wanted to sum over the first B<TWO> dimensions? i.e.  replace
 our datacube with a 1-D vector containing the sums of each plane. What
@@ -348,7 +348,7 @@ what C<clump> does:
     pdl> print $c;
     [30 30]
 
-Now we know about C<mv> it is also easy to sum over the last two dimensions:
+Now we know about C<mv>, it is also easy to sum over the last two dimensions:
 
     pdl> print sumover $a->mv(0,2)->clump(2)
     [0 6 12 18 24]
@@ -366,7 +366,7 @@ Uncannily this is almost exactly how the C<sum> function is implemented in PDL.
 
 =head2 Adding dimensions with C<dummy>
 
-After our first look at broadcasting in Chapter 2 we know how to add a
+After our first look at broadcasting in Chapter 2, we know how to add a
 vector to rows of an image:
 
     pdl> print $a = pdl([1,0,0],[1,1,0],[1,1,1]);
@@ -406,7 +406,7 @@ to change the dimensions of C<$b> :
     ]
 
 C<dummy> just inserts a "dummy dimension" of size unity at the
-specified place.  C<dummy(0)> put's it at position 0 - i.e.  the first
+specified place.  C<dummy(0)> puts it at position 0 - i.e.  the first
 dimension.  The result is a column vector.  Then we easily get what we
 want:
 
@@ -417,8 +417,8 @@ want:
      [4 4 4]
     ]
 
-Because of the broadcasting rules the unit dimension makes C<$b>
-implicitly repeat along axis 0.  i.e.  it is as if C<<$b->dummy(0)>>
+Because of the broadcasting rules, the unit dimension makes C<$b>
+implicitly repeat along axis 0.  i.e.  it is as if C<< $b->dummy(0) >>
 B<looked> like:
 
     [
@@ -451,8 +451,8 @@ Let's make an ndarray of real numbers from 0 to 1:
     [0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
 
 We can make a conditional array whose values are 1 where a condition is
-true using standard PDL operators.  For example for numbers below 0.2
-and above 0.9:
+true using standard PDL operators.  For example for numbers below 0.3
+and above 0.8:
 
     pdl> print $a<0.25 | $a>0.85;
     [1 1 1 0 0 0 0 0 0 1]
@@ -505,7 +505,7 @@ viewed as 1-D):
      [ 10 11 12 13 14 15 16 17 18 999]
     ]
 
-You can of course use C<where> too for any number of dimensions:
+You can of course use C<where> for any number of dimensions:
 
     # e.g.  make a cube with a sphere of 1's in the middle:
     $cube = rvals(100,100,100);
@@ -517,9 +517,9 @@ You can of course use C<where> too for any number of dimensions:
 
 Slicing and indexing arbitrary subsets of data is certainly a
 fundamental aspect of any array processing language and PDL is no
-exception (as you can tell from the preceding examples).  In PDL those
+exception (as you can tell from the preceding examples).  In PDL, those
 functions might be even more important since they are absolutely vital
-in using PDL B<broadcasting> , the fast (and automagic) vectorized
+in using PDL B<broadcasting>, the fast (and automagic) vectorized
 iteration of "elementary operations" over arbitrary slices of
 multidimensional data.  First we have to explain what we mean by B<broadcasting>
 in the context of PDL, especially since the term B<broadcasting>
@@ -589,24 +589,24 @@ method invocation chains:
 
     $a->pdim("Dims")->maximum;
 
-A small utility routine
+=head3 A small utility routine
 
 So let's dissect what has happened.  If you look at the documentation of
-C<maximum> it says This function reduces the dimensionality of a
-ndarray by one by taking the maximum along the 1st dimension.
+C<maximum>, it says "This function reduces the dimensionality of an
+ndarray by one by taking the maximum along the 1st dimension".
 
 In this respect C<maximum> behaves quite differently from C<max>.
 C<max> will always return a scalar with a value equal to that of the
 largest element of a (possibly multidimensional) ndarray.  C<maximum>,
 however, is by definition an operation that takes the maximum only over
-a one-dimensional vector.  If the input ndarray is of higher dimension
+a one-dimensional vector.  If the input ndarray is of higher dimension,
 this B<elementary operation> is automatically iterated over all
 one-dimensional subslices of the input ndarray
 
 And, most importantly, this automatic iteration (we call it the
 B<broadcastloop>) is implemented as fast optimized C loops.  As a
 convention, these subslices are by default taken along the first
-dimensions of the input ndarray.  In our current example the subslices
+dimensions of the input ndarray.  In our current example, the subslices
 are one-dimensional and therefore taken along the first dimension.  All
 results are placed in an appropriately sized output ndarray of N-1
 dimensions, one value for each subslice on which the operation was
@@ -648,7 +648,7 @@ Now suppose we do not want to calculate the maxima along the first
 dimension but rather along the second (the column maxima).  However, we
 just heard that C<maximum> works by definition on the first dimension.
 How can we make it do the same thing on the second dimension? Here is
-where the dimension manipulation routines come in handy: we use a to
+where the dimension manipulation routines come in handy: we
 make an ndarray in which the original second dimension has been moved to
 first place.  Guess how that is done: yes, using C<xchg> we get what
 we want:
@@ -723,7 +723,7 @@ with in a separate chapter) and the conceptual interplay with the
 dimension manipulation routines.
 
 The first and most important reason to use B<PDL broadcasting> is simply
-B<speed> .  The alternative to broadcasting are loops at the perl level.
+B<speed>.  The alternative to broadcasting are loops at the perl level.
 That is certainly a viable alternative, however, if we rewrite our
 maximum routine along these lines a quick benchmark test will prove our
 point.  First of all, here is the code that does the equivalent of C<maximum>
@@ -742,8 +742,8 @@ on 2D input without using broadcasting
     }
 
 We have written it so that C<mymax> can just deal with 2D input
-ndarrays.  A routine for the general n-dimensional case would have been
-more involved .  Note that we explicitly have to create an output ndarray
+ndarrays (a routine for the general n-dimensional case would have been
+more involved).  Note that we explicitly have to create an output ndarray
 of the desired type and size.  By comparison, the corresponding
 broadcasting routine is much more concise:
 
@@ -753,9 +753,9 @@ broadcasting routine is much more concise:
     }
 
 In fact, we only wrapped C<maximum> in another subroutine to have the
-same calling overhead as C<mymax> .  We are trying to be fair (even
+same calling overhead as C<mymax>.  We are trying to be fair (even
 though we are biased).  So let's compare the performance of C<mymax>
-versus C<mybroadcastmax> .  How?  Remember that we are using perl, after
+versus C<mybroadcastmax>.  How?  Remember that we are using Perl, after
 all, and that there is (almost) always a module that does just what you
 need.  Here and now, that would be C<Benchmark>.
 
@@ -792,14 +792,14 @@ explicitly in perl code.  We have to write extra code to create the
 right size output ndarray, explicitly handle dimension sizes, etc.  All in
 all the code is much less concise and also less general.
 
-With the requirement to deal with all dimensions, loop limits, etc
-yourself you increase the probability of introducing errors into your
+With the requirement to deal with all dimensions, loop limits, etc.
+yourself, you increase the probability of introducing errors into your
 code.  When using broadcasting, PDL checks all dimensions for you, makes
 sure it loops over the correct indices internally and keeps you from
 having to do the bookkeeping: after all, B<that> is what computers are good at.
 
 Even though PDL broadcasting makes your life much easier in one respect by
-taking care of some of the "messy" details it leaves you with another
+taking care of some of the "messy" details, it leaves you with another
 task: you have to find the places in your algorithm/problem where
 broadcasting can effectively be used and help to make for speedy execution
 even when using an (almost inevitably slower) scripting language.  But
@@ -899,7 +899,7 @@ dimensionality of each of these arguments in an elementary operation.
 Each formal parameter carries this information in a list of formal
 dimension identifiers enclosed in parentheses.  So indeed C<a(n)>
 marks C<a> as a one-dimensional argument.  Additionally, each
-dimension has a B<named> size in a signature, in this example C<n> .
+dimension has a B<named> size in a signature, C<n> in this example.
 C<c()> has an empty list of dimension sizes: it is declared to be
 zero-dimensional (a scalar).
 
@@ -933,7 +933,7 @@ between 0 and 4.  To emphasize this we sometimes write
 
     $pdl(($i),($j),($k)) $i=0..2; $j=0..3; $k=0..4
 
-With the meaning as above (and '..' C<not> meaning the perl list
+With the meaning as above (and '..' C<not> meaning the perl range
 operator).  In that way we enumerate all the subslices.  Quite
 analogously, when dealing with an elementary operation that consumes 1D
 slices we want to view C<$pdl> as an C<[4,5]> array of 1D subslices:
@@ -943,6 +943,8 @@ slices we want to view C<$pdl> as an C<[4,5]> array of 1D subslices:
 And similarly, as a C<[5]> array of 2D subslices:
 
     $pdl(:,:,($i)) $i=0..4
+
+=for comment insert fig XXX
 
 You see how we just insert a ":" for each complete dimension we include
 in the subslice.  In fig. XXX the situation is illustrated graphically
@@ -961,7 +963,7 @@ interpretations:
 
 The dimensions in parentheses suggest that these are used in the
 elementary operation (mimicking the signature syntax); in the context of
-broadcasting we call these the B<elementary dimensions> .  The following
+broadcasting we call these the B<elementary dimensions>.  The following
 group of dimensions in rectangular brackets are the B<extra dimensions>.
 Conversely, given the elementary/extra dims notation we can easily
 obtain the shape of the underlying ndarray by appending the extradims to
@@ -976,7 +978,7 @@ Alright, the principles are simple.  But nothing is better than a few
 examples.  Again a typical imaging processing task is our starting
 point.  We want to convert a colour image to grayscale.  The input image
 is represented as a two-dimensional array of triples of RGB colour
-coordinates, or in other words, an ndarray of shape C<[3,n,m]> .
+coordinates, or in other words, an ndarray of shape C<[3,n,m]>.
 Without delving too deeply into the details of digital colour
 representation it suffices to note that commonly a gray value B<i>
 corresponding to a colour represented by a triple of red, green and blue
@@ -1151,7 +1153,7 @@ Alright, this probably is exactly what you expected but let us go
 through our new terminology and check that we can formally agree with
 what we intuitively expected anyway.
 
-C<$a>'s B<extradim> (s) has shape C<[3]> , those of C<$c> shape C<[3,2]>.
+C<$a>'s B<extradim> (s) has shape C<[3]>, those of C<$c> shape C<[3,2]>.
 The B<corresponding> B<extradim>(s) in this case is
 just the first one for the ndarrays involved.  It is equal
 to 3 in both input ndarrays, so clearly matches.
@@ -1165,7 +1167,7 @@ shape of the automatically created output ndarray given the shape of the
 extradims of the input ndarrays involved? Well, the result is created so
 that it has as many extradims as that input B<ndarray>(s) with the
 most extra dims.  Additionally, the shape will match that of the input
-ndarrays.  In our current example that leaves us with a result with
+ndarrays.  In our current example, that leaves us with a result with
 extradim shape C<[3,2]>: C<[o] c() ()[3,2]>. Remembering that we
 obtain the shape of the output ndarray by appending the shapes of the
 extradims to that of the elementary dimensions (here a scalar, i.e.  0D)
@@ -1179,7 +1181,7 @@ or expressed in slices (with NiceSlice syntax):
 
 How do we achieve that by broadcasting?
 
-    $result = $c*$d
+    $result = $c * $d
 
 is not the right way.
 
@@ -1199,7 +1201,7 @@ again.  This time C<dummy> comes in handy.  We want to multiply each
 element in the nth row of C<$c> with the nth element of C<$d> .  So
 we have to repeat each element of C<$d> as many times as there are
 elements in each row of C<$c> .  This is exactly what we can achieve
-by inserting a dummy dimension of size C<<$c->getdim(0)>> as dimension
+by inserting a dummy dimension of size C<< $c->getdim(0) >> as dimension
 0 of C<$d> :
 
     pdl> print $d->dummy(0,$c->getdim(0))->pdim("New dims");
